@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'kifucapture' target in the 'kifucapture' project
+//
+
+#ifdef __OBJC__
+    #import <UIKit/UIKit.h>
+#endif
