@@ -21,7 +21,10 @@
 	<key>OpenAllWhitelistURLsInWebView</key>
 	<false/>
 	<key>ExternalHosts</key>
-	<array/>
+	<array>
+		<string>*.msi.ucsb.edu</string>
+		<string>*.seasketch.org</string>
+	</array>
 	<key>Plugins</key>
 	<dict>
 		<key>org.apache.cordova.accelerometer</key>
