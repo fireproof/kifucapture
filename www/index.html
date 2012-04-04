@@ -20,6 +20,7 @@
         var temp = "582,224,277,117,399,437,45,280";
         var coords = temp.split(","); // board corner coordinates will come from gocam library
         
+            
         function onBodyLoad() {
             document.addEventListener("deviceready", onDeviceReady, false);
         }
@@ -69,8 +70,9 @@
                 goTracer = new GoTracer(image, canvas);
                 goTracer.setCorners();
                 goTracer.startScan();
+                
                 console.log(goTracer.getSGF());
-                document.getElementById('eidogo-player-auto').innerHTML = goTracer.getSGF();
+                document.getElementById('sgfoutput').innerHTML = goTracer.getSGF();
                 writeFile(goTracer.getSGF());
             };
             
@@ -124,12 +126,19 @@
                 document.getElementById('sgfoutput').innerHTML = goTracer.getSGF();
                 writeFile(goTracer.getSGF());
                 
+                // draw preview image in SGF page
+                var preview = new Preview($("preview"));
+                preview.update(goTracer);
+                
                 // save SGF to disk? Send via Email? Open in Browser? Display using eidogo?
                 
             };
             image.src = imageURI;               
         }
         
+            /* ------------------- */
+            /*  PhoneGap Functions */
+            /* ------------------- */
                  
         // A button will call this function
 
@@ -196,8 +205,7 @@
                          // need to check SZ is selected? How?
                          });
             console.log(preferences);
-            console.log($(this).serializeArray());
-//            printObject($(this).serializeArray())
+
         }
     
             
@@ -561,6 +569,56 @@
             {}
         }
             
+            /* -------------------- */
+            /*   Preview Functions  */
+            /* -------------------- */
+            
+            function Preview(cvs)
+            {
+                console.log("Preview begins");
+//                console.log(cvs);
+                this.canvas = cvs;
+                this.ctx = canvas.getContext('2d');
+//                this.backgroundImage = new Image();
+//                this.backgroundImage.src = "images/blank_board.png";
+//                console.log('this.backgroundImage.src: ' + this.backgroundImage.src);
+            }
+            
+            Preview.prototype = {
+                update: function(goTracer) {
+                    console.log("Preview.update");
+                    this.clear();
+                    this.draw(goTracer.blackSet.points, "black");
+                    this.draw(goTracer.whiteSet.points, "white");
+                },
+                clear: function() {
+                    console.log("Preview.clear");
+                    this.ctx.clearRect(0,0,this.canvas.width, this.canvas.height);
+                },
+                draw: function(points, color) {
+                    console.log("Preview.draw");
+                    this.ctx.fillStyle = color == "white" ? "rgb(255,255,255)" : "rgb(0,0,0)";
+                    for ( var p=0 ; p<points.length ; p++ ) {
+                        this.drawStone(points[p]);
+                    }
+                },
+                
+                // point here is anything with a .x and a .y, like a PointSet
+                drawStone: function(point) {
+                    console.log("drawStone");
+                    var x = 10 + 10.46*(point.coord[1].charCodeAt(0) - 97) -4;
+                    var y = 10 + 10.46*(point.coord[2].charCodeAt(0) - 97) -4;
+                    var r = 5;
+                    
+                    this.ctx.beginPath();
+                    this.ctx.arc(x, y, r, 0, 2*Math.PI, 0)
+                    this.ctx.fill();
+                    this.ctx.closePath();
+                }
+            };
+            
+
+            
             </script>
     </head>
     <body onload="onBodyLoad()">
@@ -694,6 +752,7 @@
             <div data-role="content">
                 
                 <div id="sgfdisplay">
+                    <canvas id="preview" width="200" height="200"></canvas>
                     <div id="player-container"></div>
                     <div id="sgfoutput"></div>
                     <div id="sgfmessage"></div>
