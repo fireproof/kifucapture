@@ -8,4 +8,10 @@ body {
     margin: 0.25em 0 !important;
 }
 
-#page1 { background-color: red; }
+#preview-background
+{
+  background-image: url('images/blank_board.png') !important;
+  width: 200px;
+  height: 200px;
+  margin-bottom: 5px;
+}
