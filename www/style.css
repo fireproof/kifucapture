@@ -1,0 +1,11 @@
+body {
+}
+.ui-input-text {
+    width: 40%;
+}
+
+.ui-field-contain {
+    margin: 0.25em 0 !important;
+}
+
+#page1 { background-color: red; }
