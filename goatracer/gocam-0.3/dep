@@ -1,0 +1,4 @@
+gocam.o: gocam.cc geom.hh util.hh gocam.hh CImg.h im.hh
+conf.o: conf.cc conf.hh str.hh
+str.o: str.cc str.hh
+gocam_test.o: gocam_test.cc CImg.h gocam.hh geom.hh util.hh conf.hh

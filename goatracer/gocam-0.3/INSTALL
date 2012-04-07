@@ -1,0 +1,7 @@
+GoCam is compiled by simply executing "make".  The Makefile does not
+have any install rule because the system is still under developement
+and contains only a simple test executable "gocam_test".
+
+The CImg library seems to know only about Sun, Linux, Windows, Mac and
+FreeBSD systems.  If you have other X11-capable system, that CImg does
+not recognize, see the Makefile how to force CImg to try X11 display.

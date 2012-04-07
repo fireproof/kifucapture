@@ -1,0 +1,13 @@
+{
+    "name": "snapKifu"
+  , "version": "0.0.1"
+  , "private": true
+  , "dependencies": {
+      "express": "2.5.x"
+    , "ejs": ">= 0.0.1"
+    , "canvas": "0.5.x"
+    , "canvas": "0.10.x"
+    , "formidable": "1.0.x"
+    , "imagemagick": "0.1.x"
+  }
+}
