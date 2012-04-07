@@ -3,7 +3,7 @@
     <head>
         <title>Capture SGF</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
-        <link rel="stylesheet" href="jquery/jquery.mobile-1.0.1.css" />
+        <link rel="stylesheet" type="text/css" href="jquery/jquery.mobile-1.0.1.min.css" />
         <link rel="stylesheet" media="screen" href="style.css" type="text/css" />
         <!-- iPad/iPhone specific css below, add after your main css >
          <link rel="stylesheet" media="only screen and (max-device-width: 1024px)" href="ipad.css" type="text/css" />		
@@ -37,14 +37,15 @@
             
             var canvas = document.getElementById("canvas");
             var ctx = canvas.getContext("2d");
+            var sgfCanvas = document.getElementById("preview");
 
             var image = new Image();
             
             image.onload = function(){
                 
                 var ratio = 1;
-                var maxWidth = 640;
-                var maxHeight = 480;
+                var maxWidth = 640 / 2;
+                var maxHeight = 480 / 2;
                 var w = image.width;
                 var h = image.height;
                 
@@ -61,7 +62,7 @@
                 ctx.canvas.height = newHeight;
                 
                 ctx.drawImage(image, 0,0,newWidth,newHeight);
-                
+                document.getElementById('message').innerHTML = 'newWidth: ' + newWidth + ' newHeight: ' + newHeight;
                 
 //                printObject(ctx.drawImage);
                 
@@ -71,9 +72,13 @@
                 goTracer.setCorners();
                 goTracer.startScan();
                 
-                console.log(goTracer.getSGF());
+//                console.log(goTracer.getSGF());
                 document.getElementById('sgfoutput').innerHTML = goTracer.getSGF();
                 writeFile(goTracer.getSGF());
+                
+                // draw preview image in SGF page
+                var preview = new Preview(sgfCanvas);
+                preview.update(goTracer);
             };
             
             image.src = imageData;
@@ -91,6 +96,7 @@
             /* Canvas manipulation */
             var canvas = document.getElementById("canvas");
             var ctx = canvas.getContext("2d");
+            var sgfCanvas = document.getElementById("preview");
             
             var image = new Image();
             
@@ -104,9 +110,11 @@
                 
                 if ( w > maxWidth) {
                     ratio = maxWidth / w;
+                    console.log('width greater than ' + maxWidth + ', ratio set to ' + ratio);
                 }
                 else if (h > maxHeight) {
                     ratio = maxHeight / h;
+                    console.log('height greater than ' + maxHeight + ', ratio set to ' + ratio);
                 }
                 var newWidth = w * ratio;
                 var newHeight = h * ratio;
@@ -114,7 +122,8 @@
                 ctx.canvas.width = newWidth;
                 ctx.canvas.height = newHeight;
                 ctx.drawImage(image, 0,0, newWidth,newHeight);
-                
+                console.log('Original Size: ' + w + ' x ' + h + ', Resized in onPhotoURISuccess - newWidth: ' + newWidth + ' newHeight: ' + newHeight);
+                document.getElementById('message').innerHTML = 'Resized in onPhotoURISuccess - newWidth: ' + newWidth + ' newHeight: ' + newHeight;
 //                printObject(ctx.drawImage);
                                                 
                 // a good point at which to get the corner coordinates from GoCam
@@ -126,8 +135,9 @@
                 document.getElementById('sgfoutput').innerHTML = goTracer.getSGF();
                 writeFile(goTracer.getSGF());
                 
+                
                 // draw preview image in SGF page
-                var preview = new Preview($("preview"));
+                var preview = new Preview(sgfCanvas);
                 preview.update(goTracer);
                 
                 // save SGF to disk? Send via Email? Open in Browser? Display using eidogo?
@@ -219,13 +229,14 @@
             this.img = img;
             this.canvas = canvas;
             this.ctx = canvas.getContext('2d');
-            console.log('this.img.src: ' + this.img.src);
-            console.log('this.canvas: ' + this.canvas);
+            console.log('GoTracer - this.img.src: ' + this.img.src);
+            console.log('GoTracer - this.canvas: ' + this.canvas);
+            console.log('GoTracer - this.img.width: ' + this.img.width + ' this.img.height: ' + this.img.height);
         }
         
         GoTracer.prototype.setCorners = function()
         {
-            coords = coords.map( function(c) { return 1*c; })
+            coords = coords.map( function(c) { return 1*c; }); // could dived each corner coordinate by the same amount as display 
             console.log('coords: ' + coords);
             
             this.corners = [
@@ -259,11 +270,14 @@
             this.canvasWidth = Math.min(this.img.height * aspectRatio, this.img.width);
             this.canvasHeight = Math.min(this.img.width / aspectRatio, this.img.height);
             //console.log(this.img);
-            console.log("aspectRatio: " + aspectRatio);
-            console.log("image dimensions: " + this.img.width + "x" + this.img.height);
-            // draw image at scale to fit in canvas width
-            //this.ctx.drawImage(img, 0, 0, this.canvas.width, this.canvas.height);
-            this.ctx.drawImage(this.img, 0, 0);
+            console.log("drawImage - aspectRatio: " + aspectRatio);
+            console.log("drawImage - image dimensions: " + this.img.width + "x" + this.img.height);
+            console.log("drawImage - canvasWidth x Height: " + this.canvasWidth + "x" + this.canvasHeight);
+            console.log("drawImage - this.canvas.width x height: " + this.canvas.width + "x" + this.canvas.height);
+            // draw image at scale to fit in canvas width as set in onPhotoURISuccess/onDataSuccess
+            this.ctx.drawImage(this.img, 0, 0, this.canvas.width, this.canvas.height);
+            // draw image at actual size (to match coordinates)
+//            this.ctx.drawImage(this.img, 0, 0);
         };
         
         GoTracer.prototype.calcRadii = function()
@@ -576,12 +590,10 @@
             function Preview(cvs)
             {
                 console.log("Preview begins");
-//                console.log(cvs);
                 this.canvas = cvs;
-                this.ctx = canvas.getContext('2d');
-//                this.backgroundImage = new Image();
-//                this.backgroundImage.src = "images/blank_board.png";
-//                console.log('this.backgroundImage.src: ' + this.backgroundImage.src);
+                this.ctx = this.canvas.getContext('2d');
+                this.backgroundImage = new Image();
+                this.backgroundImage.src = "images/blank_board.png";
             }
             
             Preview.prototype = {
@@ -605,7 +617,6 @@
                 
                 // point here is anything with a .x and a .y, like a PointSet
                 drawStone: function(point) {
-                    console.log("drawStone");
                     var x = 10 + 10.46*(point.coord[1].charCodeAt(0) - 97) -4;
                     var y = 10 + 10.46*(point.coord[2].charCodeAt(0) - 97) -4;
                     var r = 5;
@@ -716,9 +727,11 @@
                 <div id="camerasetup">
                     <button onclick="capturePhoto();">Capture Photo</button> <br>
                     <button onclick="getPhoto(pictureSource.PHOTOLIBRARY);">From Photo Library</button><br>
+                    
+                    <canvas id="canvas"></canvas>
+                    
                     <div id="response" style="text-align: left;"></div>
                     <div id="message" style="text-align: left;"></div>
-                    <canvas id="canvas"></canvas>
                     
                 </div>
             </div>
@@ -752,6 +765,7 @@
             <div data-role="content">
                 
                 <div id="sgfdisplay">
+                    <div id="preview-background"></div>
                     <canvas id="preview" width="200" height="200"></canvas>
                     <div id="player-container"></div>
                     <div id="sgfoutput"></div>

@@ -1,0 +1,30 @@
+GoCam - A computer vision tool for extracting moves from go videos
+
+GoCam is an open source project for developing an automatic system for
+analysing video capture of a real go game, and extracting the moves of
+the game.  More information about the project can be found on the
+project's wiki page "http://teemu.pieni.net/gocam-wiki/moin.cgi".  See
+"NEWS" file for general changes, and "INSTALL" file for compilation
+and installation instructions.
+
+The system can be experimented with the command line tool "gocam_test"
+and the example image "example.jpg".  Just give the image as a command
+line parameter:
+
+  ./gocam_test example.jpg
+
+Analysing images may take 1-30 seconds depending on the speed of your
+computer and the size of the images.  After analysis, the program
+opens a window showing the original image and the grid it found.  At
+the moment, the program does not try to find stones on the board.
+
+The test program recognises also some command line options:
+
+  -h, --help             display help
+  -i, --intermediate     show also intermediate results
+  -s, --save-hough=FILE  save the hough image
+  -u, --use-hough=FILE   load a pre-computed hough image
+
+-- 
+Teemu Hirsimäki
+Email: teemu.hirsimaki [at domain] iki.fi

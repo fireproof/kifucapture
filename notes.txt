@@ -1,0 +1,65 @@
+Put this on github
+let Todd know.
+  gocam without convert - trick it to create a PPM from supplied jpeg
+  
+  iOS developers - odesk, okori, brian fox
+
+
+
+Turning gocam into an Object file (.o)
+being able to link against it. Invoke the functions within it.
+
+replacing main() with something else.
+
+
+
+WTF is up with image sizes?
+	read up on canvas and images and all that shit.
+
+Compiling gocam as a static library
+	Where is that article? 
+	http://www.eosgarden.com/en/articles/xcode-static-libraries/
+	http://www.blackdogfoundry.com/blog/?p=60
+	main() whuh?
+	jhead too? or maybe that's overkill
+	
+* using a static library
+	from within PhoneGap
+		is this the right term?
+	
+PhoneGap plugin - making one
+	http://wiki.phonegap.com/w/page/36753496/How%20to%20Create%20a%20PhoneGap%20Plugin%20for%20iOS
+
+
+NativeControls plugin
+	toolbar / tabbar (or action sheet?)
+	https://github.com/phonegap/phonegap-plugins/blob/master/iOS/NativeControls/NativeControls.js
+
+If no gocam - goTracer-style corner picking.
+
+Skip phonegap
+
+------------
+Things to think about 
+
+Maybe SenchaTouch is the way to go?
+http://www.sencha.com/learn/a-sencha-touch-mvc-application-with-phonegap/
+
+*** Javascript in sep. files?
+
+Eidogo - SGF playback.
+
+create directories
+view directories + contents as list (review/download past games)
+
+Debugging:
+http://www.daveoncode.com/2010/01/12/debugging-phonegap-applications-using-xcode-console/
+
+Timelapse on iPhone
+	read from library? Kind of a lot of work, not great to use an external app
+
+Order switch
+	Capture, grid, see SGF, setup, download/save
+
+UI layout crutch
+	http://www.codiqa.com/

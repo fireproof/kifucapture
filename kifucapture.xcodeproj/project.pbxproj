@@ -38,6 +38,7 @@
 		34E317D21518FC6B007BA5BF /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 34E317D11518FC6B007BA5BF /* MainViewController.m */; };
 		34E317D41518FC6B007BA5BF /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 34E317D31518FC6B007BA5BF /* MainViewController.xib */; };
 		34E317D81518FC6B007BA5BF /* verify.sh in Resources */ = {isa = PBXBuildFile; fileRef = 34E317D71518FC6B007BA5BF /* verify.sh */; };
+		34E317DF1518FD18007BA5BF /* www in Resources */ = {isa = PBXBuildFile; fileRef = 34E317DE1518FD18007BA5BF /* www */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -55,10 +56,10 @@
 		34E3179A1518FC6B007BA5BF /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		34E3179C1518FC6B007BA5BF /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		34E3179E1518FC6B007BA5BF /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
-		34E317A21518FC6B007BA5BF /* kifucapture-Info.plist */ = {isa = PBXFileReference; path = "kifucapture-Info.plist"; sourceTree = "<group>"; };
+		34E317A21518FC6B007BA5BF /* kifucapture-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "kifucapture-Info.plist"; sourceTree = "<group>"; };
 		34E317A41518FC6B007BA5BF /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		34E317A61518FC6B007BA5BF /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		34E317A81518FC6B007BA5BF /* kifucapture-Prefix.pch */ = {isa = PBXFileReference; path = "kifucapture-Prefix.pch"; sourceTree = "<group>"; };
+		34E317A81518FC6B007BA5BF /* kifucapture-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "kifucapture-Prefix.pch"; sourceTree = "<group>"; };
 		34E317A91518FC6B007BA5BF /* Cordova.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cordova.framework; path = /Users/Shared/Cordova/Frameworks/Cordova.framework; sourceTree = "<absolute>"; };
 		34E317AE1518FC6B007BA5BF /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Resources/en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		34E317B21518FC6B007BA5BF /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = Resources/es.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -71,13 +72,14 @@
 		34E317C61518FC6B007BA5BF /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default@2x.png"; path = "Resources/splash/Default@2x.png"; sourceTree = "<group>"; };
 		34E317C81518FC6B007BA5BF /* Capture.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = Capture.bundle; path = Resources/Capture.bundle; sourceTree = "<group>"; };
 		34E317CA1518FC6B007BA5BF /* Cordova.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Cordova.plist; sourceTree = "<group>"; };
-		34E317CD1518FC6B007BA5BF /* AppDelegate.h */ = {isa = PBXFileReference; name = AppDelegate.h; path = Classes/AppDelegate.h; sourceTree = "<group>"; };
+		34E317CD1518FC6B007BA5BF /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Classes/AppDelegate.h; sourceTree = "<group>"; };
 		34E317CE1518FC6B007BA5BF /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = Classes/AppDelegate.m; sourceTree = "<group>"; };
-		34E317D01518FC6B007BA5BF /* MainViewController.h */ = {isa = PBXFileReference; name = MainViewController.h; path = Classes/MainViewController.h; sourceTree = "<group>"; };
+		34E317D01518FC6B007BA5BF /* MainViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MainViewController.h; path = Classes/MainViewController.h; sourceTree = "<group>"; };
 		34E317D11518FC6B007BA5BF /* MainViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MainViewController.m; path = Classes/MainViewController.m; sourceTree = "<group>"; };
 		34E317D31518FC6B007BA5BF /* MainViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = MainViewController.xib; path = Classes/MainViewController.xib; sourceTree = "<group>"; };
-		34E317D61518FC6B007BA5BF /* README */ = {isa = PBXFileReference; name = README; path = Plugins/README; sourceTree = "<group>"; };
+		34E317D61518FC6B007BA5BF /* README */ = {isa = PBXFileReference; lastKnownFileType = text; name = README; path = Plugins/README; sourceTree = "<group>"; };
 		34E317D71518FC6B007BA5BF /* verify.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = verify.sh; sourceTree = "<group>"; };
+		34E317DE1518FD18007BA5BF /* www */ = {isa = PBXFileReference; lastKnownFileType = folder; path = www; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,6 +120,7 @@
 				34E317A01518FC6B007BA5BF /* kifucapture */,
 				34E317851518FC6B007BA5BF /* Frameworks */,
 				34E317831518FC6B007BA5BF /* Products */,
+				34E317DE1518FD18007BA5BF /* www */,
 			);
 			sourceTree = "<group>";
 		};
@@ -289,7 +292,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0430;
-				ORGANIZATIONNAME = "Marine Science Institute, UCSB";
+				ORGANIZATIONNAME = "Matthew McClintock";
 			};
 			buildConfigurationList = 34E317791518FC6B007BA5BF /* Build configuration list for PBXProject "kifucapture" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -330,6 +333,7 @@
 				34E317CB1518FC6B007BA5BF /* Cordova.plist in Resources */,
 				34E317D41518FC6B007BA5BF /* MainViewController.xib in Resources */,
 				34E317D81518FC6B007BA5BF /* verify.sh in Resources */,
+				34E317DF1518FD18007BA5BF /* www in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -433,11 +437,12 @@
 					"$(inherited)",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -453,11 +458,12 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -476,6 +482,7 @@
 					"DEBUG=1,",
 					"CORDOVA_FRAMEWORK=1",
 				);
+				GCC_THUMB_SUPPORT = NO;
 				INFOPLIST_FILE = "kifucapture/kifucapture-Info.plist";
 				OTHER_LDFLAGS = (
 					"-weak_framework",
@@ -506,6 +513,7 @@
 					"NDEBUG=1,",
 					"CORDOVA_FRAMEWORK=1",
 				);
+				GCC_THUMB_SUPPORT = NO;
 				INFOPLIST_FILE = "kifucapture/kifucapture-Info.plist";
 				OTHER_LDFLAGS = (
 					"-weak_framework",
@@ -543,6 +551,7 @@
 				34E317DD1518FC6B007BA5BF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

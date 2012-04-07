@@ -1,0 +1,27 @@
+GoCam NEWS -- history of user-visible changes
+
+-- Version 0.2 --
+				
+GoCam reimplemented in C++.  The system is able to find the playing
+grid, but no stone detection implemented yet.  The modules of the
+system are defined neatly in separate namespaces and documented with
+Doxygen.  The namespaces are
+
+  * gocam:	the main analysis
+  * geom:	line and point geometry in two dimensions
+  * im:		general image processing functions
+
+and some common utility functions not related to analysis
+'
+  * conf:	general functions for parsing program configuration options
+  * str:	handy functions for handling strings
+  * util:	common utility functions
+
+The namespaces are defined in header files of the same name (appended
+with the .hh extension)
+
+
+-- Version 0.1 --
+
+The first prototype version implemented in MATLAB.  Finds the grid
+from still images, and has a simple algorithm for locating stones.
