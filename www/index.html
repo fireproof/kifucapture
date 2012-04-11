@@ -185,7 +185,7 @@
         
         function writeFile(SGF) {
             console.log("writeFile begins");
-            window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fileSystem){
+            window.requestFileSystem(LocalFileSystem.TEMPORARY, 0, function(fileSystem){
                                      console.log("root filesystem: " + fileSystem.root.name);
                                      fileSystem.root.getFile("SGF.txt", {create: true, exclusive: false}, function(fileEntry){
                                                              console.log("fileEntry");
@@ -633,97 +633,10 @@
             </script>
     </head>
     <body onload="onBodyLoad()">
-        <div data-role="page" id="page1">
-        <div data-theme="a" data-role="header">
-        <div data-role="navbar" data-iconpos="top">
-                    <ul>
-                        <li>
-                            <a href="#page1" data-theme="a" data-icon="gear" class="ui-btn-active">
-                                Setup
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#page2" data-theme="a" data-icon="grid">
-                                Capture
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#page3" data-theme="a" data-icon="arrow-d">
-                                SGF
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div data-role="content">
-                
-                <form id="prefsForm">
-                    <!-- Need to add Rank (BR, WR), Rules (RU = Japanese, Chinese, etc) -->
-                    <!-- Date (DT), location (PC), time (TM) should be added automatically? -->
-                            <label for="textinput1">
-                                Black:
-                            </label>
-                            <input id="textinput1" name="PB" placeholder="Player Name" value="" type="text" />
-                            <label for="textinput2">
-                                White:
-                            </label>
-                            <input id="textinput2" name="PW" placeholder="Player Name" value="" type="text" />
-                       
-                        <fieldset data-role="controlgroup" data-type="horizontal">
-                            <legend>
-                                Board Size:
-                            </legend>
-                            <input name="SZ" id="radio1" value="19" type="radio" />
-                            <label for="radio1">
-                                19x19
-                            </label>
-                            <input name="SZ" id="radio2" value="13" type="radio" />
-                            <label for="radio2">
-                                13x13
-                            </label>
-                            <input name="SZ" id="radio3" value="9" type="radio" />
-                            <label for="radio3">
-                                9x9
-                            </label>
-                        </fieldset>
-                            <label for="textinput3">
-                                Komi:
-                            </label>
-                            <input id="textinput3" name="KM" placeholder="Komi" value="5.5" type="number" />
-                            <label for="textinput4">
-                                Handicap:
-                            </label>
-                            <input id="textinput4" name="HA" placeholder="Handicap" value="0" type="number" />
-                    <a href="#page2" data-role="button" data-theme="b" data-icon="arrow-r" data-iconpos="right" onclick="savePrefs();">Begin Capture</a>
-                </form>
-            </div>
-            
-        </div>
         
-        <div data-role="page" id="page2">
-        <div data-theme="a" data-role="header">
-        <div data-role="navbar" data-iconpos="top">
-                    <ul>
-                        <li>
-                            <a href="#page1" data-theme="a" data-icon="gear" data-direction="reverse">
-                                Setup
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#page2" data-theme="a" data-icon="grid" class="ui-btn-active">
-                                Capture
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#page3" data-theme="a" data-icon="arrow-d">
-                                SGF
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-        </div>
-            <div data-role="content">
-                
+        
+        <div data-role="page" id="page1">
+            <div data-role="content">                
                 <div id="camerasetup">
                     <button onclick="capturePhoto();">Capture Photo</button> <br>
                     <button onclick="getPhoto(pictureSource.PHOTOLIBRARY);">From Photo Library</button><br>
@@ -736,34 +649,26 @@
                 </div>
             </div>
             <div data-theme="a" data-role="footer" data-position="fixed">
-            </div>
-        </div>
-        
-        
-        <div data-role="page" id="page3">
-        <div data-theme="a" data-role="header">
-        <div data-role="navbar" data-iconpos="top">
+                <div data-role="navbar" data-iconpos="top">
                     <ul>
                         <li>
-                            <a href="#page1" data-theme="a" data-icon="gear" data-direction="reverse">
-                                Setup
+                            <a href="#page1" data-theme="" data-icon="grid" class="ui-btn-active">
+                                Camera
                             </a>
                         </li>
                         <li>
-                            <a href="#page2" data-theme="a" data-icon="grid" data-direction="reverse">
-                                Capture
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#page3" data-theme="a" data-icon="arrow-d" class="ui-btn-active">
+                            <a href="#page2" data-theme="" data-icon="arrow-d">
                                 SGF
                             </a>
                         </li>
                     </ul>
                 </div>
+            </div>
         </div>
-            <div data-role="content">
-                
+        
+        
+        <div data-role="page" id="page2">
+            <div data-role="content">                
                 <div id="sgfdisplay">
                     <div id="preview-background"></div>
                     <canvas id="preview" width="200" height="200"></canvas>
@@ -772,9 +677,74 @@
                     <div id="sgfmessage"></div>
                     <canvas id="sgfcanvas"></canvas>
                 </div>
+                <a data-role="button" data-transition="slide" href="#page3">
+                    Change Settings
+                </a>
             </div>
             <div data-theme="a" data-role="footer" data-position="fixed">
+                <div data-role="navbar" data-iconpos="top">
+                    <ul>
+                        <li>
+                            <a href="#page1" data-theme="" data-icon="grid">
+                                Camera
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#page2" data-theme="" data-icon="arrow-d" class="ui-btn-active">
+                                SGF
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
+        </div>
+        
+        
+        <div data-role="page" id="page3">
+            <div data-role="content">
+                
+                <form id="prefsForm">
+                    <!-- Need to add Rank (BR, WR), Rules (RU = Japanese, Chinese, etc) -->
+                    <!-- Date (DT), location (PC), time (TM) should be added automatically? -->
+                    <label for="textinput1">
+                        Black:
+                    </label>
+                    <input id="textinput1" name="PB" placeholder="Player Name" value="" type="text" />
+                    <label for="textinput2">
+                        White:
+                    </label>
+                    <input id="textinput2" name="PW" placeholder="Player Name" value="" type="text" />
+                    
+                    <fieldset data-role="controlgroup" data-type="horizontal">
+                        <legend>
+                            Board Size:
+                        </legend>
+                        <input name="SZ" id="radio1" value="19" type="radio" />
+                        <label for="radio1">
+                            19x19
+                        </label>
+                        <input name="SZ" id="radio2" value="13" type="radio" />
+                        <label for="radio2">
+                            13x13
+                        </label>
+                        <input name="SZ" id="radio3" value="9" type="radio" />
+                        <label for="radio3">
+                            9x9
+                        </label>
+                    </fieldset>
+                    <label for="textinput3">
+                        Komi:
+                    </label>
+                    <input id="textinput3" name="KM" placeholder="Komi" value="5.5" type="number" />
+                    <label for="textinput4">
+                        Handicap:
+                    </label>
+                    <input id="textinput4" name="HA" placeholder="Handicap" value="0" type="number" />
+                    <a href="#page2" data-role="button" data-direction="reverse" data-theme="b" data-icon="arrow-r" data-iconpos="right" onclick="savePrefs();">Save Settings</a>
+                    <input type="submit" data-direction="reverse" data-icon="arrow-r" data-iconpos="right" value="Submit Settings" onsubmit="savePrefs();" />
+                </form>
+            </div>
+            
         </div>
     </body>
 </html>
