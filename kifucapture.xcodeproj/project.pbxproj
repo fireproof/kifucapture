@@ -22,7 +22,6 @@
 		34E3179F1518FC6B007BA5BF /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34E3179E1518FC6B007BA5BF /* CoreMedia.framework */; };
 		34E317A51518FC6B007BA5BF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 34E317A31518FC6B007BA5BF /* InfoPlist.strings */; };
 		34E317A71518FC6B007BA5BF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 34E317A61518FC6B007BA5BF /* main.m */; };
-		34E317AA1518FC6B007BA5BF /* Cordova.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34E317A91518FC6B007BA5BF /* Cordova.framework */; };
 		34E317AF1518FC6B007BA5BF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 34E317AD1518FC6B007BA5BF /* Localizable.strings */; };
 		34E317B31518FC6B007BA5BF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 34E317B11518FC6B007BA5BF /* Localizable.strings */; };
 		34E317B71518FC6B007BA5BF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 34E317B51518FC6B007BA5BF /* Localizable.strings */; };
@@ -41,8 +40,6 @@
 		34E317DF1518FD18007BA5BF /* www in Resources */ = {isa = PBXBuildFile; fileRef = 34E317DE1518FD18007BA5BF /* www */; };
 		934537A91534089200AEB8DB /* conf.cc in Sources */ = {isa = PBXBuildFile; fileRef = 9345375E1534089200AEB8DB /* conf.cc */; };
 		934537AB1534089200AEB8DB /* COPYING in Resources */ = {isa = PBXBuildFile; fileRef = 934537611534089200AEB8DB /* COPYING */; };
-		934537AC1534089200AEB8DB /* dep in Resources */ = {isa = PBXBuildFile; fileRef = 934537621534089200AEB8DB /* dep */; };
-		934537AD1534089200AEB8DB /* dep-stamp in Resources */ = {isa = PBXBuildFile; fileRef = 934537631534089200AEB8DB /* dep-stamp */; };
 		934537AE1534089200AEB8DB /* Doxyfile in Resources */ = {isa = PBXBuildFile; fileRef = 934537641534089200AEB8DB /* Doxyfile */; };
 		934537AF1534089200AEB8DB /* example.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 934537651534089200AEB8DB /* example.jpg */; };
 		934537B11534089200AEB8DB /* gocam.cc in Sources */ = {isa = PBXBuildFile; fileRef = 934537681534089200AEB8DB /* gocam.cc */; };
@@ -121,6 +118,7 @@
 		934539441534179000AEB8DB /* libMagickWand.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9345392F1534179000AEB8DB /* libMagickWand.a */; };
 		934539451534179000AEB8DB /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 934539301534179000AEB8DB /* libpng.a */; };
 		934539461534179000AEB8DB /* libtiff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 934539311534179000AEB8DB /* libtiff.a */; };
+		93C488CA153A0C3E0042CB4F /* Cordova.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93C488C9153A0C3E0042CB4F /* Cordova.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -142,7 +140,6 @@
 		34E317A41518FC6B007BA5BF /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		34E317A61518FC6B007BA5BF /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		34E317A81518FC6B007BA5BF /* kifucapture-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "kifucapture-Prefix.pch"; sourceTree = "<group>"; };
-		34E317A91518FC6B007BA5BF /* Cordova.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cordova.framework; path = /Users/Shared/Cordova/Frameworks/Cordova.framework; sourceTree = "<absolute>"; };
 		34E317AE1518FC6B007BA5BF /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Resources/en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		34E317B21518FC6B007BA5BF /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = Resources/es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		34E317B61518FC6B007BA5BF /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = Resources/de.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -166,8 +163,6 @@
 		9345375E1534089200AEB8DB /* conf.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = conf.cc; sourceTree = "<group>"; };
 		9345375F1534089200AEB8DB /* conf.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = conf.hh; sourceTree = "<group>"; };
 		934537611534089200AEB8DB /* COPYING */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = COPYING; sourceTree = "<group>"; };
-		934537621534089200AEB8DB /* dep */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dep; sourceTree = "<group>"; };
-		934537631534089200AEB8DB /* dep-stamp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "dep-stamp"; sourceTree = "<group>"; };
 		934537641534089200AEB8DB /* Doxyfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Doxyfile; sourceTree = "<group>"; };
 		934537651534089200AEB8DB /* example.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = example.jpg; sourceTree = "<group>"; };
 		934537661534089200AEB8DB /* geom.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = geom.hh; sourceTree = "<group>"; };
@@ -372,6 +367,7 @@
 		9345392F1534179000AEB8DB /* libMagickWand.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libMagickWand.a; sourceTree = "<group>"; };
 		934539301534179000AEB8DB /* libpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libpng.a; sourceTree = "<group>"; };
 		934539311534179000AEB8DB /* libtiff.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libtiff.a; sourceTree = "<group>"; };
+		93C488C9153A0C3E0042CB4F /* Cordova.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Cordova.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -379,6 +375,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				93C488CA153A0C3E0042CB4F /* Cordova.framework in Frameworks */,
 				34E317871518FC6B007BA5BF /* Foundation.framework in Frameworks */,
 				34E317891518FC6B007BA5BF /* UIKit.framework in Frameworks */,
 				34E3178B1518FC6B007BA5BF /* CoreGraphics.framework in Frameworks */,
@@ -392,7 +389,6 @@
 				34E3179B1518FC6B007BA5BF /* SystemConfiguration.framework in Frameworks */,
 				34E3179D1518FC6B007BA5BF /* MobileCoreServices.framework in Frameworks */,
 				34E3179F1518FC6B007BA5BF /* CoreMedia.framework in Frameworks */,
-				34E317AA1518FC6B007BA5BF /* Cordova.framework in Frameworks */,
 				934539421534179000AEB8DB /* libjpeg.a in Frameworks */,
 				934539431534179000AEB8DB /* libMagickCore.a in Frameworks */,
 				934539441534179000AEB8DB /* libMagickWand.a in Frameworks */,
@@ -432,6 +428,7 @@
 		34E317851518FC6B007BA5BF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				93C488C9153A0C3E0042CB4F /* Cordova.framework */,
 				34E317861518FC6B007BA5BF /* Foundation.framework */,
 				34E317881518FC6B007BA5BF /* UIKit.framework */,
 				34E3178A1518FC6B007BA5BF /* CoreGraphics.framework */,
@@ -452,7 +449,6 @@
 		34E317A01518FC6B007BA5BF /* kifucapture */ = {
 			isa = PBXGroup;
 			children = (
-				34E317A91518FC6B007BA5BF /* Cordova.framework */,
 				34E317AB1518FC6B007BA5BF /* Resources */,
 				34E317CC1518FC6B007BA5BF /* Classes */,
 				34E317D51518FC6B007BA5BF /* Plugins */,
@@ -568,8 +564,6 @@
 				9345375E1534089200AEB8DB /* conf.cc */,
 				9345375F1534089200AEB8DB /* conf.hh */,
 				934537611534089200AEB8DB /* COPYING */,
-				934537621534089200AEB8DB /* dep */,
-				934537631534089200AEB8DB /* dep-stamp */,
 				934537641534089200AEB8DB /* Doxyfile */,
 				934537651534089200AEB8DB /* example.jpg */,
 				934537661534089200AEB8DB /* geom.hh */,
@@ -923,8 +917,6 @@
 				34E317D81518FC6B007BA5BF /* verify.sh in Resources */,
 				34E317DF1518FD18007BA5BF /* www in Resources */,
 				934537AB1534089200AEB8DB /* COPYING in Resources */,
-				934537AC1534089200AEB8DB /* dep in Resources */,
-				934537AD1534089200AEB8DB /* dep-stamp in Resources */,
 				934537AE1534089200AEB8DB /* Doxyfile in Resources */,
 				934537AF1534089200AEB8DB /* example.jpg in Resources */,
 				934537B61534089200AEB8DB /* annotated.html in Resources */,
@@ -1139,7 +1131,10 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_SEARCH_PATHS = /Users/Shared/Cordova/Frameworks;
+				FRAMEWORK_SEARCH_PATHS = (
+					/Users/Shared/Cordova/Frameworks,
+					"\"$(SRCROOT)\"",
+				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "kifucapture/kifucapture-Prefix.pch";
@@ -1148,9 +1143,7 @@
 					"CORDOVA_FRAMEWORK=1",
 				);
 				GCC_THUMB_SUPPORT = NO;
-				HEADER_SEARCH_PATHS = (
-					"\"$(SRCROOT)/iOSMagick-6.7.5-3-libs\"",
-				);
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/iOSMagick-6.7.5-3-libs\"";
 				INFOPLIST_FILE = "kifucapture/kifucapture-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				LD_RUNPATH_SEARCH_PATHS = "-weak_framework UIKit -weak_framework AVFoundation -weak_framework CoreMedia -weak_library /usr/lib/libSystem.B.dylib -lMagickCore -lMagickWand -ljpeg -lpng -lbz2 -lz";
@@ -1188,7 +1181,10 @@
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				FRAMEWORK_SEARCH_PATHS = /Users/Shared/Cordova/Frameworks;
+				FRAMEWORK_SEARCH_PATHS = (
+					/Users/Shared/Cordova/Frameworks,
+					"\"$(SRCROOT)\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "kifucapture/kifucapture-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -1196,9 +1192,7 @@
 					"CORDOVA_FRAMEWORK=1",
 				);
 				GCC_THUMB_SUPPORT = NO;
-				HEADER_SEARCH_PATHS = (
-					"\"$(SRCROOT)/iOSMagick-6.7.5-3-libs\"",
-				);
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/iOSMagick-6.7.5-3-libs\"";
 				INFOPLIST_FILE = "kifucapture/kifucapture-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				LD_RUNPATH_SEARCH_PATHS = "-weak_framework UIKit -weak_framework AVFoundation -weak_framework CoreMedia -weak_library /usr/lib/libSystem.B.dylib -lMagickCore -lMagickWand -ljpeg -lpng -lbz2 -lz";
