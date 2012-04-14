@@ -20,6 +20,14 @@
         var temp = "582,224,277,117,399,437,45,280";
         var coords = temp.split(","); // board corner coordinates will come from gocam library
         
+            // File display and manipulation variables
+            var root = null; // File System root variable
+            var currentDir = null; // Current DirectoryEntry listed
+            var parentDir = null; // Parent of the current directory
+            var activeItem = null; // The clicked item
+            var activeItemType = null; // d-directory, f-file
+            var clipboardItem = null; // file or directory for copy or move
+            var clipboardAction = null; // c-copy, m-move
             
         function onBodyLoad() {
             document.addEventListener("deviceready", onDeviceReady, false);
@@ -29,6 +37,8 @@
         function onDeviceReady() {
             pictureSource = navigator.camera.PictureSourceType;
             destinationType = navigator.camera.DestinationType;
+            getFileSystem();
+            clickItemAction();
         }
         
         // Called when a photo is successfully retrieved from camera
@@ -141,7 +151,8 @@
                 preview.update(goTracer);
                 
                 // save SGF to disk? Send via Email? Open in Browser? Display using eidogo?
-                
+//                listFiles();
+//                listDir();
             };
             image.src = imageURI;               
         }
@@ -169,10 +180,242 @@
                                         sourceType: source });
         }
         
-        // Called if something bad happens.
-        function onFail(message) {
-            alert('Failed because: ' + message);
-        }
+            
+            /* --------------------------- */
+            /*     Filesystem Functions    */
+            /* --------------------------- */
+            /* get the root file system */
+            function getFileSystem(){
+                window.requestFileSystem(LocalFileSystem.PERSISTENT, 0,
+                                         function(fileSystem){ // success get file system
+                                         root = fileSystem.root;
+                                         console.log('getFileSystem - got filesystem for display: ' + root);
+                                         listDir(root);
+                                         }, function(evt){ // error get file system
+                                         console.log("File System Error: "+evt.target.error.code);
+                                         }
+                                         );
+            }
+            
+            
+            /* show the content of a directory */
+            function listDir(directoryEntry){
+                if( !directoryEntry.isDirectory ) console.log('listDir incorrect type');
+//                $.mobile.showPageLoadingMsg(); // show loading message
+                
+                currentDir = directoryEntry; // set current directory
+                directoryEntry.getParent(function(par){ // success get parent
+                                         parentDir = par; // set parent directory
+                                         if( (parentDir.name == 'sdcard' && currentDir.name != 'sdcard') || parentDir.name != 'sdcard' ) $('#backBtn').show();
+                                         }, function(error){ // error get parent
+                                         console.log('Get parent error: '+error.code);
+                                         });
+                
+                var directoryReader = directoryEntry.createReader();
+                directoryReader.readEntries(function(entries){
+                                            var dirContent = $('#dirContent');
+                                            dirContent.empty();
+                                            
+                                            var dirArr = new Array();
+                                            var fileArr = new Array();
+                                            for(var i=0; i<entries.length; ++i){ // sort entries
+                                            var entry = entries[i];
+                                            if( entry.isDirectory && entry.name[0] != '.' ) dirArr.push(entry);
+                                            else if( entry.isFile && entry.name[0] != '.' ) fileArr.push(entry);
+                                            }
+                                            
+                                            var sortedArr = dirArr.concat(fileArr); // sorted entries
+                                            var uiBlock = ['a','b','c','d'];
+                                            
+                                            for(var i=0; i<sortedArr.length; ++i){ // show directories
+                                            var entry = sortedArr[i];
+                                            var blockLetter = uiBlock[i%4];
+                                            //console.log(entry.name);
+                                            if( entry.isDirectory )
+                                            dirContent.append('<div class="ui-block-'+blockLetter+'"><div class="folder"><p>'+entry.name+'</p></div></div>');
+                                            else if( entry.isFile )
+                                            dirContent.append('<div class="ui-block-'+blockLetter+'"><div class="file"><p>'+entry.name+'</p></div></div>');
+                                            }
+                                            $.mobile.hidePageLoadingMsg(); // hide loading message
+                                            }, function(error){
+                                            console.log('listDir readEntries error: '+error.code);
+                                            });
+            }
+            
+            /* read from file */
+            function readFile(fileEntry){
+                if( !fileEntry.isFile ) console.log('readFile incorrect type');
+//                $.mobile.showPageLoadingMsg(); // show loading message
+                
+                fileEntry.file(function(file){
+                               var reader = new FileReader();
+                               reader.onloadend = function(evt) {
+                               console.log("Read as data URL");
+                               console.log(evt.target.result); // show data from file into console
+                               };
+                               reader.readAsDataURL(file);
+                               
+//                               $.mobile.hidePageLoadingMsg(); // hide loading message
+                               
+                               // dialog with file details
+                               $('#file_details').html('<p><strong>Name:</strong> '+file.name+
+                                                       '</p><p><strong>Type:</strong> '+file.type+
+                                                       '</p><p><strong>Last Modified:</strong> '+new Date(file.lastModifiedDate)+
+                                                       '</p><p><strong>Size:</strong> '+file.size);
+                               $('#get_file_details').trigger('click');
+                               }, function(error){
+                               console.log(evt.target.error.code);
+                               });
+            }
+            
+            /* open item */
+            function openItem(type){
+                if( type == 'd' ){
+                    listDir(activeItem);
+                } else if(type == 'f'){
+                    readFile(activeItem);
+                }
+            }
+            
+            /* get active item  */
+            function getActiveItem(name, type){
+                if( type == 'd' && currentDir != null ){
+                    currentDir.getDirectory(name, {create:false},
+                                            function(dir){ // success find directory
+                                            activeItem = dir;
+                                            activeItemType = type;
+                                            }, 
+                                            function(error){ // error find directory
+                                            console.log('Unable to find directory: '+error.code);
+                                            }
+                                            );
+                } else if(type == 'f' && currentDir != null){
+                    currentDir.getFile(name, {create:false},
+                                       function(file){ // success find file
+                                       activeItem = file;
+                                       activeItemType = type;
+                                       },
+                                       function(error){ // error find file
+                                       console.log('Unable to find file: '+error.code);
+                                       }
+                                       );
+                }
+            }
+            
+            /* get clipboard item for copy or move */
+            function getClipboardItem(action){
+                if( activeItem != null) {
+                    clipboardItem = activeItem;
+                    clipboardAction = action;
+                }
+            }
+            
+            /* click actions */
+            function clickItemAction(){
+                var folders = $('.folder');
+                var files = $('.file');
+//                var backBtn = $('#backBtn');
+//                var homeBtn = $('#homeBtn');
+                /* menu buttons */
+                var menuDialog = $('#menuOptions');
+                var openBtn = $('#openBtn');
+//                var copyBtn = $('#copyBtn');
+//                var moveBtn = $('#moveBtn');
+//                var pasteBtn = $('#pasteBtn');
+                var deleteBtn = $('#deleteBtn');  
+                
+                folders.live('tap', function(){
+                             var name = $(this).text();
+                             getActiveItem(name, 'd');
+                             $('#menu').trigger('click'); // menu dialog box
+                             });
+                
+                files.live('tap', function(){
+                           var name = $(this).text();
+                           getActiveItem(name, 'f');
+                           $('#menu').trigger('click'); // menu dialog box
+                           // paste button always disabled for files
+//                           pasteBtn.button('disable');
+//                           pasteBtn.button('refresh');
+                           });
+                
+//                backBtn.click(function(){ // go one level up
+//                              if( parentDir != null ) listDir(parentDir);
+//                              });
+                
+//                homeBtn.click(function(){ // go to root
+//                              if( root != null ) listDir(root);
+//                              });
+                
+                openBtn.click(function(){
+                              menuDialog.dialog('close');
+                              openItem(activeItemType);
+                             
+                              });
+                
+//                copyBtn.click(function(){
+//                              getClipboardItem('c');
+//                              menuDialog.dialog('close');
+//                              pasteBtn.button('enable');
+//                              pasteBtn.button('refresh');
+//                              });
+//                
+//                moveBtn.click(function(){
+//                              getClipboardItem('m');
+//                              menuDialog.dialog('close');
+//                              pasteBtn.button('enable');
+//                              pasteBtn.button('refresh');
+//                              });
+//                
+//                pasteBtn.click(function(){
+//                               if( clipboardItem != null && clipboardAction != null ){
+//                               if(clipboardAction == 'c'){ // copy item
+//                               console.log('copy: '+clipboardItem.name + ' to: '+activeItem.name);
+//                               clipboardItem.copyTo(activeItem,clipboardItem.name,
+//                                                    function(fileCopy){
+//                                                    console.log('copy success! '+fileCopy.name);
+//                                                    openBtn.trigger('click');
+//                                                    }, function(error){
+//                                                    console.log('copy error: '+error.code);
+//                                                    }
+//                                                    );
+//                               } else if(clipboardAction == 'm'){ // move item
+//                               console.log('move: '+clipboardItem.name + ' to: '+activeItem.name);
+//                               clipboardItem.moveTo(activeItem,clipboardItem.name,
+//                                                    function(fileCopy){
+//                                                    console.log('move success! '+fileCopy.name);
+//                                                    openBtn.trigger('click');
+//                                                    }, function(error){
+//                                                    console.log('move error: '+error.code);
+//                                                    }
+//                                                    );
+//                               }
+//                               }
+//                               });
+                
+                deleteBtn.click(function(){
+                                if( activeItem != null && activeItemType != null){
+                                if(activeItemType=='d'){
+                                activeItem.removeRecursively(function(){
+                                                             console.log('Directory removed recursively with success');
+                                                             menuDialog.dialog('close');
+                                                             listDir(currentDir);
+                                                             }, function(error){
+                                                             console.log('Directory remove recursively error: '+error.code);
+                                                             });
+                                } else if(activeItemType=='f'){
+                                activeItem.remove(function(){
+                                                  console.log('File removed with success');
+                                                  menuDialog.dialog('close');
+                                                  listDir(currentDir);
+                                                  }, function(error){
+                                                  console.log('File remove error: '+error.code);
+                                                  });
+                                }
+                                }
+                                });
+            }
+            
         
         // used instead of console.log in a few instances.
         function printObject(o) {
@@ -188,10 +431,10 @@
             window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fileSystem){
                                      console.log("root filesystem: " + fileSystem.root.name);
                                      fileSystem.root.getFile("SGF.txt", {create: true, exclusive: false}, function(fileEntry){
-                                                             console.log("fileEntry");
+                                                             console.log("writeFile - fileEntry");
                                                              fileEntry.createWriter(function(writer){
                                                                                     writer.onwriteend = function(evt) {
-                                                                                        console.log("SGF.txt written");
+                                                                                        console.log("writeFile - SGF.txt written");
                                                                                     
                                                                                     }
                                                                                     writer.write(SGF);
@@ -215,9 +458,50 @@
                          // need to check SZ is selected? How?
                          });
             console.log(preferences);
-
+            // save prefs to file?
         }
-    
+            
+//        function listFiles() {
+//            console.log("listFiles begins");
+//            // request the persistent file system
+//            window.requestFileSystem(LocalFileSystem.TEMPORARY, 0, function(fileSystem) {
+//                                     console.log(fileSystem.name);
+//                                     console.log(fileSystem.root.name);
+//                                     console.log("listDir begins");
+//                                     var dirEntry = new DirectoryEntry();
+//                                     var directoryReader = dirEntry.createReader(fileSystem);
+//                                     
+//                                     // Get a list of all the entries in the directory
+//                                     directoryReader.readEntries(function(entries) {
+//                                                                 var i;
+//                                                                 for (i=0; i<entries.length; i++) {
+//                                                                 console.log(entries[i].name);
+//                                                                 }
+//                                                                 },function(error) {
+//                                                                 alert("Failed to list directory contents: " + error.code);
+//                                                                 });
+//
+//                                     
+//                                     }
+//                                    , null);
+//            }
+//        
+//            
+//        function listDir() {
+//            console.log("listDir begins");
+//            var directoryReader = dirEntry.createReader();
+//            
+//            // Get a list of all the entries in the directory
+//            directoryReader.readEntries(function(entries) {
+//                                        var i;
+//                                        for (i=0; i<entries.length; i++) {
+//                                        console.log(entries[i].name);
+//                                        }
+//                                        },function(error) {
+//                                        alert("Failed to list directory contents: " + error.code);
+//                                        });
+//            }
+            
             
         /* ------------------- */
         /*  GoTracer Functions */
@@ -633,148 +917,200 @@
             </script>
     </head>
     <body onload="onBodyLoad()">
-        <div data-role="page" id="page1">
-        <div data-theme="a" data-role="header">
-        <div data-role="navbar" data-iconpos="top">
-                    <ul>
-                        <li>
-                            <a href="#page1" data-theme="a" data-icon="gear" class="ui-btn-active">
-                                Setup
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#page2" data-theme="a" data-icon="grid">
-                                Capture
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#page3" data-theme="a" data-icon="arrow-d">
-                                SGF
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div data-role="content">
-                
-                <form id="prefsForm">
-                    <!-- Need to add Rank (BR, WR), Rules (RU = Japanese, Chinese, etc) -->
-                    <!-- Date (DT), location (PC), time (TM) should be added automatically? -->
-                            <label for="textinput1">
-                                Black:
-                            </label>
-                            <input id="textinput1" name="PB" placeholder="Player Name" value="" type="text" />
-                            <label for="textinput2">
-                                White:
-                            </label>
-                            <input id="textinput2" name="PW" placeholder="Player Name" value="" type="text" />
-                       
-                        <fieldset data-role="controlgroup" data-type="horizontal">
-                            <legend>
-                                Board Size:
-                            </legend>
-                            <input name="SZ" id="radio1" value="19" type="radio" />
-                            <label for="radio1">
-                                19x19
-                            </label>
-                            <input name="SZ" id="radio2" value="13" type="radio" />
-                            <label for="radio2">
-                                13x13
-                            </label>
-                            <input name="SZ" id="radio3" value="9" type="radio" />
-                            <label for="radio3">
-                                9x9
-                            </label>
-                        </fieldset>
-                            <label for="textinput3">
-                                Komi:
-                            </label>
-                            <input id="textinput3" name="KM" placeholder="Komi" value="5.5" type="number" />
-                            <label for="textinput4">
-                                Handicap:
-                            </label>
-                            <input id="textinput4" name="HA" placeholder="Handicap" value="0" type="number" />
-                    <a href="#page2" data-role="button" data-theme="b" data-icon="arrow-r" data-iconpos="right" onclick="savePrefs();">Begin Capture</a>
-                </form>
-            </div>
-            
-        </div>
         
-        <div data-role="page" id="page2">
-        <div data-theme="a" data-role="header">
-        <div data-role="navbar" data-iconpos="top">
-                    <ul>
-                        <li>
-                            <a href="#page1" data-theme="a" data-icon="gear" data-direction="reverse">
-                                Setup
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#page2" data-theme="a" data-icon="grid" class="ui-btn-active">
-                                Capture
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#page3" data-theme="a" data-icon="arrow-d">
-                                SGF
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-        </div>
-            <div data-role="content">
-                
+        
+        <div data-role="page" id="page1">
+            <div data-role="content">                
                 <div id="camerasetup">
                     <button onclick="capturePhoto();">Capture Photo</button> <br>
                     <button onclick="getPhoto(pictureSource.PHOTOLIBRARY);">From Photo Library</button><br>
                     
                     <canvas id="canvas"></canvas>
                     
-                    <div id="response" style="text-align: left;"></div>
-                    <div id="message" style="text-align: left;"></div>
+                    <div id="response"></div>
+                    <div id="message"></div>
                     
                 </div>
             </div>
             <div data-theme="a" data-role="footer" data-position="fixed">
-            </div>
-        </div>
-        
-        
-        <div data-role="page" id="page3">
-        <div data-theme="a" data-role="header">
-        <div data-role="navbar" data-iconpos="top">
+                <div data-role="navbar" data-iconpos="top">
                     <ul>
                         <li>
-                            <a href="#page1" data-theme="a" data-icon="gear" data-direction="reverse">
-                                Setup
+                            <a href="#page1" data-theme="" data-icon="grid" class="ui-btn-active">
+                                Camera
                             </a>
                         </li>
                         <li>
-                            <a href="#page2" data-theme="a" data-icon="grid" data-direction="reverse">
-                                Capture
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#page3" data-theme="a" data-icon="arrow-d" class="ui-btn-active">
+                            <a href="#page2" data-theme="" data-icon="arrow-d">
                                 SGF
                             </a>
                         </li>
                     </ul>
                 </div>
+            </div>
         </div>
-            <div data-role="content">
-                
+        
+        
+        <div data-role="page" id="page2">
+            <div data-role="content">                
                 <div id="sgfdisplay">
                     <div id="preview-background"></div>
                     <canvas id="preview" width="200" height="200"></canvas>
+                    <a data-role="button" data-transition="slide" href="#page3">
+                        Save SGF Game Record
+                    </a><br />
+                    <a data-role="button" data-transition="slide" href="#page4" onclick="listDir(root);">
+                        Saved Games
+                    </a>
                     <div id="player-container"></div>
                     <div id="sgfoutput"></div>
                     <div id="sgfmessage"></div>
                     <canvas id="sgfcanvas"></canvas>
                 </div>
+                
             </div>
             <div data-theme="a" data-role="footer" data-position="fixed">
+                <div data-role="navbar" data-iconpos="top">
+                    <ul>
+                        <li>
+                            <a href="#page1" data-direction="reverse" data-theme="" data-icon="grid">
+                                Camera
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#page2" data-theme="" data-icon="arrow-d" class="ui-btn-active">
+                                SGF
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
+        
+        
+        <div data-role="page" id="page3">
+            <div data-theme="a" data-role="header">
+                <h3>
+                    SGF Settings
+                </h3>
+                <a data-role="button" data-direction="reverse" data-transition="slide" href="#page2" data-icon="arrow-l" data-iconpos="left">
+                    Cancel
+                </a>
+            </div>
+
+            <div data-role="content">
+                                <form id="prefsForm">
+                    <!-- Need to add Rank (BR, WR), Rules (RU = Japanese, Chinese, etc) -->
+                    <!-- Date (DT), location (PC), time (TM) should be added automatically? -->
+                    <label for="textinput1">
+                        Black:
+                    </label>
+                    <input id="textinput1" name="PB" placeholder="Player Name" value="" type="text" />
+                    <label for="textinput2">
+                        White:
+                    </label>
+                    <input id="textinput2" name="PW" placeholder="Player Name" value="" type="text" />
+                    
+                    <fieldset data-role="controlgroup" data-type="horizontal">
+                        <legend>
+                            Board Size:
+                        </legend>
+                        <input name="SZ" id="radio1" value="19" type="radio" />
+                        <label for="radio1">
+                            19x19
+                        </label>
+                        <input name="SZ" id="radio2" value="13" type="radio" />
+                        <label for="radio2">
+                            13x13
+                        </label>
+                        <input name="SZ" id="radio3" value="9" type="radio" />
+                        <label for="radio3">
+                            9x9
+                        </label>
+                    </fieldset>
+                    <label for="textinput3">
+                        Komi:
+                    </label>
+                    <input id="textinput3" name="KM" placeholder="Komi" value="5.5" type="number" />
+                    <label for="textinput4">
+                        Handicap:
+                    </label>
+                    <input id="textinput4" name="HA" placeholder="Handicap" value="0" type="number" />
+                    <a href="#page2" data-role="button" data-direction="reverse" data-theme="b" data-icon="arrow-r" data-iconpos="right" onclick="savePrefs();">Save Record</a>
+                   <!-- <input type="submit" data-direction="reverse" data-icon="arrow-r" data-iconpos="right" value="Submit Settings" onsubmit="savePrefs();" /> -->
+                </form>
+            </div>
+            
+        </div>
+        
+        
+        <div data-role="page" id="page4">
+            <div data-theme="a" data-role="header">
+                <h3>
+                    Stored Files
+                </h3>
+                <a data-role="button" data-direction="reverse" data-transition="slide" href="#page2" data-icon="arrow-l" data-iconpos="left">
+                    Cancel
+                </a>
+                <a data-role="button" data-transition="fade" href="#page4" data-icon="refresh" data-iconpos="left" onclick="listDir(root);">
+                    Refresh
+                </a>
+            </div>
+            
+            <div data-role="content">
+                <div class="ui-grid-c" id="dirContent">
+                    <div class="ui-block-a">
+                        <div class="folder"><p>folder name</p></div>
+                    </div>
+                    <div class="ui-block-b">
+                        <div class="folder"><p>folder name</p></div>
+                    </div>
+                    <div class="ui-block-c">
+                        <div class="folder"><p>folder name</p></div>
+                    </div>
+                    <div class="ui-block-d">
+                        <div class="folder"><p>folder name</p></div>
+                    </div>
+                    <!-- next row -->
+                    <div class="ui-block-a">
+                        <div class="file"><p>file name</p></div>
+                    </div>
+                    <div class="ui-block-b">
+                        <div class="file"><p>file name</p></div>
+                    </div>
+                    <div class="ui-block-c">
+                        <div class="file"><p>file name</p></div>
+                    </div>
+                    <div class="ui-block-d">
+                        <div class="file"><p>file name</p></div>
+                    </div>
+                </div>
+                <a id="menu" href="#menuOptions" data-rel="dialog">file details</a>
+                <a id="get_file_details" href="#fileDetails" data-rel="dialog">file details</a>
+
+            </div>                        
+        </div>
+        
+        <div id="menuOptions" data-role="page">
+            <div data-role="header">
+                <h1>Select</h1>
+            </div>
+            <div data-role="content">
+                <input type="button" id="openBtn" data-theme="e" value="Open" />
+                <!-- <input type="button" id="copyBtn" value="Copy" />
+                <input type="button" id="moveBtn" value="Move" />
+                <input type="button" id="pasteBtn" value="Paste" disabled /> -->
+                <input type="button" id="deleteBtn" value="Delete" />
+            </div>
+        </div>
+
+        <div id="fileDetails" data-role="page">
+            <div data-role="header">
+                <h1>File</h1>
+            </div>
+            <div id="file_details" data-role="content"></div>
+        </div>
+        
+        
     </body>
 </html>

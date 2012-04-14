@@ -13,11 +13,33 @@ body {
   background-image: url('images/blank_board.png');
   width: 200px;
   height: 200px;
-  margin-bottom: 5px;
+  margin-bottom: 15px;
 }
 
 #preview
 {
   position: absolute;
-  margin-top: -205px;
+  margin-top: -215px;
+}
+
+.folder, .file{
+    font-size:10px;
+}
+ 
+.folder{
+    background: url('images/33-cabinet.png') no-repeat 50% 0%;
+    margin:2px;
+    padding-top:25px;
+    text-align:center;
+}
+ 
+.file{
+    background: url('images/179-notepad.png') no-repeat 50% 0%;
+    margin:2px;
+    padding-top:25px;
+    text-align:center;
+}
+
+#menu, #get_file_details{
+    display: none;
 }
