@@ -19,16 +19,16 @@
 
 //
 //  MainViewController.h
-//  kifucapture
+//  Moku
 //
-//  Created by Matthew McClintock on 3/20/12.
+//  Created by Matthew McClintock on 4/14/12.
 //  Copyright Marine Science Institute, UCSB 2012. All rights reserved.
 //
 
 #ifdef CORDOVA_FRAMEWORK
-    #import <Cordova/CDVViewController.h>
+#import <Cordova/CDVViewController.h>
 #else
-    #import "CDVViewController.h"
+#import "CDVViewController.h"
 #endif
 
 @interface MainViewController : CDVViewController

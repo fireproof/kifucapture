@@ -19,32 +19,30 @@
 
 //
 //  AppDelegate.h
-//  kifucapture
+//  Moku
 //
-//  Created by Matthew McClintock on 3/20/12.
+//  Created by Matthew McClintock on 4/14/12.
 //  Copyright Marine Science Institute, UCSB 2012. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 
 #ifdef CORDOVA_FRAMEWORK
-    #import <Cordova/CDVViewController.h>
+#import <Cordova/CDVViewController.h>
 #else
-    #import "CDVViewController.h"
+#import "CDVViewController.h"
 #endif
 
 
-@interface AppDelegate : NSObject < UIApplicationDelegate, UIWebViewDelegate, CDVCommandDelegate > {
-
-	NSString* invokeString;
+@interface AppDelegate : NSObject < UIApplicationDelegate > {
+    
 }
 
 // invoke string is passed to your app on launch, this is only valid if you 
-// edit FooBar.plist to add a protocol
+// edit Moku-Info.plist to add a protocol
 // a simple tutorial can be found here : 
 // http://iphonedevelopertips.com/cocoa/launching-your-own-application-via-a-custom-url-scheme.html
 
-@property (nonatomic, copy)  NSString* invokeString;
 @property (nonatomic, retain) IBOutlet UIWindow* window;
 @property (nonatomic, retain) IBOutlet CDVViewController* viewController;
 
