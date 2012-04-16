@@ -92,7 +92,6 @@
 		934537E31534089200AEB8DB /* tabs.css in Resources */ = {isa = PBXBuildFile; fileRef = 9345379C1534089200AEB8DB /* tabs.css */; };
 		934537E41534089200AEB8DB /* util_8hh-source.html in Resources */ = {isa = PBXBuildFile; fileRef = 9345379D1534089200AEB8DB /* util_8hh-source.html */; };
 		934537E51534089200AEB8DB /* INSTALL in Resources */ = {isa = PBXBuildFile; fileRef = 9345379F1534089200AEB8DB /* INSTALL */; };
-		934537E61534089200AEB8DB /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 934537A01534089200AEB8DB /* Makefile */; };
 		934537E71534089200AEB8DB /* NEWS in Resources */ = {isa = PBXBuildFile; fileRef = 934537A11534089200AEB8DB /* NEWS */; };
 		934537E81534089200AEB8DB /* README in Resources */ = {isa = PBXBuildFile; fileRef = 934537A21534089200AEB8DB /* README */; };
 		934537E91534089200AEB8DB /* str.cc in Sources */ = {isa = PBXBuildFile; fileRef = 934537A31534089200AEB8DB /* str.cc */; };
@@ -119,6 +118,7 @@
 		934539451534179000AEB8DB /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 934539301534179000AEB8DB /* libpng.a */; };
 		934539461534179000AEB8DB /* libtiff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 934539311534179000AEB8DB /* libtiff.a */; };
 		93C488CA153A0C3E0042CB4F /* Cordova.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93C488C9153A0C3E0042CB4F /* Cordova.framework */; };
+		93EB0674153BC5FC0040B5FC /* GocamClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 93EB0673153BC5FC0040B5FC /* GocamClass.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -368,6 +368,9 @@
 		934539301534179000AEB8DB /* libpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libpng.a; sourceTree = "<group>"; };
 		934539311534179000AEB8DB /* libtiff.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libtiff.a; sourceTree = "<group>"; };
 		93C488C9153A0C3E0042CB4F /* Cordova.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Cordova.framework; sourceTree = "<group>"; };
+		93EB0671153BC5A40040B5FC /* GocamClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GocamClass.h; sourceTree = "<group>"; };
+		93EB0673153BC5FC0040B5FC /* GocamClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GocamClass.m; sourceTree = "<group>"; };
+		93EB0677153BD2830040B5FC /* gocam_test.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gocam_test.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -553,6 +556,8 @@
 			isa = PBXGroup;
 			children = (
 				34E317D61518FC6B007BA5BF /* README */,
+				93EB0671153BC5A40040B5FC /* GocamClass.h */,
+				93EB0673153BC5FC0040B5FC /* GocamClass.m */,
 			);
 			name = Plugins;
 			sourceTree = "<group>";
@@ -580,6 +585,7 @@
 				934537A41534089200AEB8DB /* str.hh */,
 				934537A61534089200AEB8DB /* test_board.jpg */,
 				934537A71534089200AEB8DB /* util.hh */,
+				93EB0677153BD2830040B5FC /* gocam_test.h */,
 			);
 			path = "gocam-0.3";
 			sourceTree = SOURCE_ROOT;
@@ -1018,8 +1024,8 @@
 				934537A91534089200AEB8DB /* conf.cc in Sources */,
 				934537B11534089200AEB8DB /* gocam.cc in Sources */,
 				934537B41534089200AEB8DB /* gocam_test.cc in Sources */,
-				934537E61534089200AEB8DB /* Makefile in Sources */,
 				934537E91534089200AEB8DB /* str.cc in Sources */,
+				93EB0674153BC5FC0040B5FC /* GocamClass.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1143,7 +1149,10 @@
 					"CORDOVA_FRAMEWORK=1",
 				);
 				GCC_THUMB_SUPPORT = NO;
-				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/iOSMagick-6.7.5-3-libs\"";
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/iOSMagick-6.7.5-3-libs\"",
+					"\"$(SRCROOT)/gocam-0.3\"",
+				);
 				INFOPLIST_FILE = "kifucapture/kifucapture-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				LD_RUNPATH_SEARCH_PATHS = "-weak_framework UIKit -weak_framework AVFoundation -weak_framework CoreMedia -weak_library /usr/lib/libSystem.B.dylib -lMagickCore -lMagickWand -ljpeg -lpng -lbz2 -lz";
@@ -1192,7 +1201,10 @@
 					"CORDOVA_FRAMEWORK=1",
 				);
 				GCC_THUMB_SUPPORT = NO;
-				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/iOSMagick-6.7.5-3-libs\"";
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/iOSMagick-6.7.5-3-libs\"",
+					"\"$(SRCROOT)/gocam-0.3\"",
+				);
 				INFOPLIST_FILE = "kifucapture/kifucapture-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				LD_RUNPATH_SEARCH_PATHS = "-weak_framework UIKit -weak_framework AVFoundation -weak_framework CoreMedia -weak_library /usr/lib/libSystem.B.dylib -lMagickCore -lMagickWand -ljpeg -lpng -lbz2 -lz";
