@@ -24,6 +24,8 @@
 	<array/>
 	<key>Plugins</key>
 	<dict>
+		<key>GocamPluginClass</key>
+		<string>GocamClass</string>
 		<key>Compass</key>
 		<string>CDVLocation</string>
 		<key>Accelerometer</key>

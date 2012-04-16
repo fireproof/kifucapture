@@ -51,10 +51,20 @@ analyse_step_by_step()
   }
 }
 
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    
 int
-//main(int argc, char *argv[])
-run_gocam(char *imgfilename)
+run_gocam(char *imgfilename, int result[8])
 {
+
+    for(int i = 0; i< 8; i++) {
+        result[i] = 666 + i;
+    }
+    return 0;
+        
   // Load image file and possible pre-computed hough image
    CImg<float> original_image(imgfilename);
    //fprintf(stdout, "%s ", config.arguments[0].c_str());
@@ -82,3 +92,6 @@ run_gocam(char *imgfilename)
     return(0);
   
 }
+#ifdef __cplusplus
+}
+#endif

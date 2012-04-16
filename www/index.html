@@ -12,6 +12,7 @@
         <script type="text/javascript" charset="utf-8" src="jquery/jquery-1.7.1.min.js"></script>
         <script type="text/javascript" charset="utf-8" src="jquery/jquery.mobile-1.0.1.min.js"></script>
         <script type="text/javascript" charset="utf-8" src="cordova-1.6.0.js"></script>
+        <script type="text/javascript" charset="utf-8" src="gocam-plugin.js"></script>
         
         <script type="text/javascript" charset="utf-8">
         
@@ -137,6 +138,21 @@
 //                printObject(ctx.drawImage);
                                                 
                 // a good point at which to get the corner coordinates from GoCam
+                console.log("About to run GocamPlugin");
+                try {
+                 GocamPlugin.nativeFunction(["HelloWorld"] ,
+                                        
+                                        function(result) {console.log("Success : \r\n"+result);      
+                                        },
+                                        
+                                        function(error) {
+                                        
+                                        console.log("Error : \r\n"+error);      
+                                        }
+                                        ); 
+                } catch (e) {
+                    console.log("Exception: "+e);
+                }
                 
                 goTracer = new GoTracer(image, canvas);
                 goTracer.setCorners();
