@@ -863,9 +863,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		34E317811518FC6B007BA5BF /* kifucapture */ = {
+		34E317811518FC6B007BA5BF /* Moku */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 34E317DB1518FC6B007BA5BF /* Build configuration list for PBXNativeTarget "kifucapture" */;
+			buildConfigurationList = 34E317DB1518FC6B007BA5BF /* Build configuration list for PBXNativeTarget "Moku" */;
 			buildPhases = (
 				34E3177B1518FC6B007BA5BF /* Sources */,
 				34E3177C1518FC6B007BA5BF /* Frameworks */,
@@ -878,7 +878,7 @@
 			);
 			dependencies = (
 			);
-			name = kifucapture;
+			name = Moku;
 			productName = kifucapture;
 			productReference = 34E317821518FC6B007BA5BF /* kifucapture.app */;
 			productType = "com.apple.product-type.application";
@@ -907,7 +907,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				34E317811518FC6B007BA5BF /* kifucapture */,
+				34E317811518FC6B007BA5BF /* Moku */,
 			);
 		};
 /* End PBXProject section */
@@ -1255,7 +1255,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		34E317DB1518FC6B007BA5BF /* Build configuration list for PBXNativeTarget "kifucapture" */ = {
+		34E317DB1518FC6B007BA5BF /* Build configuration list for PBXNativeTarget "Moku" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				34E317DC1518FC6B007BA5BF /* Debug */,

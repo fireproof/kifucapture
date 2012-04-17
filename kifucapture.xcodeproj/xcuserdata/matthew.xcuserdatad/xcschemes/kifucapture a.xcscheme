@@ -15,7 +15,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "34E317811518FC6B007BA5BF"
                BuildableName = "kifucapture.app"
-               BlueprintName = "kifucapture"
+               BlueprintName = "Moku"
                ReferencedContainer = "container:kifucapture.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -33,7 +33,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "34E317811518FC6B007BA5BF"
             BuildableName = "kifucapture.app"
-            BlueprintName = "kifucapture"
+            BlueprintName = "Moku"
             ReferencedContainer = "container:kifucapture.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -52,7 +52,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "34E317811518FC6B007BA5BF"
             BuildableName = "kifucapture.app"
-            BlueprintName = "kifucapture"
+            BlueprintName = "Moku"
             ReferencedContainer = "container:kifucapture.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -70,7 +70,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "34E317811518FC6B007BA5BF"
             BuildableName = "kifucapture.app"
-            BlueprintName = "kifucapture"
+            BlueprintName = "Moku"
             ReferencedContainer = "container:kifucapture.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
