@@ -13,7 +13,7 @@
         <script type="text/javascript" charset="utf-8" src="jquery/jquery.mobile-1.0.1.min.js"></script>
         <script type="text/javascript" charset="utf-8" src="cordova-1.6.0.js"></script>
         <script type="text/javascript" charset="utf-8" src="gocam-plugin.js"></script>
-        
+        <script type="text/javascript" charset="utf-8" src="Canvas2ImagePlugin.js"></script>
         <script type="text/javascript" charset="utf-8">
         
         var pictureSource;   // picture source
@@ -40,6 +40,7 @@
             destinationType = navigator.camera.DestinationType;
             getFileSystem();
             clickItemAction();
+            var canvas2ImagePlugin = window.plugins.canvas2ImagePlugin;
         }
         
         // Called when a photo is successfully retrieved from camera
@@ -109,6 +110,9 @@
             var ctx = canvas.getContext("2d");
             var sgfCanvas = document.getElementById("preview");
             
+            var secondCanvas = document.getElementById("secondcanvas");
+            var secondCtx = secondCanvas.getContext("2d");
+            
             var image = new Image();
             
             image.onload = function(){
@@ -132,10 +136,31 @@
                 
                 ctx.canvas.width = newWidth;
                 ctx.canvas.height = newHeight;
-                ctx.drawImage(image, 0,0, newWidth,newHeight);
+                var resizedImage = ctx.drawImage(image, 0,0, newWidth,newHeight);
                 console.log('Original Size: ' + w + ' x ' + h + ', Resized in onPhotoURISuccess - newWidth: ' + newWidth + ' newHeight: ' + newHeight);
-                document.getElementById('message').innerHTML = 'Resized in onPhotoURISuccess - newWidth: ' + newWidth + ' newHeight: ' + newHeight;
 //                printObject(ctx.drawImage);
+                
+                // save resized image to disk. 
+//                try { 
+//                    var dataURL = ctx.canvas.toDataURL("image/jpeg");
+//                    var rawJPG = dataURL.replace("data:image/jpeg;base64,","");
+//                    console.log(dataURL);
+//                    var img_decoded = atob(rawJPG); // oh so close, but no seegar.
+//                    writeImage(img_decoded);
+//                    $("#resizedImage").attr("src","temporary.jpg");
+//                } catch (e) {
+//                    console.log("Exception: "+e);
+//                }
+                
+                canvas2ImagePlugin.saveImageDataToLibrary(
+                                                          function(msg){
+                                                          console.log(msg);
+                                                          }, 
+                                                          function(err){
+                                                          console.log(err);
+                                                          }, 
+                                                          'canvas'
+                                                          );
                                                 
                 // a good point at which to get the corner coordinates from GoCam
                 console.log("About to run GocamPlugin");
@@ -167,8 +192,8 @@
                 preview.update(goTracer);
                 
                 // save SGF to disk? Send via Email? Open in Browser? Display using eidogo?
-//                listFiles();
-//                listDir();
+
+                
             };
             image.src = imageURI;               
         }
@@ -401,6 +426,24 @@
                                                              }, onFail); 
                                      }, onFail); 
         }
+            
+            function writeImage(imgData) {
+                console.log("writeImage begins");
+                window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fileSystem){
+                                         console.log("root filesystem: " + fileSystem.root.name);
+                                         fileSystem.root.getFile("temporary.jpg", {create: true, exclusive: false}, function(fileEntry){
+                                                                 console.log("writeImage - fileEntry");
+                                                                 fileEntry.createWriter(function(writer){
+                                                                                        writer.onwriteend = function(evt) {
+                                                                                        console.log("writeImage - temporary.jpg written");
+                                                                                        
+                                                                                        }
+                                                                                        writer.write(imgData);
+                                                                                        }, onFail);
+                                                                 }, onFail); 
+                                         }, onFail); 
+            }
+
         
         function onFail(err) {
             console.log(err)
@@ -855,7 +898,8 @@
                     <button onclick="getPhoto(pictureSource.PHOTOLIBRARY);">From Photo Library</button><br>
                     
                     <canvas id="canvas"></canvas>
-                    
+                    <canvas id="secondcanvas"></canvas>
+                    <img id="resizedImage">
                     <div id="response"></div>
                     <div id="message"></div>
                     
@@ -1011,7 +1055,7 @@
                 <h1>Select</h1>
             </div>
             <div data-role="content">
-                <input type="button" id="openBtn" data-theme="e" value="Open" />
+                <input type="button" id="openBtn" data-theme="e" value="Details" />
                 <!-- <input type="button" id="copyBtn" value="Copy" />
                 <input type="button" id="moveBtn" value="Move" />
                 <input type="button" id="pasteBtn" value="Paste" disabled /> -->
