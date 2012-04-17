@@ -468,12 +468,14 @@
             var $inputs = $('#prefsForm :input');
             // get an associative array of just the values.
             var preferences = {};
+            var prefsText;
             $inputs.each(function() {
                          preferences[this.name] = $(this).val();
                          console.log(this.name + " : " + $(this).val());
                          // need to check SZ is selected? How?
                          });
             console.log(preferences);
+            console.log(prefsText);
             // save prefs to file?
         }
             
