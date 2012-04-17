@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Capture SGF</title>
+        <title>Moku</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
         <link rel="stylesheet" type="text/css" href="jquery/jquery.mobile-1.0.1.min.css" />
         <link rel="stylesheet" media="screen" href="style.css" type="text/css" />
@@ -30,6 +30,8 @@
             var clipboardItem = null; // file or directory for copy or move
             var clipboardAction = null; // c-copy, m-move
             
+            var canvas2ImagePlugin = window.plugins.canvas2ImagePlugin; // Canvas2ImagePlugin
+            
         function onBodyLoad() {
             document.addEventListener("deviceready", onDeviceReady, false);
         }
@@ -40,7 +42,7 @@
             destinationType = navigator.camera.DestinationType;
             getFileSystem();
             clickItemAction();
-            var canvas2ImagePlugin = window.plugins.canvas2ImagePlugin;
+            
         }
         
         // Called when a photo is successfully retrieved from camera
@@ -118,8 +120,8 @@
             image.onload = function(){
                 
                 var ratio = 1;
-                var maxWidth = 640;
-                var maxHeight = 480;
+                var maxWidth = 640 / 4;
+                var maxHeight = 480 / 4;
                 var w = image.width;
                 var h = image.height;
                 
@@ -136,7 +138,7 @@
                 
                 ctx.canvas.width = newWidth;
                 ctx.canvas.height = newHeight;
-                var resizedImage = ctx.drawImage(image, 0,0, newWidth,newHeight);
+                ctx.drawImage(image, 0,0, newWidth,newHeight);
                 console.log('Original Size: ' + w + ' x ' + h + ', Resized in onPhotoURISuccess - newWidth: ' + newWidth + ' newHeight: ' + newHeight);
 //                printObject(ctx.drawImage);
                 
@@ -152,16 +154,13 @@
 //                    console.log("Exception: "+e);
 //                }
                 
-                canvas2ImagePlugin.saveImageDataToLibrary(
-                                                          function(msg){
-                                                          console.log(msg);
-                                                          }, 
-                                                          function(err){
-                                                          console.log(err);
-                                                          }, 
-                                                          'canvas'
-                                                          );
-                                                
+                // Canvas2ImagePlugin saves to Photo Library
+                try {
+                    saveImage();
+                } catch (e) {
+                    console.log("can't save image - Exception: "+e);
+                }
+                
                 // a good point at which to get the corner coordinates from GoCam
                 console.log("About to run GocamPlugin");
                 try {
@@ -184,6 +183,9 @@
                 goTracer.startScan();
                 //console.log(goTracer.getSGF());
                 document.getElementById('sgfoutput').innerHTML = goTracer.getSGF();
+                
+                // Update current moves in SGF file.
+                // temporary - just write all SGF to file.
                 writeFile(goTracer.getSGF());
                 
                 
@@ -198,6 +200,22 @@
             image.src = imageURI;               
         }
         
+            // Canvas2ImagePlugin Function
+            
+            function saveImage()
+            {
+                var canvas2ImagePlugin = window.plugins.canvas2ImagePlugin;
+                canvas2ImagePlugin.saveImageDataToLibrary(
+                                                          function(msg){
+                                                          console.log(msg);
+                                                          }, 
+                                                          function(err){
+                                                          console.log(err);
+                                                          }, 
+                                                          'canvas'
+                                                          );
+            }
+            
             /* ------------------- */
             /*  PhoneGap Functions */
             /* ------------------- */
