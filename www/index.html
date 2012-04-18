@@ -12,11 +12,15 @@
         <script type="text/javascript" charset="utf-8" src="jquery/jquery-1.7.1.min.js"></script>
         <script type="text/javascript" charset="utf-8" src="jquery/jquery.mobile-1.0.1.min.js"></script>
         <script type="text/javascript" charset="utf-8" src="cordova-1.6.0.js"></script>
+        <!-- plugin JS -->
         <script type="text/javascript" charset="utf-8" src="gocam-plugin.js"></script>
         <script type="text/javascript" charset="utf-8" src="Canvas2ImagePlugin.js"></script>
+        <script type="text/javascript" charset="utf-8" src="ActionSheet.js"></script>
+        
+        <!-- main JS -->
         <script type="text/javascript" charset="utf-8" src="Gotracer.js"></script>
         <script type="text/javascript" charset="utf-8" src="filesystem_stuff.js"></script>
-        <script type="text/javascript" charset="utf-8" src="Base64-binary.js"></script>
+        
         <script type="text/javascript" charset="utf-8">
             
             var pictureSource;   // picture source
@@ -142,31 +146,6 @@
                     ctx.canvas.height = newHeight;
                     ctx.drawImage(image, 0,0, newWidth,newHeight);
                     console.log('Original Size: ' + w + ' x ' + h + ', Resized in onPhotoURISuccess - newWidth: ' + newWidth + ' newHeight: ' + newHeight);
-//                printObject(ctx.drawImage);
-
-                    // save resized image to disk. 
-//                try { 
-//                    var dataURL = ctx.canvas.toDataURL("image/jpeg");
-//                    var rawJPG = dataURL.replace("data:image/jpeg;base64,","");
-//                    console.log(dataURL);
-//                    var img_decoded = atob(rawJPG); // oh so close, but no seegar. It's binary
-//                    writeImage(img_decoded);
-//                    $("#resizedImage").attr("src","temporary.jpg");
-//                } catch (e) {
-//                    console.log("Exception: "+e);
-//                }
-                
-                    // trying to save image to Documents using Base64-binary.js
-//                try { 
-//                    var dataURL = ctx.canvas.toDataURL("image/jpeg");
-//                    var rawJPG = dataURL.replace("data:image/jpeg;base64,","");
-//                    var uintArray = Base64Binary.decode(rawJPG);
-//                    printObject(uintArray);
-//                    writeImage(uintArray);
-//                } catch (e) {
-//                    console.log("Exception: "+e);
-//                }
-                    
                     
                     // Canvas2ImagePlugin saves to Photo Library
                     try {
@@ -208,6 +187,7 @@
                     preview.update(goTracer);
                     
                     // save SGF to disk? Send via Email? Open in Browser? Display using eidogo?
+                    // save in iTunes
                     
                     
                 };
@@ -282,24 +262,7 @@
                                          }, onFail); 
             }
             
-            function writeImage(imgData) {
-                console.log("writeImage begins");
-                window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fileSystem){
-                                         console.log("writeImage root filesystem: " + fileSystem.root.name);
-                                         fileSystem.root.getFile("temporary.jpg", {create: true, exclusive: false}, function(fileEntry){
-                                                                 console.log("writeImage - fileEntry");
-                                                                 fileEntry.createWriter(function(writer){
-                                                                                        writer.onwriteend = function(evt) {
-                                                                                        // doesn't seem to write buffer?
-                                                                                        console.log("writeImage - temporary.jpg written");
-                                                                                        }
-                                                                                        writer.write(imgData);
-                                                                                        }, onFail);
-                                                                 }, onFail); 
-                                         }, onFail); 
-            }
-            
-            
+                        
             function onFail(err) {
                 console.log(err)
             }
@@ -324,7 +287,16 @@
                 console.log(preambleText);
             }
             
-            
+            function selectAction() {
+                var actionSheet = window.plugins.actionSheet;
+                
+                // Basic with title
+                actionSheet.create('Select Image Source', ['Camera', 'Photo Library', 'Cancel'], function(buttonValue, buttonIndex) {
+                                   console.warn('create(), arguments=' + Array.prototype.slice.call(arguments).join(', '));
+                                   }, {cancelButtonIndex: 2});
+        
+            }
+
             </script>
     </head>
     <body onload="onBodyLoad()">
@@ -351,7 +323,7 @@
                 <div id="camerasetup">
                     <button onclick="capturePhoto();">Capture Photo</button> <br>
                     <button onclick="getPhoto(pictureSource.PHOTOLIBRARY);">From Photo Library</button><br>
-                    
+                    <button data-theme="b" onclick="selectAction();">TEST Select Action</button>
                     <canvas id="canvas"></canvas>
                     <canvas id="secondcanvas"></canvas>
                     <img id="resizedImage">
