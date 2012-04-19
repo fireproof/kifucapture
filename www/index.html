@@ -149,7 +149,8 @@
                     
                     // Canvas2ImagePlugin saves to Photo Library (maybe sends to Documents or temp dir instead)
                     try {
-                        saveImage();
+//                        saveImage();
+                        console.log("Image would be saved, but hey, let's not fill up the library right now");
                     } catch (e) {
                         console.log("can't save image - Exception: "+e);
                     }
@@ -175,8 +176,12 @@
                     goTracer.setCorners();
                     goTracer.startScan();
                     //console.log(goTracer.getSGF());
-                    document.getElementById('sgfoutput').innerHTML = goTracer.getSGF();
+                    //document.getElementById('sgfoutput').innerHTML = goTracer.getSGF();
                     
+                    // show grid over image preview on page 2, wait for "OK"
+                    document.location.assign('#page2');
+                    
+                    // approve or 
                     // Update current moves in SGF file.
                     // temporary - just write all SGF to file.
                     writeFile(goTracer.getSGF());
@@ -295,6 +300,13 @@
                 
                 // Basic with title
                 actionSheet.create('Select Image Source', ['Camera', 'Photo Library', 'Cancel'], function(buttonValue, buttonIndex) {
+                                   if (arguments[1] == '0'){
+                                   capturePhoto();
+                                   }
+                                   if (arguments[1] == '1') {
+                                   getPhoto(pictureSource.PHOTOLIBRARY);
+                                   }
+                                   console.log(arguments[1]);
                                    console.warn('create(), arguments=' + Array.prototype.slice.call(arguments).join(', '));
                                    }, {cancelButtonIndex: 2});
         
@@ -302,31 +314,54 @@
 
             </script>
     </head>
+    
     <body onload="onBodyLoad()">
         
         
         <div data-role="page" id="page1">
-            <div data-theme="a" data-role="header" data-position="fixed">
-                <div data-role="navbar" data-iconpos="top">
-                    <ul>
-                        <li>
-                            <a href="#page1" data-theme="" data-icon="grid" class="ui-btn-active">
-                                Camera
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#page2" data-theme="" data-icon="arrow-d">
-                                SGF
-                            </a>
-                        </li>
-                    </ul>
+            <div data-theme="a" data-role="header">
+                <h3>
+                    Moku
+                </h3>
+                <a data-role="button" data-transition="fade" href="#prefs" data-icon="gear" data-iconpos="left">
+                    Prefs
+                </a>
+                <a data-role="button" data-transition="slideup" href="#page4" onclick="listDir(root);">
+                    Archives
+                </a>
+            </div>
+            <div data-role="content">
+                
+                <div id="sgfdisplay">
+                    <div id="preview-background"></div>
+                    <canvas id="preview" width="300" height="300"></canvas>
+                    <a data-role="button" data-inline="true" data-transition="flip" href="#page1" onclick="selectAction();">
+                        Detect Board
+                    </a>
+                    <a data-role="button" data-inline="true" data-transition="fade" href="#saveGame" data-icon="check" data-iconpos="left">
+                        Save
+                    </a>
+                    <div id="player-container"></div>
+                    <div id="sgfoutput"></div>
+                    <div id="sgfmessage"></div>
+                    <canvas id="sgfcanvas"></canvas>
                 </div>
             </div>
-            <div data-role="content">                
+        </div>
+        
+        
+        
+        <div data-role="page" id="page2">
+            <div data-theme="a" data-role="header">
+                <h3>
+                    Camera
+                </h3>
+                <a data-role="button" data-direction="reverse" data-transition="flip" href="#page1" data-icon="back" data-iconpos="left">
+                    Cancel
+                </a>
+            </div>
+            <div data-role="content">
                 <div id="camerasetup">
-                    <button onclick="capturePhoto();">Capture Photo</button> <br>
-                    <button onclick="getPhoto(pictureSource.PHOTOLIBRARY);">From Photo Library</button><br>
-                    <button data-theme="b" onclick="selectAction();">TEST Select Action</button>
                     <canvas id="canvas"></canvas>
                     <canvas id="secondcanvas"></canvas>
                     <img id="resizedImage">
@@ -335,60 +370,37 @@
                         
                         </div>
             </div>
-            
-        </div>
-        
-        
-        <div data-role="page" id="page2">
-            <div data-theme="a" data-role="header" data-position="fixed">
+            <div data-theme="a" data-role="footer">
                 <div data-role="navbar" data-iconpos="top">
                     <ul>
                         <li>
-                            <a href="#page1" data-direction="reverse" data-theme="" data-icon="grid">
-                                Camera
+                            <a href="#page2" data-theme="" data-icon="" onclick="selectAction();">
+                                Change
                             </a>
                         </li>
                         <li>
-                            <a href="#page2" data-theme="" data-icon="arrow-d" class="ui-btn-active">
-                                SGF
+                            <a href="#page1" data-theme="" data-icon="" class="ui-btn-active">
+                                Accept
                             </a>
                         </li>
                     </ul>
                 </div>
             </div>
-            
-            <div data-role="content">                
-                <div id="sgfdisplay">
-                    <div id="preview-background"></div>
-                    <canvas id="preview" width="300" height="300"></canvas>
-                    <a data-role="button" data-transition="slide" href="#page3">
-                        Game Settings
-                    </a><br />
-                    <a data-role="button" data-transition="slide" href="#page4" onclick="listDir(root);">
-                        Saved Games
-                    </a>
-                    <div id="player-container"></div>
-                    <div id="sgfoutput"></div>
-                    <div id="sgfmessage"></div>
-                    <canvas id="sgfcanvas"></canvas>
-                </div>
-                
-            </div>
         </div>
         
         
-        <div data-role="page" id="page3">
+        <div data-role="page" id="saveGame">
             <div data-theme="a" data-role="header">
                 <h3>
-                    SGF Settings
+                    Save Game
                 </h3>
-                <a data-role="button" data-direction="reverse" data-transition="slide" href="#page2" data-icon="arrow-l" data-iconpos="left">
+                <a data-role="button" data-direction="reverse" data-transition="fade" href="#page1" data-icon="arrow-l" data-iconpos="left">
                     Cancel
                 </a>
             </div>
             
             <div data-role="content">
-                <form id="prefsForm" action="#page3" method="POST">
+                <form id="prefsForm" action="#page1" method="POST">
                     <!-- Need to add Rules (RU = Japanese, Chinese, etc) -->
                     <!-- Location/Place (PC), time (TM)(ie length of game) should be added automatically? -->
                     <label for="textinput1">
@@ -422,14 +434,14 @@
                             Komi:
                         </label>
                         <input id="textinput3" name="KM" placeholder="Komi" value="5.5" type="number" />
-                        </div>
-                     <div class="formdetails">
-                         <label for="textinput4">
-                             Handicap:
-                         </label>
-                         <input id="textinput4" name="HA" placeholder="Handicap" value="0" type="number" />
-                     </div>
-                    <a href="#page2" data-role="button" data-direction="reverse" data-theme="b" data-icon="arrow-r" data-iconpos="right" onclick="SGFpreamble();">Save Settings</a>
+                    </div>
+                    <div class="formdetails">
+                        <label for="textinput4">
+                            Handicap:
+                        </label>
+                        <input id="textinput4" name="HA" placeholder="Handicap" value="0" type="number" />
+                    </div>
+                    <a href="#page1" data-role="button" data-direction="reverse" data-theme="b" data-icon="arrow-r" data-iconpos="right" onclick="SGFpreamble();">Save Settings</a>
                     <!-- <input type="submit" data-direction="reverse" data-icon="arrow-r" data-iconpos="right" value="Submit Settings" onsubmit="SGFpreamble();" /> -->
                 </form>
             </div>
@@ -440,10 +452,10 @@
         <div data-role="page" id="page4">
             <div data-theme="a" data-role="header">
                 <h3>
-                    Stored Files
+                    Archives
                 </h3>
-                <a data-role="button" data-direction="reverse" data-transition="slide" href="#page2" data-icon="arrow-l" data-iconpos="left">
-                    Cancel
+                <a data-role="button" href="#page1" data-icon="arrow-l" data-iconpos="left">
+                    Back
                 </a>
                 <a data-role="button" data-transition="fade" href="#page4" data-icon="refresh" data-iconpos="left" onclick="listDir(root);">
                     Refresh
@@ -504,6 +516,14 @@
             <div id="file_details" data-role="content"></div>
         </div>
         
-        
+        <div id="prefs" data-role="page">
+            <div data-role="header">
+                <h1>Preferences</h1>
+                <a data-role="button" data-direction="reverse" data-transition="fade" href="#page1" data-icon="arrow-l" data-iconpos="left">
+                    Back
+                </a>
+            </div>
+            <div id="file_details" data-role="content"></div>
+        </div>
     </body>
 </html>
