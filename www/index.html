@@ -147,7 +147,7 @@
                     ctx.drawImage(image, 0,0, newWidth,newHeight);
                     console.log('Original Size: ' + w + ' x ' + h + ', Resized in onPhotoURISuccess - newWidth: ' + newWidth + ' newHeight: ' + newHeight);
                     
-                    // Canvas2ImagePlugin saves to Photo Library
+                    // Canvas2ImagePlugin saves to Photo Library (maybe sends to Documents or temp dir instead)
                     try {
                         saveImage();
                     } catch (e) {
@@ -270,9 +270,12 @@
             // Takes the contents of a form and turns it into a string.
             function SGFpreamble() {
                 console.log("SGFpreamble begins");
+                var d = new Date();
+                var DTval = d.getFullYear() +"-"+ d.getMonth() +"-"+ d.getDate();
+                
                 var $inputs = $('#prefsForm :input');
                 
-                var preambleText = "(\r\n;FF[4]\r\nGM[1]\r\nAP[Moku]\r\n";
+                var preambleText = "(\r\n;FF[4]\r\nGM[1]\r\nAP[Moku]\r\nDT["+DTval+"]\r\n";
                 $inputs.each(function() {
                              // watch out for radio buttons.
                              if (this.name == 'SZ') {
@@ -357,9 +360,9 @@
             <div data-role="content">                
                 <div id="sgfdisplay">
                     <div id="preview-background"></div>
-                    <canvas id="preview" width="200" height="200"></canvas>
+                    <canvas id="preview" width="300" height="300"></canvas>
                     <a data-role="button" data-transition="slide" href="#page3">
-                        Save SGF Game Record
+                        Game Settings
                     </a><br />
                     <a data-role="button" data-transition="slide" href="#page4" onclick="listDir(root);">
                         Saved Games
@@ -385,44 +388,48 @@
             </div>
             
             <div data-role="content">
-                <form id="prefsForm">
-                    <!-- Need to add Rank (BR, WR), Rules (RU = Japanese, Chinese, etc) -->
-                    <!-- Date (DT), location (PC), time (TM) should be added automatically? -->
+                <form id="prefsForm" action="#page3" method="POST">
+                    <!-- Need to add Rules (RU = Japanese, Chinese, etc) -->
+                    <!-- Location/Place (PC), time (TM)(ie length of game) should be added automatically? -->
                     <label for="textinput1">
                         Black:
                     </label>
-                    <input id="textinput1" name="PB" placeholder="Player Name" value="" type="text" />
+                    <input id="textinput1" name="PB" placeholder="Player Name" value="" type="text" /><input id="textinputbr" name="BR" placeholder="Rank" value="" type="text" />
                     <label for="textinput2">
                         White:
                     </label>
-                    <input id="textinput2" name="PW" placeholder="Player Name" value="" type="text" />
+                    <input id="textinput2" name="PW" placeholder="Player Name" value="" type="text" /><input id="textinputwr" name="WR" placeholder="Rank" value="" type="text" />
                     
                     <fieldset data-role="controlgroup" data-type="horizontal">
                         <legend>
                             Board Size:
                         </legend>
-                        <input name="SZ" id="radio1" value="19" type="radio" />
+                        <input name="SZ" id="radio1" value="19" type="radio" checked="checked" />
                         <label for="radio1">
                             19x19
                         </label>
-                        <input name="SZ" id="radio2" value="13" type="radio" />
+                        <input name="SZ" id="radio2" value="13" type="radio" disabled="true" />
                         <label for="radio2">
                             13x13
                         </label>
-                        <input name="SZ" id="radio3" value="9" type="radio" />
+                        <input name="SZ" id="radio3" value="9" type="radio" disabled="true" />
                         <label for="radio3">
                             9x9
                         </label>
                     </fieldset>
-                    <label for="textinput3">
-                        Komi:
-                    </label>
-                    <input id="textinput3" name="KM" placeholder="Komi" value="5.5" type="number" />
-                    <label for="textinput4">
-                        Handicap:
-                    </label>
-                    <input id="textinput4" name="HA" placeholder="Handicap" value="0" type="number" />
-                    <a href="#page2" data-role="button" data-direction="reverse" data-theme="b" data-icon="arrow-r" data-iconpos="right" onclick="SGFpreamble();">Save Record</a>
+                    <div class="formdetails">
+                        <label for="textinput3">
+                            Komi:
+                        </label>
+                        <input id="textinput3" name="KM" placeholder="Komi" value="5.5" type="number" />
+                        </div>
+                     <div class="formdetails">
+                         <label for="textinput4">
+                             Handicap:
+                         </label>
+                         <input id="textinput4" name="HA" placeholder="Handicap" value="0" type="number" />
+                     </div>
+                    <a href="#page2" data-role="button" data-direction="reverse" data-theme="b" data-icon="arrow-r" data-iconpos="right" onclick="SGFpreamble();">Save Settings</a>
                     <!-- <input type="submit" data-direction="reverse" data-icon="arrow-r" data-iconpos="right" value="Submit Settings" onsubmit="SGFpreamble();" /> -->
                 </form>
             </div>

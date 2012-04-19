@@ -362,7 +362,10 @@ function Preview(cvs)
 	this.canvas = cvs;
 	this.ctx = this.canvas.getContext('2d');
 	this.backgroundImage = new Image();
-	this.backgroundImage.src = "images/blank_board.png";
+	this.backgroundImage.src = "images/blank_board-300px.png"; // was images/blank_board.png
+//    console.log('Preview - this.backgroundImage.src: ' + this.backgroundImage.src);
+//	console.log('Preview - this.canvas: ' + this.canvas);
+//	console.log('Preview - this.canvas.width: ' + this.canvas.width + ' this.canvas.height: ' + this.canvas.height);
 }
 
 Preview.prototype = {
@@ -373,11 +376,11 @@ Preview.prototype = {
 		this.draw(goTracer.whiteSet.points, "white");
 	},
 	clear: function() {
-		console.log("Preview.clear");
+		console.log("Preview.clear - this.canvas.width and height: " + this.canvas.width + " " + this.canvas.height);
 		this.ctx.clearRect(0,0,this.canvas.width, this.canvas.height);
 	},
 	draw: function(points, color) {
-		console.log("Preview.draw");
+		console.log("Preview.draw " + color);
 		this.ctx.fillStyle = color == "white" ? "rgb(255,255,255)" : "rgb(0,0,0)";
 		for ( var p=0 ; p<points.length ; p++ ) {
 			this.drawStone(points[p]);
@@ -386,10 +389,16 @@ Preview.prototype = {
 	
 	// point here is anything with a .x and a .y, like a PointSet
 	drawStone: function(point) {
-		var x = 10 + 10.46*(point.coord[1].charCodeAt(0) - 97) -4;
-		var y = 10 + 10.46*(point.coord[2].charCodeAt(0) - 97) -4;
-		var r = 5;
-		
+        // default 200px wide board
+//		var x = 10 + 10.46*(point.coord[1].charCodeAt(0) - 97) -4;
+//		var y = 10 + 10.46*(point.coord[2].charCodeAt(0) - 97) -4;
+//      var r = 5;
+        // GUESSTIMATE for 300px square board image blank_board-300px.png 
+        var x = 15 + 15.46*(point.coord[1].charCodeAt(0) - 97) -4;
+		var y = 15 + 15.46*(point.coord[2].charCodeAt(0) - 97) -4;
+		var r = 7;
+//        console.log("point.coord 1 / 2: "+ point.coord[1].charCodeAt(0) +" / "+ point.coord[2].charCodeAt(0));
+//		console.log("drawstone x / y: "+ x +" / "+ y );
 		this.ctx.beginPath();
 		this.ctx.arc(x, y, r, 0, 2*Math.PI, 0)
 		this.ctx.fill();
