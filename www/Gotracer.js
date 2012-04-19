@@ -394,8 +394,8 @@ Preview.prototype = {
 //		var y = 10 + 10.46*(point.coord[2].charCodeAt(0) - 97) -4;
 //      var r = 5;
         // GUESSTIMATE for 300px square board image blank_board-300px.png 
-        var x = 15 + 15.46*(point.coord[1].charCodeAt(0) - 97) -4;
-		var y = 15 + 15.46*(point.coord[2].charCodeAt(0) - 97) -4;
+        var x = 14 + 15.838*(point.coord[1].charCodeAt(0) - 97) -8;
+		var y = 14 + 15.838*(point.coord[2].charCodeAt(0) - 97) -8;
 		var r = 7;
 //        console.log("point.coord 1 / 2: "+ point.coord[1].charCodeAt(0) +" / "+ point.coord[2].charCodeAt(0));
 //		console.log("drawstone x / y: "+ x +" / "+ y );
