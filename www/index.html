@@ -4,7 +4,7 @@
         <title>Capture SGF</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
         <link rel="stylesheet" type="text/css" href="jquery/jquery.mobile-1.0.1.min.css" />
-        <link rel="stylesheet" type="text/css" href="player/css/player-iphone.css" />
+        
         <link rel="stylesheet" media="screen" href="style.css" type="text/css" />
         <!-- iPad/iPhone specific css below, add after your main css >
          <link rel="stylesheet" media="only screen and (max-device-width: 1024px)" href="ipad.css" type="text/css" />		
@@ -28,10 +28,11 @@
         <script type="text/javascript" charset="utf-8">
             
             var pictureSource;   // picture source
-            var destinationType; // sets the format of returned value 
+            var destinationType; // sets the format of returned value
+            // board corner coordinates will come from gocam plugin
 //            var temp = "582,224,277,117,399,437,45,280";
             var temp = "612,291,135,422,428,61,90,114";
-            var coords = temp.split(","); // board corner coordinates will come from gocam library
+            var coords = temp.split(","); 
             
             // File display and manipulation variables
             var root = null; // File System root variable
@@ -56,64 +57,8 @@
                                 
             }
             
-            // Called when a photo is successfully retrieved from camera
-            function onPhotoDataSuccess(imageData) {
-                document.getElementById('message').innerHTML = imageData;
-                
-                var canvas = document.getElementById("canvas");
-                var ctx = canvas.getContext("2d");
-                var sgfCanvas = document.getElementById("preview");
-                
-                var image = new Image();
-                
-                image.onload = function(){
-                    
-                    var ratio = 1;
-                    var maxWidth = 640 / 2;
-                    var maxHeight = 480 / 2;
-                    var w = image.width;
-                    var h = image.height;
-                    
-                    if ( w > maxWidth) {
-                        ratio = maxWidth / w;
-                    }
-                    else if (h > maxHeight) {
-                        ratio = maxHeight / h;
-                    }
-                    var newWidth = w * ratio;
-                    var newHeight = h * ratio;
-                    
-                    ctx.canvas.width = newWidth;
-                    ctx.canvas.height = newHeight;
-                    
-                    ctx.drawImage(image, 0,0,newWidth,newHeight);
-                    document.getElementById('message').innerHTML = 'newWidth: ' + newWidth + ' newHeight: ' + newHeight;
-                    
-//                    printObject(ctx.drawImage);
-                    
-                    // a good point at which to get the corner coordinates from GoCam
-                    
-                    goTracer = new GoTracer(image, canvas);
-                    goTracer.setCorners();
-                    goTracer.startScan();
-                    
-//                    console.log(goTracer.getSGF());
-                    document.getElementById('sgfoutput').innerHTML = goTracer.getSGF();
-                    writeFile(goTracer.getSGF());
-                    
-                    // draw preview image in SGF page
-                    var preview = new Preview(sgfCanvas);
-                    preview.update(goTracer);
-                };
-                
-                image.src = imageData;
-                
-                
-            }
             
-            
-            
-            // Called when a photo is successfully retrieved from Library
+            // Called when a photo is successfully retrieved
             function onPhotoURISuccess(imageURI) {
 //          console.log(imageURI);
 //            document.getElementById('message').innerHTML = 'imageURI: ' + imageURI;
@@ -233,12 +178,12 @@
             
             function capturePhoto() {
                 // Take picture using device camera and retrieve image as base64-encoded string
-                navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 50 });
+                navigator.camera.getPicture(onPhotoURISuccess, onFail, { quality: 50 });
             }
             
             function capturePhotoEdit() {
                 // Take picture using device camera, allow edit, and retrieve image as base64-encoded string  
-                navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 20, allowEdit: true }); 
+                navigator.camera.getPicture(onPhotoURISuccess, onFail, { quality: 20, allowEdit: true }); 
             }
             
             function getPhoto(source) {
@@ -269,7 +214,6 @@
                                                                  fileEntry.createWriter(function(writer){
                                                                                         writer.onwriteend = function(evt) {
                                                                                         console.log("writeFile - SGF.txt written");
-                                                                                        reloadEidogo();
                                                                                         }
                                                                                         writer.write(SGF);
                                                                                         }, onFail);
@@ -328,9 +272,9 @@
                 var player = new eidogo.Player({
                                                container:       "player-container", // HTML element id indicating where to put the player
                                                theme:           "compact",          // "standard" or "compact"
-                                               sgfUrl:          "SGF.txt", // relative URL (within same domain) to SGF file to load 
+                                               sgfUrl:          "../../Documents/SGF.txt", // relative URL (within same domain) to SGF file to load 
                                                loadPath:        [0, 1000],  // Location within the game tree to start. 1000 should start at last move.
-                                               mode:            "view",     // "play" or "view"
+                                               mode:            "play",     // "play" or "view"
                                                showComments:    false,
                                                showPlayerInfo:  false,
                                                showGameInfo:    false,
@@ -357,7 +301,7 @@
                 <h3>
                     Moku
                 </h3>
-                <a data-role="button" data-transition="fade" href="#prefs" data-icon="gear"  data-iconpos="notext" data-shadow="false"">
+                <a data-role="button" data-transition="fade" href="#prefs" data-icon="gear"  data-iconpos="notext" data-shadow="false">
                     Prefs
                 </a>
                 <a data-role="button" data-transition="slideup" href="#page4" onclick="listDir(root);">
@@ -399,7 +343,7 @@
                 <a data-role="button" data-direction="reverse" data-transition="flip" href="#page1" data-icon="back" data-iconpos="left">
                     Cancel
                 </a>
-                <a data-role="button" data-direction="reverse" data-transition="flip" href="#page1" data-icon="">
+                <a data-role="button" data-direction="reverse" data-transition="flip" href="#page1" data-icon="" onclick="reloadEidogo();">
                     Accept
                 </a>
             </div>

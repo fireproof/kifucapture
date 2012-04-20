@@ -31,16 +31,17 @@ body {
 }
  
 .folder{
-    background: url('images/33-cabinet.png') no-repeat 50% 0%;
+    background: url('images/folder_48.png') no-repeat 50% 0;
     margin:2px;
-    padding-top:25px;
     text-align:center;
+	padding-top: 36px;
 }
  
 .file{
     background: url('images/179-notepad.png') no-repeat 50% 0%;
+    background: url('images/document_empty_48.png') no-repeat 50% 0%;
     margin:2px;
-    padding-top:25px;
+    padding-top:40px;
     text-align:center;
 }
 
