@@ -45,7 +45,7 @@
     -webkit-user-select: none;
 }
 .eidogo-player .controls {
-	height: 30px;
+	height: 40px;
 	text-indent: -9999px;
 	font-size: 0;
 	padding-left: 2px;
@@ -62,7 +62,7 @@
 	height: 29px;
 	float: left;
 	padding: 0;
-	background: url(../images/buttons.gif) no-repeat top left;
+	background: url(../images/buttons.png) no-repeat top left;
 }
 .eidogo-player .controls .back {
     background-position: 0 -30px;
@@ -104,9 +104,8 @@
 }
 .eidogo-player .move-number {
 	position: absolute;
-	top: 12px;
 	left: 230px;
-	color: #acc;
+	color: rgba(126,105,59,0.92);
 }
 .eidogo-player .permalink {
     text-decoration: underline;
@@ -115,19 +114,19 @@
 .eidogo-player .nav-slider {
 	clear: both;
 	position: relative;
-	height: 10px;
-	width: 365px;
+	height: 14px;
+	width: 341px;
 	margin: 0px 5px 5px 5px;
 	border-top: 1px solid #122;
-	background: #244;
+	background: #41514d;
 }
 .eidogo-player .nav-slider-thumb {
     position: absolute;
-	width: 9px;
-	height: 9px;
-	background: #d11;
-    border-bottom: 1px solid #800;
-    border-right: 1px solid #800;
+	width: 12px;
+	height: 12px;
+	background: #de5e42;
+    border-bottom: 1px solid #960009;
+    border-right: 1px solid #960009;
 	cursor: pointer;
 }
 .eidogo-player .variations-container {
@@ -803,7 +802,7 @@
     padding-top: 5px;
 }
 .eidogo-player.theme-compact .move-number {
-    top: 9px;
+    top: -15px;
 }
 .eidogo-player.theme-compact .nav-slider {
     width: 290px;

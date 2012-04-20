@@ -14,8 +14,9 @@
 	width: 371px;
 	position: relative;
 	padding: 0;
-    background: #466;
-    color: #8aa;
+    color: #5b7274;
+	background-image: -webkit-linear-gradient(#5b7274,#556b6c);
+	opacity: 1;
 }
 .eidogo-player .controls {
 	height: 70px;
@@ -81,9 +82,7 @@
 	position: absolute;
 	top: 65px;
 	left: 180px;
-	color: #8aa;
-	font-size: 13px;
-	text-decoration: underline;
+	font-size: 11px;
 	cursor: pointer;
 }
 .eidogo-player .nav-slider {

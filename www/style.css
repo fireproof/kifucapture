@@ -66,12 +66,11 @@ body {
     width: 3em;
 }
 
-.refreshButton span.ui-btn-text {
-	margin-left: -310px;
-}
 
-a.refreshButton span span.ui-icon {
-	margin-left: 4px;
+#player-container {
+width: 300px !important;
+height: 300px !important;
+background: #E8C473 url(player/images/board-19-300.gif);
 }
 
 

@@ -29,7 +29,8 @@
             
             var pictureSource;   // picture source
             var destinationType; // sets the format of returned value 
-            var temp = "582,224,277,117,399,437,45,280";
+//            var temp = "582,224,277,117,399,437,45,280";
+            var temp = "612,291,135,422,428,61,90,114";
             var coords = temp.split(","); // board corner coordinates will come from gocam library
             
             // File display and manipulation variables
@@ -183,7 +184,7 @@
                     //document.getElementById('sgfoutput').innerHTML = goTracer.getSGF();
                     
                     // show grid over image preview on page 2, wait for "OK"
-                    document.location.assign('#page2');
+//                    document.location.assign('#camera');
                     
                     // approve or 
                     // Update current moves in SGF file.
@@ -192,8 +193,10 @@
                     
                     
                     // draw preview image in SGF page
+                    /* disabling preview stuff while working on Eidogo - re-enable for error checking
                     var preview = new Preview(sgfCanvas);
                     preview.update(goTracer);
+                    */
                     
                     // reloading Eidogo needs to happen when writeFile is done
                     reloadEidogo();
@@ -266,7 +269,7 @@
                                                                  fileEntry.createWriter(function(writer){
                                                                                         writer.onwriteend = function(evt) {
                                                                                         console.log("writeFile - SGF.txt written");
-                                                                                        
+                                                                                        reloadEidogo();
                                                                                         }
                                                                                         writer.write(SGF);
                                                                                         }, onFail);
@@ -320,6 +323,8 @@
             }
             
             function reloadEidogo() {
+                // set sgfUrl to "SGF.txt" for local browser testing
+                // set sgfUrl to "../../Documents/SGF.txt" (saved by writeFile) for other tests
                 var player = new eidogo.Player({
                                                container:       "player-container", // HTML element id indicating where to put the player
                                                theme:           "compact",          // "standard" or "compact"
@@ -337,6 +342,7 @@
                                                enableShortcuts: false,
                                                problemMode:     false
                                                });
+                console.log("Eidogo reloaded");
 
             }
 
@@ -351,7 +357,7 @@
                 <h3>
                     Moku
                 </h3>
-                <a data-role="button" data-transition="fade" href="#prefs" data-icon="gear" data-iconpos="left">
+                <a data-role="button" data-transition="fade" href="#prefs" data-icon="gear"  data-iconpos="notext" data-shadow="false"">
                     Prefs
                 </a>
                 <a data-role="button" data-transition="slideup" href="#page4" onclick="listDir(root);">
@@ -361,17 +367,19 @@
             <div data-role="content">
                 
                 <div id="sgfdisplay">
-                    <div id="preview-background"></div>
-                    <canvas id="preview" width="300" height="300"></canvas>
-                    <a data-role="button" data-inline="true" data-transition="flip" href="#page1" onclick="selectAction();">
-                        Detect Board
+                    <!-- disabling preview stuff while working with Eidogo -->
+                    <!-- <div id="preview-background"></div>
+                    <canvas id="preview" width="300" height="300"></canvas> -->
+                    <div id="player-container"></div>
+                    <a data-role="button" data-inline="true" data-mini="true" data-transition="flip" href="#camera" onclick="selectAction();">
+                        Camera
                     </a>
-                    <a data-role="button" data-inline="true" data-transition="fade" href="#saveGame" data-icon="check" data-iconpos="left">
+                    <a data-role="button" data-inline="true" data-mini="true" data-transition="fade" href="#saveGame" data-icon="check" data-iconpos="left">
                         Save
                     </a>
-                    <div id="player-container"></div>
-                    <a data-role="button" data-inline="true" data-transition="fade" href="#page1" onclick="reloadEidogo();"">
-                        reload 
+                   
+                    <a data-role="button" data-inline="true" data-iconpos="notext" data-transition="fade" href="#page1" data-icon="refresh" data-iconpos="left" onclick="reloadEidogo();">
+                        Refresh 
                     </a>
                     
                     <div id="sgfoutput"></div>
@@ -383,13 +391,16 @@
         
         
         
-        <div data-role="page" id="page2">
+        <div data-role="page" id="camera">
             <div data-theme="a" data-role="header">
                 <h3>
                     Camera
                 </h3>
                 <a data-role="button" data-direction="reverse" data-transition="flip" href="#page1" data-icon="back" data-iconpos="left">
                     Cancel
+                </a>
+                <a data-role="button" data-direction="reverse" data-transition="flip" href="#page1" data-icon="">
+                    Accept
                 </a>
             </div>
             <div data-role="content">
@@ -401,22 +412,6 @@
                         <div id="message"></div>
                         
                         </div>
-            </div>
-            <div data-theme="a" data-role="footer">
-                <div data-role="navbar" data-iconpos="top">
-                    <ul>
-                        <li>
-                            <a href="#page2" data-theme="" data-icon="" onclick="selectAction();">
-                                Change
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#page1" data-theme="" data-icon="" class="ui-btn-active">
-                                Accept
-                            </a>
-                        </li>
-                    </ul>
-                </div>
             </div>
         </div>
         
@@ -486,7 +481,7 @@
                 <h3>
                     Archives
                 </h3>
-                <a class="refreshButton" data-role="button" data-transition="fade" href="#page4" data-icon="refresh" data-iconpos="left" onclick="listDir(root);">
+                <a class="refreshButton" data-role="button" data-iconpos="notext" data-transition="fade" href="#page4" data-icon="refresh" data-iconpos="left" onclick="listDir(root);">
                     Refresh
                 </a>
                 <a data-role="button" data-transition="slidedown" href="#page1" data-icon="arrow-l" data-iconpos="left">

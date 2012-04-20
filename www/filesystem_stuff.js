@@ -7,8 +7,8 @@ function getFileSystem(){
 							 function(fileSystem){ // success get file system
 							 root = fileSystem.root;
 //							 console.log('getFileSystem - got filesystem for display: ' + root);
-//                             console.log(fileSystem.name);
-//                             console.log(fileSystem.root.name);
+                             console.log(fileSystem.name);
+                             console.log(fileSystem.root.name);
 							 listDir(root);
 							 }, function(evt){ // error get file system
 							 console.log("File System Error: "+evt.target.error.code);
@@ -39,7 +39,7 @@ function listDir(directoryEntry){
 								for(var i=0; i<entries.length; ++i){ // sort entries
 								var entry = entries[i];
                                 var uri = entry.toURL();
-//                                console.log(uri);
+                                console.log(uri);
 								if( entry.isDirectory && entry.name[0] != '.' ) dirArr.push(entry);
 								else if( entry.isFile && entry.name[0] != '.' ) fileArr.push(entry);
 								}
