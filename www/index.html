@@ -4,6 +4,7 @@
         <title>Capture SGF</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
         <link rel="stylesheet" type="text/css" href="jquery/jquery.mobile-1.0.1.min.css" />
+        <link rel="stylesheet" type="text/css" href="player/css/player-iphone.css" />
         <link rel="stylesheet" media="screen" href="style.css" type="text/css" />
         <!-- iPad/iPhone specific css below, add after your main css >
          <link rel="stylesheet" media="only screen and (max-device-width: 1024px)" href="ipad.css" type="text/css" />		
@@ -20,6 +21,9 @@
         <!-- main JS -->
         <script type="text/javascript" charset="utf-8" src="Gotracer.js"></script>
         <script type="text/javascript" charset="utf-8" src="filesystem_stuff.js"></script>
+        
+        
+        <script type="text/javascript" src="player/js/all.compressed.js"></script>
         
         <script type="text/javascript" charset="utf-8">
             
@@ -48,7 +52,7 @@
                 destinationType = navigator.camera.DestinationType;
                 getFileSystem();
                 clickItemAction();
-                
+                                
             }
             
             // Called when a photo is successfully retrieved from camera
@@ -175,7 +179,7 @@
                     goTracer = new GoTracer(image, canvas);
                     goTracer.setCorners();
                     goTracer.startScan();
-                    //console.log(goTracer.getSGF());
+                    console.log(goTracer.getSGF());
                     //document.getElementById('sgfoutput').innerHTML = goTracer.getSGF();
                     
                     // show grid over image preview on page 2, wait for "OK"
@@ -190,6 +194,9 @@
                     // draw preview image in SGF page
                     var preview = new Preview(sgfCanvas);
                     preview.update(goTracer);
+                    
+                    // reloading Eidogo needs to happen when writeFile is done
+                    reloadEidogo();
                     
                     // save SGF to disk? Send via Email? Open in Browser? Display using eidogo?
                     // save in iTunes
@@ -306,10 +313,31 @@
                                    if (arguments[1] == '1') {
                                    getPhoto(pictureSource.PHOTOLIBRARY);
                                    }
-                                   console.log(arguments[1]);
-                                   console.warn('create(), arguments=' + Array.prototype.slice.call(arguments).join(', '));
+//                                   console.log(arguments[1]);
+//                                   console.warn('create(), arguments=' + Array.prototype.slice.call(arguments).join(', '));
                                    }, {cancelButtonIndex: 2});
         
+            }
+            
+            function reloadEidogo() {
+                var player = new eidogo.Player({
+                                               container:       "player-container", // HTML element id indicating where to put the player
+                                               theme:           "compact",          // "standard" or "compact"
+                                               sgfUrl:          "SGF.txt", // relative URL (within same domain) to SGF file to load 
+                                               loadPath:        [0, 1000],  // Location within the game tree to start. 1000 should start at last move.
+                                               mode:            "view",     // "play" or "view"
+                                               showComments:    false,
+                                               showPlayerInfo:  false,
+                                               showGameInfo:    false,
+                                               showTools:       false,
+                                               showOptions:     false,
+                                               markCurrent:     true,
+                                               markVariations:  false,
+                                               markNext:        true,
+                                               enableShortcuts: false,
+                                               problemMode:     false
+                                               });
+
             }
 
             </script>
@@ -342,6 +370,10 @@
                         Save
                     </a>
                     <div id="player-container"></div>
+                    <a data-role="button" data-inline="true" data-transition="fade" href="#page1" onclick="reloadEidogo();"">
+                        reload 
+                    </a>
+                    
                     <div id="sgfoutput"></div>
                     <div id="sgfmessage"></div>
                     <canvas id="sgfcanvas"></canvas>
@@ -454,11 +486,11 @@
                 <h3>
                     Archives
                 </h3>
-                <a data-role="button" href="#page1" data-icon="arrow-l" data-iconpos="left">
-                    Back
-                </a>
-                <a data-role="button" data-transition="fade" href="#page4" data-icon="refresh" data-iconpos="left" onclick="listDir(root);">
+                <a class="refreshButton" data-role="button" data-transition="fade" href="#page4" data-icon="refresh" data-iconpos="left" onclick="listDir(root);">
                     Refresh
+                </a>
+                <a data-role="button" data-transition="slidedown" href="#page1" data-icon="arrow-l" data-iconpos="left">
+                    Back
                 </a>
             </div>
             

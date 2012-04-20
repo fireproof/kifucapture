@@ -8,6 +8,10 @@ body {
     margin: 0.25em 0 !important;
 }
 
+.ui-content {
+	padding: 10px;
+}
+
 #preview-background
 {
   background-image: url('images/blank_board-300px.png');
@@ -61,3 +65,13 @@ body {
 #prefsForm #textinputbr, #prefsForm #textinputwr {
     width: 3em;
 }
+
+.refreshButton span.ui-btn-text {
+	margin-left: -310px;
+}
+
+a.refreshButton span span.ui-icon {
+	margin-left: 4px;
+}
+
+

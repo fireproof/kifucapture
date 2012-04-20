@@ -6,7 +6,9 @@ function getFileSystem(){
 	window.requestFileSystem(LocalFileSystem.PERSISTENT, 0,
 							 function(fileSystem){ // success get file system
 							 root = fileSystem.root;
-							 console.log('getFileSystem - got filesystem for display: ' + root);
+//							 console.log('getFileSystem - got filesystem for display: ' + root);
+//                             console.log(fileSystem.name);
+//                             console.log(fileSystem.root.name);
 							 listDir(root);
 							 }, function(evt){ // error get file system
 							 console.log("File System Error: "+evt.target.error.code);
@@ -36,6 +38,8 @@ function listDir(directoryEntry){
 								var fileArr = new Array();
 								for(var i=0; i<entries.length; ++i){ // sort entries
 								var entry = entries[i];
+                                var uri = entry.toURL();
+//                                console.log(uri);
 								if( entry.isDirectory && entry.name[0] != '.' ) dirArr.push(entry);
 								else if( entry.isFile && entry.name[0] != '.' ) fileArr.push(entry);
 								}
@@ -69,10 +73,11 @@ function readFile(fileEntry){
 				   };
 				   reader.readAsDataURL(file);
 				   
-				   //                               $.mobile.hidePageLoadingMsg(); // hide loading message
+//                   $.mobile.hidePageLoadingMsg(); // hide loading message
 				   
 				   // dialog with file details
 				   $('#file_details').html('<p><strong>Name:</strong> '+file.name+
+                                           '<p><strong>Path:</strong> '+file.fullPath+
 										   '</p><p><strong>Type:</strong> '+file.type+
 										   '</p><p><strong>Last Modified:</strong> '+new Date(file.lastModifiedDate)+
 										   '</p><p><strong>Size:</strong> '+file.size);

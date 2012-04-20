@@ -41,8 +41,7 @@
 	float: right;
 	position: relative;
 	padding: 5px 0 0 0;
-    background: #466;
-    color: #8aa;
+    color: black;
     -webkit-user-select: none;
 }
 .eidogo-player .controls {
@@ -53,14 +52,14 @@
 	-webkit-user-select: none;
 }
 .eidogo-player .controls .control {
-	margin: 5px 0 5px 3px;
+	margin: 5px 0 5px 12px;
 	user-select: none;
 	-khtml-user-select: none;
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	cursor: default;
 	width: 44px;
-	height: 19px;
+	height: 29px;
 	float: left;
 	padding: 0;
 	background: url(../images/buttons.gif) no-repeat top left;
@@ -407,8 +406,8 @@
 }
 .eidogo-player .board-container {
     float: left;
-	width: 421px;
-	height: 421px;
+	width: 300px;
+	height: 300px;
     background: #654;
 	user-select: none;
 	-khtml-user-select: none;
@@ -422,16 +421,16 @@
     background: none;
 }
 .eidogo-player .board-gutter {
-    width: 371px;
-	height: 371px;
-	padding: 25px;
+    width: 300px;
+	height: 300px;
+	padding: 0px;
 	background: #654;
 	user-select: none;
 	-khtml-user-select: none;
 	-moz-user-select: none;
 }
 .eidogo-player .board-gutter.with-coords {
-    background: #654 url(../images/board-bg-coords.png) no-repeat 5px 5px;
+    background: #654 url(../images/board-bg-coords.png) no-repeat 5px 5px; 
 }
 .eidogo-player .board.size9 {
 	position: absolute;
@@ -449,26 +448,26 @@
 }
 .eidogo-player .board.size19 {
 	position: absolute;
-	width: 371px;
-	height: 371px;
-	background: #E8C473 url(../images/board-19-simple.gif);
+	width: 300px;
+	height: 300px;
+	background: #E8C473 url(../images/board-19-300.gif);
 }
 .eidogo-player .board .point {
 	position: absolute;
-	width: 19px;
-	height: 19px;
+	width: 15px;
+	height: 15px;
 	z-index: 1;
 }
 .eidogo-player .board .point.stone.black {
-	background: url(../images/b.png);
+	background: url(../images/b15.png);
 }
 .eidogo-player .board .point.stone.white {
-	background: url(../images/w.png);
+	background: url(../images/w15.png);
 }
 .eidogo-player .board .point.marker {
 	z-index: 2;
-	width: 19px;
-	height: 19px;
+	width: 15px;
+	height: 15px;
 	background: url(../images/markers.gif) no-repeat top left;
 }
 .eidogo-player .board .point.marker.label {
@@ -525,8 +524,8 @@
 }
 .eidogo-player .board-hover-move {
     position: absolute;
-    width: 19px;
-    height: 19px;
+    width: 15px;
+    height: 15px;
     z-index: 1;
     margin: -8px 0 0 -8px;
     opacity: 0.4;
@@ -790,24 +789,24 @@
  *  Compact Theme
 ****************************************************************************/
 .eidogo-player.theme-compact {
-    width: 421px;
+    width: 300px;
     padding: 0;
     background: #555;
     border: 1px solid #555;
 }
 .eidogo-player.theme-compact .board.size19 {
-    background-image: url(../images/board-19-simple.gif) !important;
+    background-image: url(../images/board-19-300.gif) !important;
 }
 .eidogo-player.theme-compact .controls-container {
-    width: 421px;
+    width: 300px;
     border-top: 1px solid #244;
-    padding-top: 0;
+    padding-top: 5px;
 }
 .eidogo-player.theme-compact .move-number {
     top: 9px;
 }
 .eidogo-player.theme-compact .nav-slider {
-    width: 411px;
+    width: 290px;
 }
 .eidogo-player.theme-compact .variations-container {
     display: none;
