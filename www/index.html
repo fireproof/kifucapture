@@ -18,8 +18,6 @@
         
         var pictureSource;   // picture source
         var destinationType; // sets the format of returned value 
-        //var temp = "582,224,277,117,399,437,45,280";
-        //var coords = temp.split(","); // board corner coordinates will come from gocam library
         
             // File display and manipulation variables
             var root = null; // File System root variable
@@ -78,18 +76,39 @@
 //                printObject(ctx.drawImage);
                 
                 // a good point at which to get the corner coordinates from GoCam
-                
-                goTracer = new GoTracer(image, canvas);
-                goTracer.setCorners();
-                goTracer.startScan();
-                
-//                console.log(goTracer.getSGF());
-                document.getElementById('sgfoutput').innerHTML = goTracer.getSGF();
-                writeFile(goTracer.getSGF());
-                
-                // draw preview image in SGF page
-                var preview = new Preview(sgfCanvas);
-                preview.update(goTracer);
+                filename = imageURI.replace("file://localhost", '');
+                console.log("About to run GocamPlugin on " + filename);
+                try {
+                    GocamPlugin.nativeFunction([filename] ,
+                                               
+                                               function(result) {console.log("Success : \r\n"+result);
+                                               goTracer = new GoTracer(image, canvas);
+                                               goTracer.setCorners(result);
+                                               goTracer.startScan();
+                                               //console.log(goTracer.getSGF());
+                                               document.getElementById('sgfoutput').innerHTML = goTracer.getSGF();
+                                               writeFile(goTracer.getSGF());
+                                               
+                                               
+                                               // draw preview image in SGF page
+                                               var preview = new Preview(sgfCanvas);
+                                               preview.update(goTracer);
+                                               
+                                               // save SGF to disk? Send via Email? Open in Browser? Display using eidogo?
+                                               //                listFiles();
+                                               //                listDir();
+                                               },
+                                               
+                                               function(error) {
+                                               
+                                               console.log("Error : \r\n"+error);      
+                                               }
+                                               ); 
+                } catch (e) {
+                    console.log("Exception: "+e);
+                }
+
+               
             };
             
             image.src = imageData;
