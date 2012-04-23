@@ -7,7 +7,7 @@ gocam::Analyser analyser;
 
 
 void
-draw_grid(CImg<float> &img, float *rgb)
+draw_grid(CImg<float> &img, float *rgb, int *result)
 {
   float red[3] = {1.0, 0.0, 0.0};
   for (int s = 0; s < 2; s++) {
@@ -18,6 +18,17 @@ draw_grid(CImg<float> &img, float *rgb)
 		    (int)line.b.x, (int)line.b.y, rgb);
 		    if(s == 0) {
 		      if((l == 0) || (l == (int)analyser.lines[s].size() - 1)) {
+                  if(l == 0) {
+                      result[0] = (int)line.a.x;
+                      result[1] = (int)line.a.y;
+                      result[2] = (int)line.b.x;
+                      result[3] = (int)line.b.y;
+                  } else {
+                      result[4] = (int)line.a.x;
+                      result[5] = (int)line.a.y;
+                      result[6] = (int)line.b.x;
+                      result[7] = (int)line.b.y;
+                  }
 		        printf("%d,%d,%d,%d%s",(int)line.a.x, (int)line.a.y, (int)line.b.x, (int)line.b.y, l==0?",":"");
 	          img.draw_line((int)line.a.x, (int)line.a.y, 
 		    (int)line.b.x, (int)line.b.y, red);      
@@ -32,6 +43,7 @@ void
 analyse_step_by_step()
 {
   float white[1] = {1};
+  int result[8];
 
   analyser.compute_line_images();
   analyser.compute_hough_image();
@@ -47,7 +59,7 @@ analyse_step_by_step()
     analyser.add_best_line(1);
     analyser.tune_grid();
      tmp = analyser.line_image;
-     draw_grid(tmp, white);
+     draw_grid(tmp, white, result);
   }
 }
 
@@ -63,7 +75,6 @@ run_gocam(char *imgfilename, int result[8])
     for(int i = 0; i< 8; i++) {
         result[i] = 666 + i;
     }
-    return 0;
         
   // Load image file and possible pre-computed hough image
    CImg<float> original_image(imgfilename);
@@ -87,7 +98,7 @@ run_gocam(char *imgfilename, int result[8])
 
   // Display result
     float blue[3] = {0, 0, 1};
-    draw_grid(original_image, blue);
+    draw_grid(original_image, blue, result);
   //CImgDisplay display(original_image, "The final analysis");
     return(0);
   
