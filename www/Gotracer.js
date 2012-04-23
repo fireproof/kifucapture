@@ -13,7 +13,7 @@ function GoTracer(img, canvas)
 	console.log('GoTracer - this.img.width: ' + this.img.width + ' this.img.height: ' + this.img.height);
 }
 
-GoTracer.prototype.setCorners = function()
+GoTracer.prototype.setCorners = function(coords)
 {
 	coords = coords.map( function(c) { return 1*c; }); // could dived each corner coordinate by the same amount as display 
 	console.log('coords: ' + coords);

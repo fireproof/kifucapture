@@ -12,6 +12,11 @@ body {
 	padding: 10px;
 }
 
+#canvas {
+    visibility: hidden;
+    display: none;
+}
+
 #preview-background
 {
   background-image: url('images/blank_board-300px.png');
@@ -27,18 +32,17 @@ body {
 }
 
 .folder, .file{
-    font-size:10px;
+    font-size: 10px;
 }
  
 .folder{
     background: url('images/folder_48.png') no-repeat 50% 0;
-    margin:2px;
-    text-align:center;
+    margin: 2px;
+    text-align: center;
 	padding-top: 36px;
 }
  
 .file{
-    background: url('images/179-notepad.png') no-repeat 50% 0%;
     background: url('images/document_empty_48.png') no-repeat 50% 0%;
     margin:2px;
     padding-top:40px;
@@ -48,6 +52,9 @@ body {
 #menu, #get_file_details{
     display: none;
 }
+
+/* SGF preamble form */
+
 #prefsForm #textinput1, #prefsForm #textinput2 {
     width: 70%;
 	float: left;
@@ -67,11 +74,23 @@ body {
     width: 3em;
 }
 
-
+/* Eidogo player */
 #player-container {
-width: 300px !important;
-height: 300px !important;
-background: #E8C473 url(player/images/board-19-300.gif);
+	width: 300px !important;
+	height: 300px !important;
+	background: url(player/images/board-19-300.gif);
+}
+/* possibly used with moves slider */
+input#slider {
+	width: 280px;
+	margin-left: 7px;
 }
 
+label#sliderlabel {
+    display: none;
+}
+
+.ui-overlay-a.ui-dialog {
+	opacity: 50%;
+}
 

@@ -29,11 +29,14 @@
             
             var pictureSource;   // picture source
             var destinationType; // sets the format of returned value
+            var gameState = 'newgame';
             // board corner coordinates will come from gocam plugin
 //            var temp = "582,224,277,117,399,437,45,280";
-            var temp = "612,291,135,422,428,61,90,114";
+            var temp = "612,291,135,422,428,61,90,114"; // 640x480_example.jpg
+//            var temp = "472,396,102,524,318,198,38,265"; // four step examples IMG_2392x.jpg
             var coords = temp.split(","); 
-            
+            var coordsCopy = coords.slice();
+                        
             // File display and manipulation variables
             var root = null; // File System root variable
             var currentDir = null; // Current DirectoryEntry listed
@@ -43,6 +46,11 @@
             var clipboardItem = null; // file or directory for copy or move
             var clipboardAction = null; // c-copy, m-move
             
+            function preventBehavior(e) { 
+                e.preventDefault(); 
+            };
+            
+            document.addEventListener("touchmove", preventBehavior, false);
             
             function onBodyLoad() {
                 document.addEventListener("deviceready", onDeviceReady, false);
@@ -54,19 +62,16 @@
                 destinationType = navigator.camera.DestinationType;
                 getFileSystem();
                 clickItemAction();
-                                
+                     
             }
             
             
             // Called when a photo is successfully retrieved
             function onPhotoURISuccess(imageURI) {
 //          console.log(imageURI);
-//            document.getElementById('message').innerHTML = 'imageURI: ' + imageURI;
                 
-                /* Canvas manipulation */
                 var canvas = document.getElementById("canvas");
                 var ctx = canvas.getContext("2d");
-                var sgfCanvas = document.getElementById("preview");
                 
                 var secondCanvas = document.getElementById("secondcanvas");
                 var secondCtx = secondCanvas.getContext("2d");
@@ -75,12 +80,47 @@
                 
                 image.onload = function(){
                     
+                    var w = image.width;
+                    var h = image.height;
+
+                    // ------------------------------------------------------------------
+                    // making the smaller display...
+                    var smallRatio = 1;
+                    var smallMaxWidth = 300;
+                    var smallMaxHeight = 225;
+                    
+                    if ( w > smallMaxWidth) {
+                        smallRatio = smallMaxWidth / w;
+                    }
+                    else if (h > smallMaxHeight) {
+                        smallRatio = smallMaxHeight / h;
+                    }
+                    var smallNewWidth = w * smallRatio;
+                    var smallNewHeight = h * smallRatio;
+                    
+                    // First pass only!
+                    if (gameState == 'newgame') {
+                        for(i=0; i<coordsCopy.length; i++) {
+                            coordsCopy[i] = coordsCopy[i] * smallRatio ;
+                            console.log(coordsCopy[i]);
+                        }
+                    }
+                    
+                    secondCtx.canvas.width = smallNewWidth;
+                    secondCtx.canvas.height = smallNewHeight;
+                    secondCtx.drawImage(image, 0,0, smallNewWidth,smallNewHeight);
+                    
+                    goTracer = new GoTracer(image, secondCanvas);
+                    goTracer.setCorners(coordsCopy);
+                    goTracer.startScan();
+                    gameState = 'continue';
+                    
+                    // ------------------------------------------------------------------
+                    // regular size
                     var ratio = 1;
                     var maxWidth = 640;
                     var maxHeight = 480;
-                    var w = image.width;
-                    var h = image.height;
-                    
+                                       
                     if ( w > maxWidth) {
                         ratio = maxWidth / w;
                         console.log('width greater than ' + maxWidth + ', ratio set to ' + ratio);
@@ -97,7 +137,8 @@
                     ctx.drawImage(image, 0,0, newWidth,newHeight);
                     console.log('Original Size: ' + w + ' x ' + h + ', Resized in onPhotoURISuccess - newWidth: ' + newWidth + ' newHeight: ' + newHeight);
                     
-                    // Canvas2ImagePlugin saves to Photo Library (maybe sends to Documents or temp dir instead)
+                    // ------------------------------------------------------------------
+                    // Canvas2ImagePlugin saves to Photo Library (maybe sends to Documents or temp dir instead?)
                     try {
 //                        saveImage();
                         console.log("Image would be saved, but hey, let's not fill up the library right now");
@@ -105,7 +146,9 @@
                         console.log("can't save image - Exception: "+e);
                     }
                     
+                    // ------------------------------------------------------------------
                     // a good point at which to get the corner coordinates from GoCam
+                    // First pass only!
                     console.log("About to run GocamPlugin");
                     try {
                         GocamPlugin.nativeFunction(["HelloWorld"] ,
@@ -123,9 +166,10 @@
                     }
                     
                     goTracer = new GoTracer(image, canvas);
-                    goTracer.setCorners();
+                    goTracer.setCorners(coords);
                     goTracer.startScan();
                     console.log(goTracer.getSGF());
+                    
                     //document.getElementById('sgfoutput').innerHTML = goTracer.getSGF();
                     
                     // show grid over image preview on page 2, wait for "OK"
@@ -143,9 +187,12 @@
                     preview.update(goTracer);
                     */
                     
+//                    document.getElementById('eidogo-player-auto').innerHTML = goTracer.getSGF();
+                    
                     // reloading Eidogo needs to happen when writeFile is done
                     reloadEidogo();
                     
+                    // ------------------------------------------------------------------
                     // save SGF to disk? Send via Email? Open in Browser? Display using eidogo?
                     // save in iTunes
                     
@@ -154,8 +201,9 @@
                 image.src = imageURI;               
             }
             
+            /* -------------------------- */
             // Canvas2ImagePlugin Function
-            
+            /* -------------------------- */
             function saveImage()
             {
                 var canvas2ImagePlugin = window.plugins.canvas2ImagePlugin;
@@ -249,6 +297,9 @@
                 console.log(preambleText);
             }
             
+            /* -------------------------- */
+            //    ActionSheet Function    //
+            /* -------------------------- */
             function selectAction() {
                 var actionSheet = window.plugins.actionSheet;
                 
@@ -266,6 +317,9 @@
         
             }
             
+            /* -------------------------- */
+            //     Eidogo SGF display     //
+            /* -------------------------- */
             function reloadEidogo() {
                 // set sgfUrl to "SGF.txt" for local browser testing
                 // set sgfUrl to "../../Documents/SGF.txt" (saved by writeFile) for other tests
@@ -287,9 +341,14 @@
                                                problemMode:     false
                                                });
                 console.log("Eidogo reloaded");
+                // how to add some HTML to this without modifying the source js?
+//                $('.controls-container').append("<form id='sliderform'><label id='sliderlabel' for='slider'>Move:</label><input type='range' name='slider' id='slider' value='50' min='0' max='400' data-highlight='true' /></form>");
 
             }
-
+            
+            function resetNewGame() {
+                gameState = 'newgame';
+            }
             </script>
     </head>
     
@@ -301,7 +360,7 @@
                 <h3>
                     Moku
                 </h3>
-                <a data-role="button" data-transition="fade" href="#prefs" data-icon="gear"  data-iconpos="notext" data-shadow="false">
+                <a data-role="button" data-rel="dialog" data-transition="pop" href="#prefs" data-icon="gear" data-iconpos="notext" data-shadow="false">
                     Prefs
                 </a>
                 <a data-role="button" data-transition="slideup" href="#page4" onclick="listDir(root);">
@@ -325,10 +384,11 @@
                     <a data-role="button" data-inline="true" data-iconpos="notext" data-transition="fade" href="#page1" data-icon="refresh" data-iconpos="left" onclick="reloadEidogo();">
                         Refresh 
                     </a>
-                    
+                    <!-- eidogo-player-auto can contain SGF which *should* be displayed 
+                    <div class="eidogo-player-auto"></div>-->
                     <div id="sgfoutput"></div>
-                    <div id="sgfmessage"></div>
-                    <canvas id="sgfcanvas"></canvas>
+                    <!-- disabling preview stuff while working on Eidogo - re-enable for error checking -->
+                    <!-- <canvas id="sgfcanvas"></canvas> -->
                 </div>
             </div>
         </div>
@@ -343,6 +403,10 @@
                 <a data-role="button" data-direction="reverse" data-transition="flip" href="#page1" data-icon="back" data-iconpos="left">
                     Cancel
                 </a>
+                <!-- <a data
+                    <a data-role="button" data-direction="reverse" data-transition="flip" href="#page1" data-icon="" onclick="resetNewGame(); reloadEidogo();">
+                    New
+                </a> -->
                 <a data-role="button" data-direction="reverse" data-transition="flip" href="#page1" data-icon="" onclick="reloadEidogo();">
                     Accept
                 </a>
@@ -490,11 +554,14 @@
         <div id="prefs" data-role="page">
             <div data-role="header">
                 <h1>Preferences</h1>
-                <a data-role="button" data-direction="reverse" data-transition="fade" href="#page1" data-icon="arrow-l" data-iconpos="left">
+                <!-- <a data-role="button" data-direction="reverse" data-transition="fade" href="#page1" data-icon="arrow-l" data-iconpos="left">
                     Back
-                </a>
+                </a> -->
+                
             </div>
-            <div id="file_details" data-role="content"></div>
+            <div id="file_details" data-role="content">
+            
+            </div>
         </div>
     </body>
 </html>
