@@ -18,6 +18,12 @@
         <script type="text/javascript" charset="utf-8" src="Canvas2ImagePlugin.js"></script>
         <script type="text/javascript" charset="utf-8" src="ActionSheet.js"></script>
         
+        <!-- EXIF plugins -->
+        <!-- <script type="text/javascript" charset="utf-8" src="jquery/jquery.exif.js"></script> -->
+        <script type="text/javascript" charset="utf-8" src="jquery/binaryajax.js"></script>
+        <script type="text/javascript" charset="utf-8" src="jquery/imageinfo.js"></script>
+        <script type="text/javascript" charset="utf-8" src="jquery/exif.js"></script>
+        
         <!-- main JS -->
         <script type="text/javascript" charset="utf-8" src="Gotracer.js"></script>
         <script type="text/javascript" charset="utf-8" src="filesystem_stuff.js"></script>
@@ -79,42 +85,42 @@
                 var image = new Image();
                 
                 image.onload = function(){
-                    
+                                        
                     var w = image.width;
                     var h = image.height;
 
-                    // ------------------------------------------------------------------
-                    // making the smaller display...
-                    var smallRatio = 1;
-                    var smallMaxWidth = 300;
-                    var smallMaxHeight = 225;
-                    
-                    if ( w > smallMaxWidth) {
-                        smallRatio = smallMaxWidth / w;
-                    }
-                    else if (h > smallMaxHeight) {
-                        smallRatio = smallMaxHeight / h;
-                    }
-                    var smallNewWidth = w * smallRatio;
-                    var smallNewHeight = h * smallRatio;
-                    
-                    // First pass only!
-                    if (gameState == 'newgame') {
-                        for(i=0; i<coordsCopy.length; i++) {
-                            coordsCopy[i] = coordsCopy[i] * smallRatio ;
-                            console.log(coordsCopy[i]);
-                        }
-                    }
-                    
-                    secondCtx.canvas.width = smallNewWidth;
-                    secondCtx.canvas.height = smallNewHeight;
-                    secondCtx.drawImage(image, 0,0, smallNewWidth,smallNewHeight);
-                    
-                    goTracer = new GoTracer(image, secondCanvas);
-                    goTracer.setCorners(coordsCopy);
-                    goTracer.startScan();
-                    gameState = 'continue';
-                    
+//                    // ------------------------------------------------------------------
+//                    // making the smaller display...
+//                    var smallRatio = 1;
+//                    var smallMaxWidth = 300;
+//                    var smallMaxHeight = 225;
+//                    
+//                    if ( w > smallMaxWidth) {
+//                        smallRatio = smallMaxWidth / w;
+//                    }
+//                    else if (h > smallMaxHeight) {
+//                        smallRatio = smallMaxHeight / h;
+//                    }
+//                    var smallNewWidth = w * smallRatio;
+//                    var smallNewHeight = h * smallRatio;
+//                    
+//                    // First pass only!
+//                    if (gameState == 'newgame') {
+//                        for(i=0; i<coordsCopy.length; i++) {
+//                            coordsCopy[i] = (coordsCopy[i] * smallRatio) * 1 ;
+//                        }
+//                    }
+//                    
+//                    secondCtx.canvas.width = smallNewWidth;
+//                    secondCtx.canvas.height = smallNewHeight;
+//                    secondCtx.drawImage(image, 0,0, smallNewWidth,smallNewHeight);
+//                    
+//                    goTracer = new GoTracer(image, secondCanvas);
+//                    goTracer.setCorners(coordsCopy);
+//                    goTracer.startScan();
+//                    document.getElementById("canvas").style.display = "none";
+//                    gameState = 'continue';
+//                    
                     // ------------------------------------------------------------------
                     // regular size
                     var ratio = 1;
@@ -198,8 +204,25 @@
                     
                     
                 };
-                image.src = imageURI;               
+                image.src = imageURI;
+                
+                // EXIF goddamnit
+                // would this even give me a leg up on FIXING the EXIF orientation problem?
+                // What about a jhead plugin? Argh.
+                // http://blog.nihilogic.dk/2008/08/imageinfo-reading-image-metadata-with.html
+                var file = imageURI;
+                function getEXIF() {
+                    console.log("getEXIF called for: " + file);
+                    console.log(
+                                "EXIF: " + ImageInfo.getField(file, "exif") + ", dimensions : " + ImageInfo.getField(file, "width") + "x" + ImageInfo.getField(file, "height")
+                                );
+                }
+                ImageInfo.loadInfo(file, getEXIF());
+                
             }
+            
+            
+            
             
             /* -------------------------- */
             // Canvas2ImagePlugin Function

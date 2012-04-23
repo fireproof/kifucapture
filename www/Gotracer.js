@@ -15,7 +15,7 @@ function GoTracer(img, canvas)
 
 GoTracer.prototype.setCorners = function(coords)
 {
-	coords = coords.map( function(c) { return 1*c; }); // could dived each corner coordinate by the same amount as display 
+	coords = coords.map( function(c) { return 1*c; }); 
 	console.log('coords: ' + coords);
 	
 	this.corners = [
