@@ -9,8 +9,8 @@ function GoTracer(img, canvas)
 	this.canvas = canvas;
 	this.ctx = canvas.getContext('2d');
 	console.log('GoTracer - this.img.src: ' + this.img.src);
-	console.log('GoTracer - this.canvas: ' + this.canvas);
-	console.log('GoTracer - this.img.width: ' + this.img.width + ' this.img.height: ' + this.img.height);
+//	console.log('GoTracer - this.canvas: ' + this.canvas);
+//	console.log('GoTracer - this.img.width: ' + this.img.width + ' this.img.height: ' + this.img.height);
 }
 
 GoTracer.prototype.setCorners = function(coords)
@@ -45,14 +45,14 @@ GoTracer.prototype.startScan = function()
 GoTracer.prototype.drawImage = function()
 {
 	console.log('drawImage');
-	var aspectRatio = this.img.width / this.img.height;
-	this.canvasWidth = Math.min(this.img.height * aspectRatio, this.img.width);
-	this.canvasHeight = Math.min(this.img.width / aspectRatio, this.img.height);
-	//console.log(this.img);
-	console.log("drawImage - aspectRatio: " + aspectRatio);
-	console.log("drawImage - image dimensions: " + this.img.width + "x" + this.img.height);
-	console.log("drawImage - canvasWidth x Height: " + this.canvasWidth + "x" + this.canvasHeight);
-	console.log("drawImage - this.canvas.width x height: " + this.canvas.width + "x" + this.canvas.height);
+//	var aspectRatio = this.img.width / this.img.height;
+//	this.canvasWidth = Math.min(this.img.height * aspectRatio, this.img.width);
+//	this.canvasHeight = Math.min(this.img.width / aspectRatio, this.img.height);
+//	//console.log(this.img);
+//	console.log("drawImage - aspectRatio: " + aspectRatio);
+//	console.log("drawImage - image dimensions: " + this.img.width + "x" + this.img.height);
+//	console.log("drawImage - canvasWidth x Height: " + this.canvasWidth + "x" + this.canvasHeight);
+//	console.log("drawImage - this.canvas.width x height: " + this.canvas.width + "x" + this.canvas.height);
 	// draw image at scale to fit in canvas width as set in onPhotoURISuccess/onDataSuccess
 	this.ctx.drawImage(this.img, 0, 0, this.canvas.width, this.canvas.height);
 	// draw image at actual size (to match coordinates)

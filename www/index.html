@@ -11,18 +11,21 @@
          <link rel="stylesheet" media="only screen and (max-device-width: 480px)" href="iphone.css" type="text/css" />		
          -->
         <script type="text/javascript" charset="utf-8" src="jquery/jquery-1.7.1.min.js"></script>
+        <script type="text/javascript" charset="utf-8">
+            $(document).bind("mobileinit", function(){
+                             $.mobile.loadingMessage = "Detecting Grid";
+                             });
+            $(document).bind("mobileinit", function(){
+                             $.mobile.loadingMessageTextVisible = true;
+                             });
+        </script>
         <script type="text/javascript" charset="utf-8" src="jquery/jquery.mobile-1.0.1.min.js"></script>
         <script type="text/javascript" charset="utf-8" src="cordova-1.6.0.js"></script>
+        
         <!-- plugin JS -->
         <script type="text/javascript" charset="utf-8" src="gocam-plugin.js"></script>
         <script type="text/javascript" charset="utf-8" src="Canvas2ImagePlugin.js"></script>
         <script type="text/javascript" charset="utf-8" src="ActionSheet.js"></script>
-        
-        <!-- EXIF plugins -->
-        <!-- <script type="text/javascript" charset="utf-8" src="jquery/jquery.exif.js"></script> -->
-        <script type="text/javascript" charset="utf-8" src="jquery/binaryajax.js"></script>
-        <script type="text/javascript" charset="utf-8" src="jquery/imageinfo.js"></script>
-        <script type="text/javascript" charset="utf-8" src="jquery/exif.js"></script>
         
         <!-- main JS -->
         <script type="text/javascript" charset="utf-8" src="Gotracer.js"></script>
@@ -36,8 +39,10 @@
             var pictureSource;   // picture source
             var destinationType; // sets the format of returned value
             var gameState = 'newgame';
-            var coords = temp.split(","); 
-            var coordsCopy = coords.slice();
+            var coords;
+            var coordsCopy;
+            var idealWidth = 300;
+            var idealHeight = 400; // 402?
                         
             // File display and manipulation variables
             var root = null; // File System root variable
@@ -48,16 +53,12 @@
             var clipboardItem = null; // file or directory for copy or move
             var clipboardAction = null; // c-copy, m-move
             
-            
-            
-
-            
-            
+            // Disable Scrolling 
             function preventBehavior(e) { 
                 e.preventDefault(); 
             };
-            
             document.addEventListener("touchmove", preventBehavior, false);
+            
             
             function onBodyLoad() {
                 document.addEventListener("deviceready", onDeviceReady, false);
@@ -69,14 +70,15 @@
                 destinationType = navigator.camera.DestinationType;
                 getFileSystem();
                 clickItemAction();
+                // DB testing works
                 var db = window.openDatabase("Database", "1.0", "Moku", 200000);
                 db.transaction(populateDB, errorCB, successCB);
             }
             
             
             // Called when a photo is successfully retrieved
+            // and coordinates are needed.
             function onPhotoURISuccess(imageURI) {
-//          console.log(imageURI);
                 
                 var canvas = document.getElementById("canvas");
                 var ctx = canvas.getContext("2d");
@@ -87,66 +89,22 @@
                 var image = new Image();
                 
                 image.onload = function(){
-                                        
-                    var w = image.width;
-                    var h = image.height;
 
-//                    // ------------------------------------------------------------------
-//                    // making the smaller display...
-//                    var smallRatio = 1;
-//                    var smallMaxWidth = 300;
-//                    var smallMaxHeight = 225;
-//                    
-//                    if ( w > smallMaxWidth) {
-//                        smallRatio = smallMaxWidth / w;
-//                    }
-//                    else if (h > smallMaxHeight) {
-//                        smallRatio = smallMaxHeight / h;
-//                    }
-//                    var smallNewWidth = w * smallRatio;
-//                    var smallNewHeight = h * smallRatio;
-//                    
-//                    // First pass only!
-//                    if (gameState == 'newgame') {
-//                        for(i=0; i<coordsCopy.length; i++) {
-//                            coordsCopy[i] = (coordsCopy[i] * smallRatio) * 1 ;
-//                        }
-//                    }
-//                    
-//                    secondCtx.canvas.width = smallNewWidth;
-//                    secondCtx.canvas.height = smallNewHeight;
-//                    secondCtx.drawImage(image, 0,0, smallNewWidth,smallNewHeight);
-//                    
-//                    goTracer = new GoTracer(image, secondCanvas);
-//                    goTracer.setCorners(coordsCopy);
-//                    goTracer.startScan();
-//                    document.getElementById("canvas").style.display = "none";
-//                    gameState = 'continue';
-//                    
                     // ------------------------------------------------------------------
-                    // regular size
-                    var ratio = 1;
-                    var maxWidth = 640;
-                    var maxHeight = 480;
-                                       
-                    if ( w > maxWidth) {
-                        ratio = maxWidth / w;
-                        console.log('width greater than ' + maxWidth + ', ratio set to ' + ratio);
-                    }
-                    else if (h > maxHeight) {
-                        ratio = maxHeight / h;
-                        console.log('height greater than ' + maxHeight + ', ratio set to ' + ratio);
-                    }
-                    var newWidth = w * ratio;
-                    var newHeight = h * ratio;
+                    // default size
                     
-                    ctx.canvas.width = newWidth;
-                    ctx.canvas.height = newHeight;
-                    ctx.drawImage(image, 0,0, newWidth,newHeight);
-                    console.log('Original Size: ' + w + ' x ' + h + ', Resized in onPhotoURISuccess - newWidth: ' + newWidth + ' newHeight: ' + newHeight);
+                    // set canvas height and width to match image.
+                    ctx.canvas.width = idealWidth;
+                    ctx.canvas.height = idealHeight;
+                    
+                    // show loading message
+                    // doesn't show when taking a second picture?
+                    $.mobile.showPageLoadingMsg();
+                    ctx.drawImage(image, 0,0);
                     
                     // ------------------------------------------------------------------
                     // Canvas2ImagePlugin saves to Photo Library (maybe sends to Documents or temp dir instead?)
+                    // might not be necessary if capturePhoto can specify w x h 
                     try {
 //                        saveImage();
                         console.log("Image would be saved, but hey, let's not fill up the library right now");
@@ -157,7 +115,13 @@
                     // ------------------------------------------------------------------
                     // a good point at which to get the corner coordinates from GoCam
                     // First pass only, unless following image changes considerably.
+                    
                     console.log("About to run GocamPlugin");
+                    
+                    // try timing GocamPlugin
+                    var startTime = new Date();
+                    console.log("GocamPlugin startTime: " + startTime);
+                    
                     filename = imageURI.replace("file://localhost", '');
                     try {
                         GocamPlugin.nativeFunction([filename] ,
@@ -166,26 +130,14 @@
                             goTracer.setCorners(result);
                             goTracer.startScan();
                             console.log(goTracer.getSGF());
+                                                   
+                            // all done, hide loading message
+                            $.mobile.hidePageLoadingMsg();
                             
-                            //document.getElementById('sgfoutput').innerHTML = goTracer.getSGF();
-                            
-                            // show grid over image preview on page 2, wait for "OK"
-        //                    document.location.assign('#camera');
-                            
-                            // approve or 
-                            // Update current moves in SGF file.
+                            // Approve or Update current moves in SGF file?
                             // temporary - just write all SGF to file.
                             writeFile(goTracer.getSGF());
-                            
-                            
-                            // draw preview image in SGF page
-                            /* disabling preview stuff while working on Eidogo - re-enable for error checking
-                            var preview = new Preview(sgfCanvas);
-                            preview.update(goTracer);
-                            */
-                            
-        //                    document.getElementById('eidogo-player-auto').innerHTML = goTracer.getSGF();
-                            
+
                             // reloading Eidogo needs to happen when writeFile is done
                             reloadEidogo();
                             
@@ -203,26 +155,15 @@
                         console.log("Exception: "+e);
                     }
                     
-                    
+                    // Hmmm, I think this whole timing thing is happening asynchronously. Ah well,
+                    // the old counting method says 10-20 seconds.
+                    var endTime = new Date();
+                    console.log("GocamPlugin endTime: " + endTime);
+                    console.log("GocamPlugin took: " + (endTime - startTime) + "ms");
                     
                 };
                 image.src = imageURI;
                 
-                // EXIF goddamnit
-                // would this even give me a leg up on FIXING the EXIF orientation problem?
-                // What about a jhead plugin? Argh.
-                //
-                // May not be so bad with cameraOptions on Cordova 1.6 -
-                // correctOrientation
-                // http://blog.nihilogic.dk/2008/08/imageinfo-reading-image-metadata-with.html
-//                var file = imageURI;
-//                function getEXIF() {
-//                    console.log("getEXIF called for: " + file);
-//                    console.log(
-//                                "EXIF: " + ImageInfo.getField(file, "exif") + ", dimensions : " + ImageInfo.getField(file, "width") + "x" + ImageInfo.getField(file, "height")
-//                                );
-//                }
-//                ImageInfo.loadInfo(file, getEXIF());
                 
             }
             
@@ -232,22 +173,18 @@
             /* -------------------------- */
             
             // Populate the database 
-            //
             function populateDB(tx) {
                 tx.executeSql('DROP TABLE IF EXISTS MOKU');
                 tx.executeSql('CREATE TABLE IF NOT EXISTS MOKU (id unique, data)');
-                tx.executeSql('INSERT INTO MOKU (id, data) VALUES (1, "First row")');
-                tx.executeSql('INSERT INTO MOKU (id, data) VALUES (2, "Second row")');
+                tx.executeSql('INSERT INTO MOKU (id, data) VALUES (1, "First Game")');
             }
             
             // Query the database
-            //
             function queryDB(tx) {
                 tx.executeSql('SELECT * FROM MOKU', [], querySuccess, errorCB);
             }
             
             // Query the success callback
-            //
             function querySuccess(tx, results) {
                 var len = results.rows.length;
                 console.log("MOKU table: " + len + " rows found.");
@@ -257,13 +194,11 @@
             }
             
             // Transaction error callback
-            //
             function errorCB(err) {
                 console.log("Error processing SQL: "+err.code);
             }
             
             // Transaction success callback
-            //
             function successCB() {
                 var db = window.openDatabase("Database", "1.0", "Moku", 200000);
                 db.transaction(queryDB, errorCB);
@@ -297,11 +232,8 @@
             function capturePhoto() {
                 /*
                  
-                 File saved to Photo Album is full-size, no cropping.
-                 
-                 image.width and image.height show targetWidth and targetHeight
-                 
-                 
+                 File saved to Photo Album is full-size, no cropping, regardless of targetWidth/Height
+                                  
                  targetWidth:100, targetHeight:400
                      correctOrientation: 0
                             take the picture with phone sideways and the resulting cropped image has object pointing sideways
@@ -310,7 +242,7 @@
                             take the picture with phone sideways and resulting cropped image has object pointing up
                  
                  
-                 ptargetWidth:320, targetHeight:240 (also 480, 640)
+                 targetWidth:320, targetHeight:240 (also 480, 640)
                     correctOrientation: 0
                         picture taken upright, image is cropped object pointing up (top and bottom cropped)
                         picture taken sideways, image is object pointing  up (image resized to correct dimensions)
@@ -325,15 +257,15 @@
                 // Take picture using device camera and retrieve image as base64-encoded string
                 navigator.camera.getPicture(onPhotoURISuccess, onFail, { 
                                             quality: 50, 
-                                            targetWidth: 480,
-                                            targetHeight: 640,
+                                            targetWidth: idealWidth,
+                                            targetHeight: idealHeight,
                                             correctOrientation: 1,
                                             saveToPhotoAlbum: 0
                                             });
             }
             
             function capturePhotoEdit() {
-                // NOT CURRENTLY IN USE
+                // NOT CURRENTLY USED
                 // Take picture using device camera, allow edit, and retrieve image as base64-encoded string  
                 navigator.camera.getPicture(onPhotoURISuccess, onFail, { quality: 20, allowEdit: true }); 
             }
@@ -344,14 +276,13 @@
                 navigator.camera.getPicture(onPhotoURISuccess, onFail, { 
                                             quality: 50, 
                                             destinationType: destinationType.FILE_URI,
-                                            targetWidth: 480,
-                                            targetHeight: 640,
+                                            targetWidth: idealWidth,
+                                            targetHeight: idealHeight,
                                             correctOrientation: 1,
                                             sourceType: source,
                                             saveToPhotoAlbum: 0
                                             });
             }
-            
             
                         
             
@@ -422,8 +353,7 @@
                                    if (arguments[1] == '1') {
                                    getPhoto(pictureSource.PHOTOLIBRARY);
                                    }
-//                                   console.log(arguments[1]);
-//                                   console.warn('create(), arguments=' + Array.prototype.slice.call(arguments).join(', '));
+
                                    }, {cancelButtonIndex: 2});
         
             }
@@ -479,11 +409,7 @@
                 </a>
             </div>
             <div data-role="content">
-                
                 <div id="sgfdisplay">
-                    <!-- disabling preview stuff while working with Eidogo -->
-                    <!-- <div id="preview-background"></div>
-                    <canvas id="preview" width="300" height="300"></canvas> -->
                     <div id="player-container"></div>
                     <a data-role="button" data-inline="true" data-mini="true" data-transition="flip" href="#camera" onclick="selectAction();">
                         Camera
@@ -498,8 +424,7 @@
                     <!-- eidogo-player-auto can contain SGF which *should* be displayed 
                     <div class="eidogo-player-auto"></div>-->
                     <div id="sgfoutput"></div>
-                    <!-- disabling preview stuff while working on Eidogo - re-enable for error checking -->
-                    <!-- <canvas id="sgfcanvas"></canvas> -->
+                    
                 </div>
             </div>
         </div>
@@ -529,8 +454,7 @@
                     <img id="resizedImage">
                         <div id="response"></div>
                         <div id="message"></div>
-                        
-                        </div>
+                </div>
             </div>
         </div>
         
@@ -544,7 +468,6 @@
                     Cancel
                 </a>
             </div>
-            
             <div data-role="content">
                 <form id="prefsForm" action="#page1" method="POST">
                     <!-- Need to add Rules (RU = Japanese, Chinese, etc) -->
@@ -557,7 +480,6 @@
                         White:
                     </label>
                     <input id="textinput2" name="PW" placeholder="Player Name" value="" type="text" /><input id="textinputwr" name="WR" placeholder="Rank" value="" type="text" />
-                    
                     <fieldset data-role="controlgroup" data-type="horizontal">
                         <legend>
                             Board Size:
@@ -591,7 +513,6 @@
                     <!-- <input type="submit" data-direction="reverse" data-icon="arrow-r" data-iconpos="right" value="Submit Settings" onsubmit="SGFpreamble();" /> -->
                 </form>
             </div>
-            
         </div>
         
         
@@ -600,14 +521,13 @@
                 <h3>
                     Archives
                 </h3>
-                <a class="refreshButton" data-role="button" data-iconpos="notext" data-transition="fade" href="#page4" data-icon="refresh" data-iconpos="left" onclick="listDir(root);">
+                <a class="refreshButton" data-role="button" data-transition="fade" href="#page4" data-icon="refresh" data-iconpos="left" onclick="listDir(root);">
                     Refresh
                 </a>
                 <a data-role="button" data-transition="slidedown" href="#page1" data-icon="arrow-l" data-iconpos="left">
                     Back
                 </a>
             </div>
-            
             <div data-role="content">
                 <div class="ui-grid-c" id="dirContent">
                     <div class="ui-block-a">
@@ -638,9 +558,9 @@
                 </div>
                 <a id="menu" href="#menuOptions" data-rel="dialog">file details</a>
                 <a id="get_file_details" href="#fileDetails" data-rel="dialog">file details</a>
-                
             </div>                        
         </div>
+        
         
         <div id="menuOptions" data-role="page">
             <div data-role="header">
@@ -655,6 +575,7 @@
             </div>
         </div>
         
+        
         <div id="fileDetails" data-role="page">
             <div data-role="header">
                 <h1>File</h1>
@@ -662,16 +583,13 @@
             <div id="file_details" data-role="content"></div>
         </div>
         
+        
         <div id="prefs" data-role="page">
             <div data-role="header">
-                <h1>Preferences</h1>
-                <!-- <a data-role="button" data-direction="reverse" data-transition="fade" href="#page1" data-icon="arrow-l" data-iconpos="left">
-                    Back
-                </a> -->
-                
+                <h1>Preferences</h1>                
             </div>
             <div id="file_details" data-role="content">
-            
+            <p>Player name, default ruleset, dropbox integration, email address</p>
             </div>
         </div>
     </body>
