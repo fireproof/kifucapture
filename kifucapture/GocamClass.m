@@ -19,10 +19,15 @@
     int result[8];
     
     //Get the string that javascript sent us 
-    NSString *stringObtainedFromJavascript = [arguments objectAtIndex:0]; 
+    NSString *stringObtainedFromJavascript = [arguments objectAtIndex:0];
+    
+    // Get the temp file path
+    NSString *tempPath = NSTemporaryDirectory();
+    const char *tmp = [tempPath UTF8String];
     
     
-    run_gocam([stringObtainedFromJavascript cString], &result);
+    run_gocam([stringObtainedFromJavascript UTF8String], &result, tmp);
+    
     
     NSMutableArray *coordinateArray = [NSMutableArray array];
     for(int i = 0; i < 8; i++ ) {

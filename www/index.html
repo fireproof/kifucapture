@@ -36,10 +36,6 @@
             var pictureSource;   // picture source
             var destinationType; // sets the format of returned value
             var gameState = 'newgame';
-            // board corner coordinates will come from gocam plugin
-//            var temp = "582,224,277,117,399,437,45,280";
-            var temp = "612,291,135,422,428,61,90,114"; // 640x480_example.jpg
-//            var temp = "472,396,102,524,318,198,38,265"; // four step examples IMG_2392x.jpg
             var coords = temp.split(","); 
             var coordsCopy = coords.slice();
                         
@@ -162,51 +158,51 @@
                     // a good point at which to get the corner coordinates from GoCam
                     // First pass only, unless following image changes considerably.
                     console.log("About to run GocamPlugin");
+                    filename = imageURI.replace("file://localhost", '');
                     try {
-                        GocamPlugin.nativeFunction(["HelloWorld"] ,
+                        GocamPlugin.nativeFunction([filename] ,
+                          function(result) {
+                            goTracer = new GoTracer(image, canvas);
+                            goTracer.setCorners(result);
+                            goTracer.startScan();
+                            console.log(goTracer.getSGF());
+                            
+                            //document.getElementById('sgfoutput').innerHTML = goTracer.getSGF();
+                            
+                            // show grid over image preview on page 2, wait for "OK"
+        //                    document.location.assign('#camera');
+                            
+                            // approve or 
+                            // Update current moves in SGF file.
+                            // temporary - just write all SGF to file.
+                            writeFile(goTracer.getSGF());
+                            
+                            
+                            // draw preview image in SGF page
+                            /* disabling preview stuff while working on Eidogo - re-enable for error checking
+                            var preview = new Preview(sgfCanvas);
+                            preview.update(goTracer);
+                            */
+                            
+        //                    document.getElementById('eidogo-player-auto').innerHTML = goTracer.getSGF();
+                            
+                            // reloading Eidogo needs to happen when writeFile is done
+                            reloadEidogo();
+                            
+                            // ------------------------------------------------------------------
+                            // save SGF to disk? Send via Email? Open in Browser? Display using eidogo?
+                            // save in iTunes
+
+                          },
                                                    
-                                                   function(result) {console.log("GoCam - Success : \r\n"+result);      
-                                                   },
-                                                   
-                                                   function(error) {
-                                                   
-                                                   console.log("GoCam - Error : \r\n"+error);      
-                                                   }
-                                                   ); 
+                          function(error) {
+                            console.log("GoCam - Error : \r\n"+error);      
+                          }
+                        ); 
                     } catch (e) {
                         console.log("Exception: "+e);
                     }
                     
-                    goTracer = new GoTracer(image, canvas);
-                    goTracer.setCorners(coords);
-                    goTracer.startScan();
-                    console.log(goTracer.getSGF());
-                    
-                    //document.getElementById('sgfoutput').innerHTML = goTracer.getSGF();
-                    
-                    // show grid over image preview on page 2, wait for "OK"
-//                    document.location.assign('#camera');
-                    
-                    // approve or 
-                    // Update current moves in SGF file.
-                    // temporary - just write all SGF to file.
-                    writeFile(goTracer.getSGF());
-                    
-                    
-                    // draw preview image in SGF page
-                    /* disabling preview stuff while working on Eidogo - re-enable for error checking
-                    var preview = new Preview(sgfCanvas);
-                    preview.update(goTracer);
-                    */
-                    
-//                    document.getElementById('eidogo-player-auto').innerHTML = goTracer.getSGF();
-                    
-                    // reloading Eidogo needs to happen when writeFile is done
-                    reloadEidogo();
-                    
-                    // ------------------------------------------------------------------
-                    // save SGF to disk? Send via Email? Open in Browser? Display using eidogo?
-                    // save in iTunes
                     
                     
                 };

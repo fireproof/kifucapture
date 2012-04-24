@@ -42,6 +42,10 @@
 #include <cmath>
 #include <cstring>
 #include <ctime>
+#include <MagickCore.h>
+#include <MagickWand.h>
+
+
 
 // Overcome VisualC++ 6.0 and DMC compilers namespace 'std::' bug
 #if ( defined(_MSC_VER) && _MSC_VER<=1200 ) || defined(__DMC__)
@@ -1212,6 +1216,10 @@ hasn't been linked.\nPlease define the compilation flag '#define cimg_lapack' be
     inline const char* get_type(const long&          ) { return long_st;   }
     inline const char* get_type(const float&         ) { return float_st;  }
     inline const char* get_type(const double&        ) { return double_st; }
+      
+    //Temporary Path
+    static char * _temporaryPath = NULL;
+
           
 #if cimg_debug>=1
     static void warn(const bool cond,const char *format,...) {
@@ -1342,28 +1350,11 @@ hasn't been linked.\nPlease define the compilation flag '#define cimg_lapack' be
        \see convert_path, CImg::load_convert, CImg::save_convert.
     **/
     inline const char* temporary_path() {
-      static char *temporary_path = NULL;
-      if (!temporary_path) {
-        temporary_path = new char[1024];
-#ifdef cimg_temporary_path
-        std::strcpy(temporary_path,cimg_temporary_path);
-        const char* testing_path[7] = { temporary_path, "/tmp","C:\\WINNT\\Temp", "C:\\WINDOWS\\Temp","","C:",NULL };
-#else
-        const char* testing_path[6] = { "/tmp","C:\\WINNT\\Temp", "C:\\WINDOWS\\Temp","","C:",NULL };
-#endif
-        char filetmp[1024];
-        std::FILE *file=NULL;
-        int i=-1;
-        while (!file && testing_path[++i]) {
-          std::sprintf(filetmp,"%s/CImg%.4d.ppm",testing_path[i],std::rand()%10000);
-          if ((file=std::fopen(filetmp,"w"))!=NULL) { std::fclose(file); std::remove(filetmp); }
-        }
-        if (!file) throw CImgIOException("cimg::temporary_path() : Unable to find a temporary path accessible for writing\n\
-you have to set the macro 'cimg_temporary_path' to a valid path where you have writing access :\n \
-#define cimg_temporary_path \"path\" (before including 'CImg.h')");
-        std::strcpy(temporary_path,testing_path[i]);
-      }
-      return temporary_path;
+        return(_temporaryPath);
+    }
+      
+    inline void set_temporary_path(const char *tempPath) {
+        _temporaryPath = strdup(tempPath);
     }
     
     inline const char *filename_split(const char *const filename, char *const body=NULL) {
@@ -6601,18 +6592,35 @@ you have to set the macro 'cimg_temporary_path' to a valid path where you have w
     //! Function that loads the image for other file formats that are not natively handled by CImg, using the tool 'convert' from the ImageMagick package.\n
     //! This is the case for all compressed image formats (GIF,PNG,JPG,TIF,...). You need to install the ImageMagick package in order to get
     //! this function working properly (see http://www.imagemagick.org ).
+    // TRB - Loads existing image, converts to PPM, and saves to convert path.  USe MagickWand ConvertImageCommand instead.
     static CImg load_convert(const char *filename) {
       srand((unsigned int)::time(NULL));
       char command[512], filetmp[512];
+      // Build paths
       std::sprintf(filetmp,"%s/CImg%.4d.ppm",cimg::temporary_path(),::rand()%10000);
       std::sprintf(command,"\"%s\" \"%s\" %s",cimg::convert_path(),filename,filetmp);
-      cimg::system(command);
+        
+        // Resize image.
+      ImageInfo *imageInfo = AcquireImageInfo();
+      ExceptionInfo *exceptionInfo = AcquireExceptionInfo();
+        
+        // Get image from bundle.
+      
+      const char *argv[] = { "convert", filename, filetmp, NULL };
+        
+        // ConvertImageCommand(ImageInfo *, int, char **, char **, MagickExceptionInfo *);
+      ConvertImageCommand(imageInfo, 3, (char **)argv, NULL, exceptionInfo);
+  
+        
+        
+      // LOoks for result by attempting to open it
       std::FILE *file = std::fopen(filetmp,"rb");
       if (!file) {
         std::fclose(cimg::fopen(filename,"r"));
         throw CImgIOException("CImg<%s>::load_convert() : Failed to open image '%s' with 'convert'.\n\
 Check that you have installed the ImageMagick package in a standart directory.",pixel_type(),filename);
       } else cimg::fclose(file);
+      // CImg lib loads the file and then we remove the temp file
       const CImg dest(filetmp);
       std::remove(filetmp);
       return dest;

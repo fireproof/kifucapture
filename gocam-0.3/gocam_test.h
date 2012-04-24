@@ -6,7 +6,7 @@ extern "C" {
 #endif
 
 
-int run_gocam(const char *imgfilename, int *result);
+int run_gocam(const char *imgfilename, int *result, const char *tempfilepath);
 #ifdef __cplusplus
 }
 #endif
