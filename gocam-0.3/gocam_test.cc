@@ -69,12 +69,10 @@ extern "C" {
 #endif
     
 int
-run_gocam(char *imgfilename, int result[8])
+run_gocam(char *imgfilename, int result[8], const char* tempfilepath)
 {
-
-    for(int i = 0; i< 8; i++) {
-        result[i] = 666 + i;
-    }
+    cimg::set_temporary_path(tempfilepath);
+    
         
   // Load image file and possible pre-computed hough image
    CImg<float> original_image(imgfilename);

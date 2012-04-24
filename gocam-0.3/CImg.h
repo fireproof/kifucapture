@@ -45,6 +45,8 @@
 #include <MagickCore.h>
 #include <MagickWand.h>
 
+
+
 // Overcome VisualC++ 6.0 and DMC compilers namespace 'std::' bug
 #if ( defined(_MSC_VER) && _MSC_VER<=1200 ) || defined(__DMC__)
 #define std
@@ -1214,6 +1216,10 @@ hasn't been linked.\nPlease define the compilation flag '#define cimg_lapack' be
     inline const char* get_type(const long&          ) { return long_st;   }
     inline const char* get_type(const float&         ) { return float_st;  }
     inline const char* get_type(const double&        ) { return double_st; }
+      
+    //Temporary Path
+    static char * _temporaryPath = NULL;
+
           
 #if cimg_debug>=1
     static void warn(const bool cond,const char *format,...) {
@@ -1344,28 +1350,11 @@ hasn't been linked.\nPlease define the compilation flag '#define cimg_lapack' be
        \see convert_path, CImg::load_convert, CImg::save_convert.
     **/
     inline const char* temporary_path() {
-      static char *temporary_path = NULL;
-      if (!temporary_path) {
-        temporary_path = new char[1024];
-#ifdef cimg_temporary_path
-        std::strcpy(temporary_path,cimg_temporary_path);
-        const char* testing_path[7] = { temporary_path, "/tmp","C:\\WINNT\\Temp", "C:\\WINDOWS\\Temp","","C:",NULL };
-#else
-        const char* testing_path[6] = { "/tmp","C:\\WINNT\\Temp", "C:\\WINDOWS\\Temp","","C:",NULL };
-#endif
-        char filetmp[1024];
-        std::FILE *file=NULL;
-        int i=-1;
-        while (!file && testing_path[++i]) {
-          std::sprintf(filetmp,"%s/CImg%.4d.ppm",testing_path[i],std::rand()%10000);
-          if ((file=std::fopen(filetmp,"w"))!=NULL) { std::fclose(file); std::remove(filetmp); }
-        }
-        if (!file) throw CImgIOException("cimg::temporary_path() : Unable to find a temporary path accessible for writing\n\
-you have to set the macro 'cimg_temporary_path' to a valid path where you have writing access :\n \
-#define cimg_temporary_path \"path\" (before including 'CImg.h')");
-        std::strcpy(temporary_path,testing_path[i]);
-      }
-      return temporary_path;
+        return(_temporaryPath);
+    }
+      
+    inline void set_temporary_path(const char *tempPath) {
+        _temporaryPath = strdup(tempPath);
     }
     
     inline const char *filename_split(const char *const filename, char *const body=NULL) {
