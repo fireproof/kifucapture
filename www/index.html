@@ -99,7 +99,9 @@
                     
                     // show loading message
                     // doesn't show when taking a second picture?
-                    $.mobile.showPageLoadingMsg();
+//                    $.mobile.showPageLoadingMsg();
+                    $('body').addClass('ui-loading');
+                    
                     ctx.drawImage(image, 0,0);
                     
                     // ------------------------------------------------------------------
@@ -132,8 +134,9 @@
                             console.log(goTracer.getSGF());
                                                    
                             // all done, hide loading message
-                            $.mobile.hidePageLoadingMsg();
-                            
+//                            $.mobile.hidePageLoadingMsg();
+                            $('body').removeClass('ui-loading');
+                                                   
                             // Approve or Update current moves in SGF file?
                             // temporary - just write all SGF to file.
                             writeFile(goTracer.getSGF());
