@@ -2,14 +2,13 @@
 iOS developers - odesk, okori, brian fox
 
 
-Turning gocam into an Object file (.o)
-being able to link against it. Invoke the functions within it.
-
-
 WTF is up with image sizes?
 	read up on canvas and images and all that shit.
 
-	
+Eidogo: loading data into hidden div? initGame hook to load as the game progresses?
+
+jhead (or other EXIF rotation fix) will be necessary.
+
 PhoneGap plugin - making one
 	http://wiki.phonegap.com/w/page/36753496/How%20to%20Create%20a%20PhoneGap%20Plugin%20for%20iOS
 
@@ -18,19 +17,10 @@ NativeControls plugin
 	toolbar / tabbar (or action sheet?)
 	https://github.com/phonegap/phonegap-plugins/blob/master/iOS/NativeControls/NativeControls.js
 
-If no gocam - goTracer-style corner picking.
-
 
 
 ------------
 Things to think about 
-
-Maybe SenchaTouch is the way to go?
-http://www.sencha.com/learn/a-sencha-touch-mvc-application-with-phonegap/
-
-*** Javascript in sep. files?
-
-Eidogo - SGF playback.
 
 Create directories
 	/tmp for storing in-progress SGF files
@@ -50,3 +40,4 @@ http://www.daveoncode.com/2010/01/12/debugging-phonegap-applications-using-xcode
 
 UI layout crutch
 	http://www.codiqa.com/
+	

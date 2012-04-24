@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3470C2E3153E262300FDD800 /* Canvas2ImagePlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 3470C2E0153E262300FDD800 /* Canvas2ImagePlugin.m */; };
+		3470C2E4153E262300FDD800 /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 3470C2E2153E262300FDD800 /* NSData+Base64.m */; };
+		3470C2F3153EEFDA00FDD800 /* ActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = 3470C2F2153EEFDA00FDD800 /* ActionSheet.m */; };
 		34E317871518FC6B007BA5BF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34E317861518FC6B007BA5BF /* Foundation.framework */; };
 		34E317891518FC6B007BA5BF /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34E317881518FC6B007BA5BF /* UIKit.framework */; };
 		34E3178B1518FC6B007BA5BF /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34E3178A1518FC6B007BA5BF /* CoreGraphics.framework */; };
@@ -122,7 +125,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		34E317821518FC6B007BA5BF /* kifucapture.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = kifucapture.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3470C2DF153E262300FDD800 /* Canvas2ImagePlugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Canvas2ImagePlugin.h; sourceTree = "<group>"; };
+		3470C2E0153E262300FDD800 /* Canvas2ImagePlugin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Canvas2ImagePlugin.m; sourceTree = "<group>"; };
+		3470C2E1153E262300FDD800 /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Base64.h"; sourceTree = "<group>"; };
+		3470C2E2153E262300FDD800 /* NSData+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Base64.m"; sourceTree = "<group>"; };
+		3470C2F1153EEFDA00FDD800 /* ActionSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActionSheet.h; sourceTree = "<group>"; };
+		3470C2F2153EEFDA00FDD800 /* ActionSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActionSheet.m; sourceTree = "<group>"; };
+		34E317821518FC6B007BA5BF /* Moku.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Moku.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		34E317861518FC6B007BA5BF /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		34E317881518FC6B007BA5BF /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		34E3178A1518FC6B007BA5BF /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -423,7 +432,7 @@
 		34E317831518FC6B007BA5BF /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				34E317821518FC6B007BA5BF /* kifucapture.app */,
+				34E317821518FC6B007BA5BF /* Moku.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -555,6 +564,12 @@
 		34E317D51518FC6B007BA5BF /* Plugins */ = {
 			isa = PBXGroup;
 			children = (
+				3470C2F1153EEFDA00FDD800 /* ActionSheet.h */,
+				3470C2F2153EEFDA00FDD800 /* ActionSheet.m */,
+				3470C2DF153E262300FDD800 /* Canvas2ImagePlugin.h */,
+				3470C2E0153E262300FDD800 /* Canvas2ImagePlugin.m */,
+				3470C2E1153E262300FDD800 /* NSData+Base64.h */,
+				3470C2E2153E262300FDD800 /* NSData+Base64.m */,
 				34E317D61518FC6B007BA5BF /* README */,
 				93EB0671153BC5A40040B5FC /* GocamClass.h */,
 				93EB0673153BC5FC0040B5FC /* GocamClass.m */,
@@ -853,9 +868,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		34E317811518FC6B007BA5BF /* kifucapture */ = {
+		34E317811518FC6B007BA5BF /* Moku */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 34E317DB1518FC6B007BA5BF /* Build configuration list for PBXNativeTarget "kifucapture" */;
+			buildConfigurationList = 34E317DB1518FC6B007BA5BF /* Build configuration list for PBXNativeTarget "Moku" */;
 			buildPhases = (
 				34E3177B1518FC6B007BA5BF /* Sources */,
 				34E3177C1518FC6B007BA5BF /* Frameworks */,
@@ -868,9 +883,9 @@
 			);
 			dependencies = (
 			);
-			name = kifucapture;
+			name = Moku;
 			productName = kifucapture;
-			productReference = 34E317821518FC6B007BA5BF /* kifucapture.app */;
+			productReference = 34E317821518FC6B007BA5BF /* Moku.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -897,7 +912,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				34E317811518FC6B007BA5BF /* kifucapture */,
+				34E317811518FC6B007BA5BF /* Moku */,
 			);
 		};
 /* End PBXProject section */
@@ -1026,6 +1041,9 @@
 				934537B41534089200AEB8DB /* gocam_test.cc in Sources */,
 				934537E91534089200AEB8DB /* str.cc in Sources */,
 				93EB0674153BC5FC0040B5FC /* GocamClass.m in Sources */,
+				3470C2E3153E262300FDD800 /* Canvas2ImagePlugin.m in Sources */,
+				3470C2E4153E262300FDD800 /* NSData+Base64.m in Sources */,
+				3470C2F3153EEFDA00FDD800 /* ActionSheet.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1086,10 +1104,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = (
-					armv6,
-					"$(ARCHS_STANDARD_32_BIT)",
-				);
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -1114,10 +1129,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = (
-					armv6,
-					"$(ARCHS_STANDARD_32_BIT)",
-				);
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -1250,7 +1262,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		34E317DB1518FC6B007BA5BF /* Build configuration list for PBXNativeTarget "kifucapture" */ = {
+		34E317DB1518FC6B007BA5BF /* Build configuration list for PBXNativeTarget "Moku" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				34E317DC1518FC6B007BA5BF /* Debug */,

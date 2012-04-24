@@ -24,6 +24,10 @@
 	<array/>
 	<key>Plugins</key>
 	<dict>
+		<key>ActionSheet</key>
+		<string>ActionSheet</string>
+		<key>Canvas2ImagePlugin</key>
+		<string>Canvas2ImagePlugin</string>
 		<key>GocamPluginClass</key>
 		<string>GocamClass</string>
 		<key>Compass</key>
