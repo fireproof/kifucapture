@@ -52,6 +52,11 @@
             var clipboardItem = null; // file or directory for copy or move
             var clipboardAction = null; // c-copy, m-move
             
+            
+            
+
+            
+            
             function preventBehavior(e) { 
                 e.preventDefault(); 
             };
@@ -68,7 +73,8 @@
                 destinationType = navigator.camera.DestinationType;
                 getFileSystem();
                 clickItemAction();
-                     
+                var db = window.openDatabase("Database", "1.0", "Moku", 200000);
+                db.transaction(populateDB, errorCB, successCB);
             }
             
             
@@ -154,7 +160,7 @@
                     
                     // ------------------------------------------------------------------
                     // a good point at which to get the corner coordinates from GoCam
-                    // First pass only!
+                    // First pass only, unless following image changes considerably.
                     console.log("About to run GocamPlugin");
                     try {
                         GocamPlugin.nativeFunction(["HelloWorld"] ,
@@ -209,24 +215,69 @@
                 // EXIF goddamnit
                 // would this even give me a leg up on FIXING the EXIF orientation problem?
                 // What about a jhead plugin? Argh.
+                //
+                // May not be so bad with cameraOptions on Cordova 1.6 -
+                // correctOrientation
                 // http://blog.nihilogic.dk/2008/08/imageinfo-reading-image-metadata-with.html
-                var file = imageURI;
-                function getEXIF() {
-                    console.log("getEXIF called for: " + file);
-                    console.log(
-                                "EXIF: " + ImageInfo.getField(file, "exif") + ", dimensions : " + ImageInfo.getField(file, "width") + "x" + ImageInfo.getField(file, "height")
-                                );
-                }
-                ImageInfo.loadInfo(file, getEXIF());
+//                var file = imageURI;
+//                function getEXIF() {
+//                    console.log("getEXIF called for: " + file);
+//                    console.log(
+//                                "EXIF: " + ImageInfo.getField(file, "exif") + ", dimensions : " + ImageInfo.getField(file, "width") + "x" + ImageInfo.getField(file, "height")
+//                                );
+//                }
+//                ImageInfo.loadInfo(file, getEXIF());
                 
             }
             
             
+            /* -------------------------- */
+            //  Database Functions
+            /* -------------------------- */
+            
+            // Populate the database 
+            //
+            function populateDB(tx) {
+                tx.executeSql('DROP TABLE IF EXISTS MOKU');
+                tx.executeSql('CREATE TABLE IF NOT EXISTS MOKU (id unique, data)');
+                tx.executeSql('INSERT INTO MOKU (id, data) VALUES (1, "First row")');
+                tx.executeSql('INSERT INTO MOKU (id, data) VALUES (2, "Second row")');
+            }
+            
+            // Query the database
+            //
+            function queryDB(tx) {
+                tx.executeSql('SELECT * FROM MOKU', [], querySuccess, errorCB);
+            }
+            
+            // Query the success callback
+            //
+            function querySuccess(tx, results) {
+                var len = results.rows.length;
+                console.log("MOKU table: " + len + " rows found.");
+                for (var i=0; i<len; i++){
+                    console.log("Row = " + i + " ID = " + results.rows.item(i).id + " Data =  " + results.rows.item(i).data);
+                }
+            }
+            
+            // Transaction error callback
+            //
+            function errorCB(err) {
+                console.log("Error processing SQL: "+err.code);
+            }
+            
+            // Transaction success callback
+            //
+            function successCB() {
+                var db = window.openDatabase("Database", "1.0", "Moku", 200000);
+                db.transaction(queryDB, errorCB);
+            }
             
             
             /* -------------------------- */
             // Canvas2ImagePlugin Function
             /* -------------------------- */
+            
             function saveImage()
             {
                 var canvas2ImagePlugin = window.plugins.canvas2ImagePlugin;
@@ -248,20 +299,61 @@
             // A button will call this function
             
             function capturePhoto() {
+                /*
+                 
+                 File saved to Photo Album is full-size, no cropping.
+                 
+                 image.width and image.height show targetWidth and targetHeight
+                 
+                 
+                 targetWidth:100, targetHeight:400
+                     correctOrientation: 0
+                            take the picture with phone sideways and the resulting cropped image has object pointing sideways
+                                (CAN'T REPLICATE THIS)
+                     correctOrientation: 1
+                            take the picture with phone sideways and resulting cropped image has object pointing up
+                 
+                 
+                 ptargetWidth:320, targetHeight:240 (also 480, 640)
+                    correctOrientation: 0
+                        picture taken upright, image is cropped object pointing up (top and bottom cropped)
+                        picture taken sideways, image is object pointing  up (image resized to correct dimensions)
+                    correctOrientation: 1
+                        picture taken upright, image is cropped, object pointing up (top and bottom cropped)
+                        picture taken sideways, image has object pointing up (image resized to correct dimensions)
+                
+                        
+                 
+                */
+                // USED FOR "CAMERA" CAPTURE
                 // Take picture using device camera and retrieve image as base64-encoded string
-                navigator.camera.getPicture(onPhotoURISuccess, onFail, { quality: 50 });
+                navigator.camera.getPicture(onPhotoURISuccess, onFail, { 
+                                            quality: 50, 
+                                            targetWidth: 480,
+                                            targetHeight: 640,
+                                            correctOrientation: 1,
+                                            saveToPhotoAlbum: 0
+                                            });
             }
             
             function capturePhotoEdit() {
+                // NOT CURRENTLY IN USE
                 // Take picture using device camera, allow edit, and retrieve image as base64-encoded string  
                 navigator.camera.getPicture(onPhotoURISuccess, onFail, { quality: 20, allowEdit: true }); 
             }
             
             function getPhoto(source) {
+                // PHOTO LIBRARY
                 // Retrieve image file location from specified source
-                navigator.camera.getPicture(onPhotoURISuccess, onFail, { quality: 50, 
+                navigator.camera.getPicture(onPhotoURISuccess, onFail, { 
+                                            quality: 50, 
                                             destinationType: destinationType.FILE_URI,
-                                            sourceType: source });
+                                            targetWidth: 480,
+                                            targetHeight: 640,
+                                            correctOrientation: 1,
+                                            sourceType: source,
+                                            saveToPhotoAlbum: 0
+                                            });
             }
             
             
