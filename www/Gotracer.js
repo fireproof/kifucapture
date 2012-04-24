@@ -24,8 +24,9 @@ GoTracer.prototype.setCorners = function(coords)
 					new Point(coords[4], coords[5]),
 					new Point(coords[0], coords[1])
 					];
-	console.log('this.corners: ');
-	console.log(this.corners);
+    // following two lines throw an exception due to bug in Cordova 1.6
+//	console.log('this.corners: ');
+//	console.log(this.corners);
 }
 
 
@@ -202,6 +203,9 @@ GoTracer.prototype.getSGF = function()
 	var whiteCoords = this.whiteSet.points.map(function(pt) { return pt.coord; })
 	//console.log (blackCoords.join(''));
 	return '(;AB' + blackCoords.join('') + 'AW' + whiteCoords.join('') + ')';
+    // Eidogo won't display SGF with more than one move per color, but the following would the the right way to record two moves at once
+//    return '(;B' + blackCoords.join('') + ';W' + whiteCoords.join('') + ')';
+//
 	
 };
 
