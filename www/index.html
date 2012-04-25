@@ -132,6 +132,10 @@
                     try {
                         GocamPlugin.nativeFunction([filename] ,
                           function(result) {
+                           var endTime = new Date();
+                                                   console.log("GocamPlugin endTime: " + endTime);
+                                                   console.log("GocamPlugin took: " + (endTime - startTime) + "ms");
+
                             goTracer = new GoTracer(image, canvas);
                             goTracer.setCorners(result);
                             goTracer.startScan();
@@ -143,10 +147,12 @@
                                                    
                             // Approve or Update current moves in SGF file?
                             // temporary - just write all SGF to file.
-                            writeFile(goTracer.getSGF());
+                                                   writeFile(goTracer.getSGF(), function(){
+                                                             reloadEidogo();
+                                                             });
                             saveMovetoDB(goTracer.getSGF());
                             // reloading Eidogo needs to happen when writeFile is done
-                            reloadEidogo();
+//                            reloadEidogo();
                             
                             // ------------------------------------------------------------------
                             // save SGF to disk? Send via Email? Open in Browser? Display using eidogo?
@@ -164,17 +170,24 @@
                     
                     // Hmmm, I think this whole timing thing is happening asynchronously. Ah well,
                     // the old counting method says 10-20 seconds.
-                    var endTime = new Date();
-                    console.log("GocamPlugin endTime: " + endTime);
-                    console.log("GocamPlugin took: " + (endTime - startTime) + "ms");
                     
+                                        
                 };
                 image.src = imageURI;
                 
                 
             }
             
-            
+            function newCapture(){
+                /* 
+                 clear database?
+                 reset gameState
+                 reset currentMove
+                 check stored preferences for default Preamble
+                 
+                */
+                
+            }
             /* -------------------------- */
             //  Database Functions
             /* -------------------------- */
@@ -311,7 +324,7 @@
                 console.log(out);
             }
             
-            function writeFile(SGF) {
+            function writeFile(SGF, callback) {
                 console.log("writeFile begins");
                 window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fileSystem){
                                          console.log("writeFile root filesystem: " + fileSystem.root.name);
@@ -320,6 +333,8 @@
                                                                  fileEntry.createWriter(function(writer){
                                                                                         writer.onwriteend = function(evt) {
                                                                                         console.log("writeFile - SGF.txt written");
+                                                                                        callback();
+                                                                                        
                                                                                         }
                                                                                         writer.write(SGF);
                                                                                         }, onFail);

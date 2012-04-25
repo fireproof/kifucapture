@@ -18,7 +18,25 @@ NativeControls plugin
 	https://github.com/phonegap/phonegap-plugins/blob/master/iOS/NativeControls/NativeControls.js
 
 
-
+BUGS:
+  spinner don't spin
+  Tilt counter clock-wise causes flip! EXIF? Check on code in goatracer...
+  
+  New Capture step at launch?
+    save existing, continue, or new capture? -- a good point to select camera or photolibrary?
+    
+  Camera button should just launch camera.
+  
+  Eidogo - how to load new moves progressively?
+  
+  Select 
+  
+  TABLE STRUCTURE
+    moves uniqID gameID moveID(for sequence) move (coordinates or SGF)
+    
+    gameID date, other preamble stuff
+    
+    preferences
 ------------
 Things to think about 
 
