@@ -1,0 +1,28 @@
+First Run: initialize DB, set prefs
+
+New Game
+	*board size*
+	Select image source
+		Camera
+			take picture
+			find grid
+			accept image
+			update DB with initial handicap
+		Eidogo viewer SGF
+		app takes pictures on timer
+			updates DB with moves, increment current move
+		Update Eidogo viewer
+		PASS/PASS (or just end)
+		Eidogo scores?
+		Save SGF
+			Set details
+			Save as file? Store in new DB?
+		---------------
+		Library
+			select folder
+			find grid on initial picture
+			accept image
+		Process all images (update DB)
+		Save SGF
+			Set details
+			save as file

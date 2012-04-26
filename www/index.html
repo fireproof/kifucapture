@@ -76,7 +76,9 @@
                 clickItemAction();
                 // DB testing works
                 var db = window.openDatabase("Database", "1.0", "Moku", 200000);
-                db.transaction(populateDB, errorCB, successCB);
+                db.transaction(populateDB, errorCB, function(){
+                               console.log('database populated');
+                               });
             }
             
             
@@ -112,8 +114,8 @@
                     // Canvas2ImagePlugin saves to Photo Library (maybe sends to Documents or temp dir instead?)
                     // might not be necessary if capturePhoto can specify w x h 
                     try {
-                        saveImage();
-//                        console.log("Image would be saved, but hey, let's not fill up the library right now");
+//                        saveImage();
+                        console.log("Image would be saved, but hey, let's not fill up the library right now");
                     } catch (e) {
                         console.log("can't save image - Exception: "+e);
                     }
@@ -194,44 +196,100 @@
             
             // Populate the database 
             function populateDB(tx) {
-                tx.executeSql('DROP TABLE IF EXISTS MOKU');
-                tx.executeSql('CREATE TABLE IF NOT EXISTS MOKU (id unique, data)');
-//                tx.executeSql('INSERT INTO MOKU (id, data) VALUES (0, "SGF Preamble")');
+                console.log('populateDB called');
+                tx.executeSql('DROP TABLE IF EXISTS MOVES');
+                tx.executeSql('CREATE TABLE IF NOT EXISTS MOVES (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, moveid, gameid, movedata)');
+                tx.executeSql('CREATE TABLE IF NOT EXISTS GAMES (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, gameid, gamedata)');
             }
             
             // Query the database
             function queryDB(tx) {
-                tx.executeSql('SELECT * FROM MOKU', [], querySuccess, errorCB);
+                console.log("queryDB called");
+                tx.executeSql('SELECT * FROM MOVES', [], querySuccess, errorCB);
             }
             
             // Query the success callback
             function querySuccess(tx, results) {
                 var len = results.rows.length;
-                console.log("MOKU table: " + len + " rows found.");
+                console.log("MOVES table: " + len + " rows found.");
                 for (var i=0; i<len; i++){
-                    console.log("Row = " + i + " ID = " + results.rows.item(i).id + " Data =  " + results.rows.item(i).data);
+                    console.log("Row = " + i + " ID = " + results.rows.item(i).id + " movedata = " + results.rows.item(i).movedata);
                 }
             }
             
-            // Transaction error callback
+            // Error callback
             function errorCB(err) {
-                console.log("Error processing SQL: "+err.code);
+                console.log("ERROR processing SQL: "+err.code);
             }
             
-            // Transaction success callback
+            // Success callback
             function successCB() {
+                console.log("successCB called");
                 var db = window.openDatabase("Database", "1.0", "Moku", 200000);
                 db.transaction(queryDB, errorCB);
             }
+
             
             // Save a move to the Database
             function saveMovetoDB(newMove) {
                 var db = window.openDatabase("Database", "1.0", "Moku", 200000);
                 db.transaction(
                                function(tx){
-                               tx.executeSql('INSERT INTO MOKU (id, data) VALUES ('+ currentMove +', "'+ newMove +'")');
-                               }, errorCB, successCB);
+                               tx.executeSql('INSERT INTO MOVES (moveid, movedata) VALUES ('+ currentMove +', "'+ newMove +'")');
+                               }, errorCB, function() {
+                               var db = window.openDatabase("Database", "1.0", "Moku", 200000);
+                               db.transaction(function(tx){
+                                              tx.executeSql('SELECT * FROM MOVES', [], function(tx, results) {
+                                                            var len = results.rows.length;
+                                                            console.log("MOVES table: " + len + " rows found.");
+                                                            for (var i=0; i<len; i++){
+                                                            console.log("Row = " + i + " ID = " + results.rows.item(i).id + " movedata = " + results.rows.item(i).movedata);
+                                                            }
+
+                                                            }, errorCB);
+                                              }, errorCB);
+                               });
             }
+            
+            // Takes the contents of a form and turns it into a string, adds to DB
+            function SGFpreamble() {
+                console.log("SGFpreamble begins");
+                var d = new Date();
+                var DTval = d.getFullYear() +"-"+ d.getMonth() +"-"+ d.getDate();
+                var $inputs = $('#prefsForm :input');
+                var preambleText = "(\r\n;FF[4]\r\nGM[1]\r\nAP[Moku]\r\nDT["+DTval+"]\r\n";
+                
+                $inputs.each(function() {
+                             // add form values -watch out for radio buttons.
+                             if (this.name == 'SZ') {
+                             if ($(this).attr('checked')) {
+                             preambleText += this.name + "[" + $(this).val() + "]\r\n";
+                             }
+                             } 
+                             else {
+                             preambleText += this.name + "[" + $(this).val() + "]\r\n";
+                             }
+                             });
+                //                console.log(preambleText);
+                var db = window.openDatabase("Database", "1.0", "Moku", 200000);
+                db.transaction(
+                               function(tx){
+                               tx.executeSql('INSERT INTO GAMES (gameid, gamedata) VALUES (0, "'+ preambleText +'")');
+                               }, errorCB, function() {
+                               var db = window.openDatabase("Database", "1.0", "Moku", 200000);
+                               db.transaction(function(tx){
+                                              tx.executeSql('SELECT * FROM GAMES', [], function(tx, results) {
+                                                            var len = results.rows.length;
+                                                            console.log("GAMES table: " + len + " rows found.");
+                                                            for (var i=0; i<len; i++){
+                                                            console.log("Row = " + i + " ID = " + results.rows.item(i).id + " gamedata = " + results.rows.item(i).gamedata);
+                                                            }
+                                                            
+                                                            }, errorCB);
+                                              }, errorCB);
+                               });
+            }
+
             
             /* -------------------------- */
             // Canvas2ImagePlugin Function
@@ -289,7 +347,7 @@
                                             targetWidth: idealWidth,
                                             targetHeight: idealHeight,
                                             correctOrientation: 0,
-                                            saveToPhotoAlbum: 1
+                                            saveToPhotoAlbum: 0
                                             });
             }
             
@@ -347,35 +405,7 @@
                 console.log(err)
             }
             
-            // Takes the contents of a form and turns it into a string.
-            function SGFpreamble() {
-                console.log("SGFpreamble begins");
-                var d = new Date();
-                var DTval = d.getFullYear() +"-"+ d.getMonth() +"-"+ d.getDate();
-                
-                var $inputs = $('#prefsForm :input');
-                
-                var preambleText = "(\r\n;FF[4]\r\nGM[1]\r\nAP[Moku]\r\nDT["+DTval+"]\r\n";
-                $inputs.each(function() {
-                             // add form values
-                             // watch out for radio buttons.
-                             if (this.name == 'SZ') {
-                             if ($(this).attr('checked')) {
-                             preambleText += this.name + "[" + $(this).val() + "]\r\n";
-                             }
-                             } 
-                             else {
-                             preambleText += this.name + "[" + $(this).val() + "]\r\n";
-                             }
-                             });
-//                console.log(preambleText);
-                var db = window.openDatabase("Database", "1.0", "Moku", 200000);
-                db.transaction(
-                               function(tx){
-                               tx.executeSql('INSERT INTO MOKU (id, data) VALUES (0, "'+ preambleText +'")');
-                               }, errorCB, successCB);
-            }
-            
+                       
             /* -------------------------- */
             //    ActionSheet Function    //
             /* -------------------------- */
