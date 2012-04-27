@@ -38,15 +38,16 @@
             
             var pictureSource;   // picture source
             var destinationType; // sets the format of returned value
-            var gameState = 'newgame';
-            var currentMove = 0;
-            
+
+            var currentMoveID = 0;
+            var currentGameID = 0;
             var coords;
-            var coordsCopy;
+//            var coordsCopy;
             
             // Image Capture 
             var idealWidth = 300;
             var idealHeight = 400; // 402?
+            var imageSource = '';
                         
             // File display and manipulation variables
             var root = null; // File System root variable
@@ -79,13 +80,17 @@
                 db.transaction(populateDB, errorCB, function(){
                                console.log('database populated');
                                });
+                if (currentGameID == '0') { $('#game-control-buttons').hide(); }
             }
             
+            /*--------------------------------------------- */
+            //         initial GRID DETECTION               //
+            /*--------------------------------------------- */
             
             // Called when a photo is successfully retrieved
             // and coordinates are needed.
             function onPhotoURISuccess(imageURI) {
-                currentMove = currentMove + 1;
+                currentMoveID = currentMoveID + 1;
                 var canvas = document.getElementById("canvas");
                 var ctx = canvas.getContext("2d");
                 
@@ -104,7 +109,7 @@
                     ctx.canvas.height = idealHeight;
                     
                     // show loading message
-                    // doesn't show when taking a second picture?
+                    // doesn't show when taking a second picture? spinner no spinny?
                     $.mobile.showPageLoadingMsg();
 //                    $('body').addClass('ui-loading');
                     
@@ -145,16 +150,14 @@
                                                    
                             // all done, hide loading message
                             $.mobile.hidePageLoadingMsg();
-//                            $('body').removeClass('ui-loading');
                                                    
                             // Approve or Update current moves in SGF file?
                             // temporary - just write all SGF to file.
-                                                   writeFile(goTracer.getSGF(), function(){
+                            writeFile(goTracer.getSGF(), function(){
                                                              reloadEidogo();
                                                              });
+                            // save move to databse
                             saveMovetoDB(goTracer.getSGF());
-                            // reloading Eidogo needs to happen when writeFile is done
-//                            reloadEidogo();
                             
                             // ------------------------------------------------------------------
                             // save SGF to disk? Send via Email? Open in Browser? Display using eidogo?
@@ -170,26 +173,14 @@
                         console.log("Exception: "+e);
                     }
                     
-                    // Hmmm, I think this whole timing thing is happening asynchronously. Ah well,
-                    // the old counting method says 10-20 seconds.
-                    
-                                        
                 };
                 image.src = imageURI;
                 
                 
             }
             
-            function newCapture(){
-                /* 
-                 clear database?
-                 reset gameState
-                 reset currentMove
-                 check stored preferences for default Preamble
-                 
-                */
-                
-            }
+                       
+            
             /* -------------------------- */
             //  Database Functions
             /* -------------------------- */
@@ -198,8 +189,9 @@
             function populateDB(tx) {
                 console.log('populateDB called');
                 tx.executeSql('DROP TABLE IF EXISTS MOVES');
-                tx.executeSql('CREATE TABLE IF NOT EXISTS MOVES (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, moveid, gameid, movedata)');
-                tx.executeSql('CREATE TABLE IF NOT EXISTS GAMES (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, gameid, gamedata)');
+                tx.executeSql('DROP TABLE IF EXISTS GAMES');
+                tx.executeSql('CREATE TABLE IF NOT EXISTS MOVES (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, gameid, movedata)');
+                tx.executeSql('CREATE TABLE IF NOT EXISTS GAMES (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, gamedata)');
             }
             
             // Query the database
@@ -235,7 +227,7 @@
                 var db = window.openDatabase("Database", "1.0", "Moku", 200000);
                 db.transaction(
                                function(tx){
-                               tx.executeSql('INSERT INTO MOVES (moveid, movedata) VALUES ('+ currentMove +', "'+ newMove +'")');
+                               tx.executeSql('INSERT INTO MOVES (gameid, movedata) VALUES ('+ currentGameID +', "'+ newMove +'")');
                                }, errorCB, function() {
                                var db = window.openDatabase("Database", "1.0", "Moku", 200000);
                                db.transaction(function(tx){
@@ -243,7 +235,7 @@
                                                             var len = results.rows.length;
                                                             console.log("MOVES table: " + len + " rows found.");
                                                             for (var i=0; i<len; i++){
-                                                            console.log("Row = " + i + " ID = " + results.rows.item(i).id + " movedata = " + results.rows.item(i).movedata);
+                                                            console.log("Row = " + i + " ID = " + results.rows.item(i).id + "gameid = "+ results.rows.item(i).gameid +" movedata = " + results.rows.item(i).movedata);
                                                             }
 
                                                             }, errorCB);
@@ -274,7 +266,9 @@
                 var db = window.openDatabase("Database", "1.0", "Moku", 200000);
                 db.transaction(
                                function(tx){
-                               tx.executeSql('INSERT INTO GAMES (gameid, gamedata) VALUES (0, "'+ preambleText +'")');
+                               // this will actually require finding the currentGameID, then UPDATE that row 
+                               // also, if there is no record it will have to be created?
+                               tx.executeSql('UPDATE GAMES WHERE id=? (gamedata) VALUES (?)', [currentGameID, preambleText]);
                                }, errorCB, function() {
                                var db = window.openDatabase("Database", "1.0", "Moku", 200000);
                                db.transaction(function(tx){
@@ -290,6 +284,116 @@
                                });
             }
 
+            
+            function newGameRecord() {
+                // create a new record in GAMES db
+                // and sets currentGameID to that new gameid
+                console.log('newGameRecord called');
+                var db = window.openDatabase("Database", "1.0", "Moku", 200000);
+                db.transaction(function (tx) {
+                               tx.executeSql('INSERT INTO GAMES (gamedata) VALUES ("")');
+                               }, errorCB, function () {
+                               // set currentGameID to new (highest) in Database
+                               getHighestGameID(function (highestId) {
+                                                 currentGameID = highestId;
+                                                 console.log('currentGameID is now '+currentGameID);
+                                                 });
+                               });
+            }
+            
+            function listGamesDB() {
+                // lists GAMES db to console.
+                var db = window.openDatabase("Database", "1.0", "Moku", 200000);
+                db.transaction(function(tx){
+                               tx.executeSql('SELECT * FROM GAMES', [], function(tx, results) {
+                                             var len = results.rows.length;
+                                             console.log("GAMES table: " + len + " rows found.");
+                                             for (var i=0; i<len; i++){
+                                             console.log("Row " + i + ": id = " + results.rows.item(i).id + " gamedata = " + results.rows.item(i).gamedata);
+                                             }
+                                             
+                                             }, errorCB);
+                               }, errorCB);
+            }
+            
+            function stopGameCapture() {
+                console.log('stopGameCapture called');
+                // Finish game Recording
+                // set currentGameID to zero, ie Not Recording.
+                currentGameID = 0;
+            }
+            
+            function getHighestGameID(callback) {
+                var db = window.openDatabase("Database", "1.0", "Moku", 200000);
+                db.transaction(function (tx) {
+                               tx.executeSql("SELECT id FROM GAMES", [], function (tx, result) {
+                                             var highestGameIDinDB = 0;
+                                             for (var i = 0; i < result.rows.length; ++i) {
+                                             var row = result.rows.item(i);
+                                             if (row['id'] > highestGameIDinDB) {
+                                                highestGameIDinDB = row['id'];
+                                             }
+                                             }
+                                             console.log('getHighestGameID says: ' + highestGameIDinDB);
+                                             callback(highestGameIDinDB);
+                                             }, function (tx, error) {
+                                                console.log('could not SELECT id FROM GAMES - ' + error.message);
+                                                return;
+                                             });
+                               });            
+            }
+            
+            function confirmNewGame(button) {
+                // 1: NO
+                // 2: YES (start new Capture session)
+                if (button == 2){
+                    // create new game record, set currentGameID
+                    newGameRecord();
+                    // Stop image capture (NOT IN PLACE YET)
+                    
+                    // enable Grid and Save buttons
+                    $('#game-control-buttons').show();
+                    
+                    // launch Camera/Photo Library picker
+                    selectAction();
+                    
+                }
+            }
+            
+            function newGame() {
+                console.log('newGame?');
+                // Check for currently running Capture Session
+                if (currentGameID > 0) {
+                    console.log('currentGameID "'+ currentGameID +'" is greater than 0 so a capture session is already running');
+                    // confirm quit
+                    // use an alert. "Stop current session? - Yes, No
+                    navigator.notification.vibrate(1000);
+                    navigator.notification.confirm(
+                                                   'Stop current game capture and start a new one?',  // message
+                                                   confirmNewGame,                                  // callback to invoke with index of button pressed
+                                                   'Capture session running',                       // title
+                                                   'No,Yes'                                         // buttonLabels
+                                                   );
+                    
+                }
+                else {
+                    console.log('currentGameID is NOT greater than 0, so there is NO capture session running');
+                    // no existing games, so create new game record, start capture
+                    newGameRecord();
+                    // launch Camera/Photo Library picker
+                    selectAction();
+                    
+                }
+            }
+            
+            function acceptGrid() {
+                // If the grid looks good
+                // write initial grid to disk/ add to database?
+                
+                // go to main page, reload Eidogo, start Automatic Image Capture
+                window.location = "#page1";
+                reloadEidogo();
+            }
             
             /* -------------------------- */
             // Canvas2ImagePlugin Function
@@ -351,12 +455,7 @@
                                             });
             }
             
-            function capturePhotoEdit() {
-                // NOT CURRENTLY USED
-                // Take picture using device camera, allow edit, and retrieve image as base64-encoded string  
-                navigator.camera.getPicture(onPhotoURISuccess, onFail, { quality: 20, allowEdit: true }); 
-            }
-            
+                        
             function getPhoto(source) {
                 // PHOTO LIBRARY
                 // Retrieve image file location from specified source
@@ -371,7 +470,12 @@
                                             });
             }
             
-                        
+            function capturePhotoEdit() {
+                // NOT CURRENTLY USED
+                // Take picture using device camera, allow edit, and retrieve image as base64-encoded string  
+                navigator.camera.getPicture(onPhotoURISuccess, onFail, { quality: 20, allowEdit: true }); 
+            }
+     
             
             // used instead of console.log in a few instances.
             function printObject(o) {
@@ -382,6 +486,10 @@
                 console.log(out);
             }
             
+            
+            /* -------------------------------- */
+            //      Write SGF to file           //
+            /* -------------------------------- */
             function writeFile(SGF, callback) {
                 console.log("writeFile begins");
                 window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fileSystem){
@@ -408,17 +516,26 @@
                        
             /* -------------------------- */
             //    ActionSheet Function    //
+            //   Select Camera/Photo Lib  //
             /* -------------------------- */
             function selectAction() {
                 var actionSheet = window.plugins.actionSheet;
+                window.location = "#camera";
+                // check for currentGameID - if it's 0, create a new one?
+                // Nope, can't do that. sometimes we'll be clicking this to update Grid...
                 
-                // Basic with title
+                // Select Source
                 actionSheet.create('Select Image Source', ['Camera', 'Photo Library', 'Cancel'], function(buttonValue, buttonIndex) {
                                    if (arguments[1] == '0'){
                                    capturePhoto();
+                                   // set default image source?
                                    }
                                    if (arguments[1] == '1') {
                                    getPhoto(pictureSource.PHOTOLIBRARY);
+                                   // set default image source?
+                                   }
+                                   else {
+                                   window.location = "#page1"; // return to main page.
                                    }
 
                                    }, {cancelButtonIndex: 2});
@@ -454,9 +571,6 @@
 
             }
             
-            function resetNewGame() {
-                gameState = 'newgame';
-            }
             </script>
     </head>
     
@@ -468,8 +582,13 @@
                 <h3>
                     Moku
                 </h3>
+                <!--
                 <a data-role="button" data-rel="dialog" data-transition="pop" href="#prefs" data-icon="gear" data-iconpos="notext" data-shadow="false">
                     Prefs
+                </a>
+                 -->
+                <a data-role="button" data-transition="pop" data-icon="plus" data-shadow="false" onclick="newGame();">
+                    New
                 </a>
                 <a data-role="button" data-transition="slideup" href="#page4" onclick="listDir(root);">
                     Archives
@@ -478,16 +597,19 @@
             <div data-role="content">
                 <div id="sgfdisplay">
                     <div id="player-container"></div>
-                    <a data-role="button" data-inline="true" data-mini="true" data-transition="flip" href="#camera" onclick="selectAction();">
-                        Camera
+                    <div id="game-control-buttons">
+                    <a id="gridButton" data-role="button" data-inline="true" data-icon="grid" data-mini="true" data-transition="flip" onclick="selectAction();">
+                        Grid
                     </a>
-                    <a data-role="button" data-inline="true" data-mini="true" data-transition="fade" href="#saveGame" data-icon="check" data-iconpos="left">
+                    <a id="saveButton" data-role="button" data-inline="true" data-mini="true" data-transition="fade" href="#saveGame" data-icon="check" data-iconpos="left">
                         Save
                     </a>
-                   
+                   <!--
                     <a data-role="button" data-inline="true" data-iconpos="notext" data-transition="fade" href="#page1" data-icon="refresh" data-iconpos="left" onclick="reloadEidogo();">
                         Refresh 
                     </a>
+                    -->
+                    </div>
                     <!-- eidogo-player-auto can contain SGF which *should* be displayed 
                     <div class="eidogo-player-auto"></div>-->
                     <div id="sgfoutput"></div>
@@ -510,7 +632,7 @@
                     <a data-role="button" data-direction="reverse" data-transition="flip" href="#page1" data-icon="" onclick="resetNewGame(); reloadEidogo();">
                     New
                 </a> -->
-                <a data-role="button" data-direction="reverse" data-transition="flip" href="#page1" data-icon="" onclick="reloadEidogo();">
+                <a data-role="button" data-direction="reverse" data-transition="flip" href="#page1" data-icon="" onclick="acceptGrid();">
                     Accept
                 </a>
             </div>
