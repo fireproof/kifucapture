@@ -252,7 +252,7 @@
                 var preambleText = "(\r\n;FF[4]\r\nGM[1]\r\nAP[Moku]\r\nDT["+DTval+"]\r\n";
                 
                 $inputs.each(function() {
-                             // add form values -watch out for radio buttons.
+                             // add form values - watch out for radio buttons.
                              if (this.name == 'SZ') {
                              if ($(this).attr('checked')) {
                              preambleText += this.name + "[" + $(this).val() + "]\r\n";
@@ -349,7 +349,7 @@
                 if (button == 2){
                     // create new game record, set currentGameID
                     newGameRecord();
-                    // Stop image capture (NOT IN PLACE YET)
+                    // TODO Stop image capture (NOT IN PLACE YET)
                     
                     // enable Grid and Save buttons
                     $('#game-control-buttons').show();
@@ -365,8 +365,6 @@
                 // Check for currently running Capture Session
                 if (currentGameID > 0) {
                     console.log('currentGameID "'+ currentGameID +'" is greater than 0 so a capture session is already running');
-                    // confirm quit
-                    // use an alert. "Stop current session? - Yes, No
                     navigator.notification.vibrate(1000);
                     navigator.notification.confirm(
                                                    'Stop current game capture and start a new one?',  // message
@@ -380,19 +378,26 @@
                     console.log('currentGameID is NOT greater than 0, so there is NO capture session running');
                     // no existing games, so create new game record, start capture
                     newGameRecord();
+                    // TODO Add step to fill out SGFPreamble first, then launch selectAction
                     // launch Camera/Photo Library picker
                     selectAction();
                     
                 }
             }
             
+            /* -------------------------- */
+            //         Accept Grid        //
+            /* -------------------------- */
             function acceptGrid() {
                 // If the grid looks good
-                // write initial grid to disk/ add to database?
-                
-                // go to main page, reload Eidogo, start Automatic Image Capture
+                // write initial grid to disk/add to database?
+                if (currentGameID > '0') { $('#game-control-buttons').show(); } // TODO hide instructions
+                // go to main page
+                // reload Eidogo 
                 window.location = "#page1";
                 reloadEidogo();
+                // TODO start Automatic Image Capture
+                // NOT IMPLEMENTED YET
             }
             
             /* -------------------------- */
@@ -423,7 +428,9 @@
                 /*
                  
                  File saved to Photo Album is full-size, no cropping, regardless of targetWidth/Height
-                                  
+                
+                 Orientation and cropping/size issues will be resolved in Cordova 1.7 according to mailing lists
+                 
                  targetWidth:100, targetHeight:400
                      correctOrientation: 0
                             take the picture with phone sideways and the resulting cropped image has object pointing sideways
