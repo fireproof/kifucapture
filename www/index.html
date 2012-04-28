@@ -41,6 +41,8 @@
 
             var currentMoveID = 0;
             var currentGameID = 0;
+            var currentBoardSize = 19;
+            
             var coords;
 //            var coordsCopy;
             
@@ -191,7 +193,8 @@
                 tx.executeSql('DROP TABLE IF EXISTS MOVES');
                 tx.executeSql('DROP TABLE IF EXISTS GAMES');
                 tx.executeSql('CREATE TABLE IF NOT EXISTS MOVES (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, gameid, movedata)');
-                tx.executeSql('CREATE TABLE IF NOT EXISTS GAMES (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, gamedata)');
+                tx.executeSql('CREATE TABLE IF NOT EXISTS GAMES (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, PB, BR, PW, WR, SZ, KM, HA, DT, gamedata)');
+                // PB, BR, PW, WR, SZ, KM, HA, DT, 
             }
             
             // Query the database
@@ -235,7 +238,7 @@
                                                             var len = results.rows.length;
                                                             console.log("MOVES table: " + len + " rows found.");
                                                             for (var i=0; i<len; i++){
-                                                            console.log("Row = " + i + " ID = " + results.rows.item(i).id + "gameid = "+ results.rows.item(i).gameid +" movedata = " + results.rows.item(i).movedata);
+                                                            console.log("Row = " + i + " ID = " + results.rows.item(i).id + " gameid = "+ results.rows.item(i).gameid +" movedata = " + results.rows.item(i).movedata);
                                                             }
 
                                                             }, errorCB);
@@ -243,51 +246,156 @@
                                });
             }
             
-            // Takes the contents of a form and turns it into a string, adds to DB
-            function SGFpreamble() {
-                console.log("SGFpreamble begins");
+            /* -------------------------- */
+            //       GAME listing
+            /* -------------------------- */
+            
+            function listGamesArchive() {
+                // lists GAMES db on gamesArchive page
+                var list = '';
+                var db = window.openDatabase("Database", "1.0", "Moku", 200000);
+                db.transaction(function(tx){
+                               tx.executeSql('SELECT * FROM GAMES', [], function(tx, results) {
+                                             var len = results.rows.length;
+                                             console.log("GAMES table: " + len + " rows found.");
+                                             for (var i=0; i<len; i++){
+                                             var pb = '';
+                                             var pw = '';
+                                             var row = results.rows.item(i);
+                                             if (row.PB !== null ){ pb = '<br />Black: '+ row.PB; }
+                                             if (row.PW !== null ){ pw = '<br />White: '+ row.PW; }
+                                             list += "<li><a href=\"#\" onclick=\"viewGameDetails();\"><h3>" + row.DT +"</h3><p>"+ pb +pw  +"<br />Board size: "+ row.SZ +"</p></a></li>";
+                                             }
+                                             $('ul#archive-list').html(list);
+                                             $('ul#archive-list').listview('refresh');
+                                             window.location = '#gamesArchive';
+                                             }, errorCB);
+                               }, errorCB);                
+            }
+            
+            function listGamesDB() {
+                // spit GAMES db to console.
+                var db = window.openDatabase("Database", "1.0", "Moku", 200000);
+                db.transaction(function(tx){
+                               tx.executeSql('SELECT * FROM GAMES', [], function(tx, results) {
+                                             var len = results.rows.length;
+                                             console.log("GAMES table: " + len + " rows found.");
+                                             for (var i=0; i<len; i++){
+                                             var row = results.rows.item(i);
+                                             console.log("Row " + i + ": id=" + row.id +" PB="+ row.PB +" BR="+ row.BR +" PW="+ row.PW +" WR="+ row.WR +" SZ="+ row.SZ +" KM="+ row.KM +" HA="+ row.HA +" DT="+ row.DT +" gamedata = " + row.gamedata);
+                                             }
+                                             
+                                             }, errorCB);
+                               }, errorCB);
+            }
+            
+            function viewGameDetails() {
+                // Display game particulars
+                // edit details
+                // link to 
+            }
+
+            
+            function getHighestGameID(callback) {
+                var db = window.openDatabase("Database", "1.0", "Moku", 200000);
+                db.transaction(function (tx) {
+                               tx.executeSql("SELECT id FROM GAMES", [], function (tx, result) {
+                                             var highestGameIDinDB = 0;
+                                             for (var i = 0; i < result.rows.length; ++i) {
+                                             var row = result.rows.item(i);
+                                             if (row['id'] > highestGameIDinDB) {
+                                             highestGameIDinDB = row['id'];
+                                             }
+                                             }
+                                             console.log('getHighestGameID says: ' + highestGameIDinDB);
+                                             callback(highestGameIDinDB);
+                                             }, function (tx, error) {
+                                             console.log('could not SELECT id FROM GAMES - ' + error.message);
+                                             return;
+                                             });
+                               });            
+            }
+
+
+            
+            /* -------------------------- */
+            //       Save Forms
+            /* -------------------------- */
+            
+            function saveGameFormSubmit() {
+                savePrefsFormtoDB();
+                selectAction();
+            }
+            
+            
+            function savePrefsFormtoDB() {
+                var fields = $("#prefsForm :input").serializeArray();
+                
                 var d = new Date();
                 var DTval = d.getFullYear() +"-"+ d.getMonth() +"-"+ d.getDate();
-                var $inputs = $('#prefsForm :input');
-                var preambleText = "(\r\n;FF[4]\r\nGM[1]\r\nAP[Moku]\r\nDT["+DTval+"]\r\n";
                 
-                $inputs.each(function() {
-                             // add form values - watch out for radio buttons.
-                             if (this.name == 'SZ') {
-                             if ($(this).attr('checked')) {
-                             preambleText += this.name + "[" + $(this).val() + "]\r\n";
-                             }
-                             } 
-                             else {
-                             preambleText += this.name + "[" + $(this).val() + "]\r\n";
-                             }
-                             });
-                //                console.log(preambleText);
+                var updateString = " ";
+                jQuery.each(fields, function(i, field){
+                            if (field.name == 'SZ') {
+                            currentBoardSize = field.value;
+                            }
+                            if (field.value != '') {
+                            updateString += field.name +'="'+ field.value +'",';
+                            }
+                            });
+                updateString += 'DT="'+DTval+'"';
+                
+                var updateGameSQL = 'UPDATE GAMES SET '+ updateString +' WHERE id='+ currentGameID;
+
                 var db = window.openDatabase("Database", "1.0", "Moku", 200000);
                 db.transaction(
                                function(tx){
-                               // this will actually require finding the currentGameID, then UPDATE that row 
-                               // also, if there is no record it will have to be created?
-                               tx.executeSql('UPDATE GAMES WHERE id=? (gamedata) VALUES (?)', [currentGameID, preambleText]);
-                               }, errorCB, function() {
-                               var db = window.openDatabase("Database", "1.0", "Moku", 200000);
-                               db.transaction(function(tx){
-                                              tx.executeSql('SELECT * FROM GAMES', [], function(tx, results) {
-                                                            var len = results.rows.length;
-                                                            console.log("GAMES table: " + len + " rows found.");
-                                                            for (var i=0; i<len; i++){
-                                                            console.log("Row = " + i + " ID = " + results.rows.item(i).id + " gamedata = " + results.rows.item(i).gamedata);
-                                                            }
-                                                            
-                                                            }, errorCB);
-                                              }, errorCB);
-                               });
-            }
+                               tx.executeSql(updateGameSQL);
+                               }, errorCB, listGamesDB);
 
             
+            }
+            
+            
+            // Takes the contents of a form and turns it into a string, adds to DB
+//            function SGFpreamble() {
+//                console.log("SGFpreamble begins");
+//                var d = new Date();
+//                var DTval = d.getFullYear() +"-"+ d.getMonth() +"-"+ d.getDate();
+//                var $inputs = $('#prefsForm :input');
+//                var preambleText = "(\r\n;FF[4]\r\nGM[1]\r\nAP[Moku]\r\nDT["+DTval+"]\r\n";
+//                
+//                $inputs.each(function() {
+//                             // add form values - watch out for radio buttons.
+//                             if (this.name == 'SZ') {
+//                             if ($(this).attr('checked')) {
+//                             preambleText += this.name + "[" + $(this).val() + "]\r\n";
+//                             currentBoardSize = $(this).val();
+//                             }
+//                             } 
+//                             else {
+//                             preambleText += this.name + "[" + $(this).val() + "]\r\n";
+//                             }
+//                             });
+//                // console.log(preambleText);
+//                // save Preamble to database
+//                var db = window.openDatabase("Database", "1.0", "Moku", 200000);
+//                db.transaction(
+//                               function(tx){
+//                               // this will actually require finding the currentGameID, then UPDATE that row 
+//                               // also, if there is no record it will have to be created?
+//                               tx.executeSql('UPDATE GAMES SET gamedata="'+preambleText+'" WHERE id='+currentGameID);
+//                               }, errorCB, listGamesDB);
+//                selectAction();
+//            }
+
+            /* -------------------------- */
+            //    New Game Functions
+            /* -------------------------- */
             function newGameRecord() {
                 // create a new record in GAMES db
                 // and sets currentGameID to that new gameid
+                // then go to SaveGame page to set details
                 console.log('newGameRecord called');
                 var db = window.openDatabase("Database", "1.0", "Moku", 200000);
                 db.transaction(function (tx) {
@@ -299,23 +407,11 @@
                                                  console.log('currentGameID is now '+currentGameID);
                                                  });
                                });
+                window.location = "#saveGame";
+                
             }
             
-            function listGamesDB() {
-                // lists GAMES db to console.
-                var db = window.openDatabase("Database", "1.0", "Moku", 200000);
-                db.transaction(function(tx){
-                               tx.executeSql('SELECT * FROM GAMES', [], function(tx, results) {
-                                             var len = results.rows.length;
-                                             console.log("GAMES table: " + len + " rows found.");
-                                             for (var i=0; i<len; i++){
-                                             console.log("Row " + i + ": id = " + results.rows.item(i).id + " gamedata = " + results.rows.item(i).gamedata);
-                                             }
-                                             
-                                             }, errorCB);
-                               }, errorCB);
-            }
-            
+                        
             function stopGameCapture() {
                 console.log('stopGameCapture called');
                 // Finish game Recording
@@ -323,26 +419,7 @@
                 currentGameID = 0;
             }
             
-            function getHighestGameID(callback) {
-                var db = window.openDatabase("Database", "1.0", "Moku", 200000);
-                db.transaction(function (tx) {
-                               tx.executeSql("SELECT id FROM GAMES", [], function (tx, result) {
-                                             var highestGameIDinDB = 0;
-                                             for (var i = 0; i < result.rows.length; ++i) {
-                                             var row = result.rows.item(i);
-                                             if (row['id'] > highestGameIDinDB) {
-                                                highestGameIDinDB = row['id'];
-                                             }
-                                             }
-                                             console.log('getHighestGameID says: ' + highestGameIDinDB);
-                                             callback(highestGameIDinDB);
-                                             }, function (tx, error) {
-                                                console.log('could not SELECT id FROM GAMES - ' + error.message);
-                                                return;
-                                             });
-                               });            
-            }
-            
+                        
             function confirmNewGame(button) {
                 // 1: NO
                 // 2: YES (start new Capture session)
@@ -354,33 +431,34 @@
                     // enable Grid and Save buttons
                     $('#game-control-buttons').show();
                     
-                    // launch Camera/Photo Library picker
-                    selectAction();
+                    // go to SaveGame form, save details
+                    window.location = "#saveGame";
+                    
+                    // SaveGame form should then launch selectAction
                     
                 }
             }
             
+            
             function newGame() {
                 console.log('newGame?');
                 // Check for currently running Capture Session
+                // if there's already a game, check to see if user wants to stop and create a new one:
                 if (currentGameID > 0) {
                     console.log('currentGameID "'+ currentGameID +'" is greater than 0 so a capture session is already running');
-                    navigator.notification.vibrate(1000);
+                    navigator.notification.vibrate(1000); // not working?
                     navigator.notification.confirm(
                                                    'Stop current game capture and start a new one?',  // message
                                                    confirmNewGame,                                  // callback to invoke with index of button pressed
                                                    'Capture session running',                       // title
                                                    'No,Yes'                                         // buttonLabels
                                                    );
-                    
                 }
                 else {
                     console.log('currentGameID is NOT greater than 0, so there is NO capture session running');
-                    // no existing games, so create new game record, start capture
+                    // Otherwise, no existing games, so create new game record, start capture
                     newGameRecord();
                     // TODO Add step to fill out SGFPreamble first, then launch selectAction
-                    // launch Camera/Photo Library picker
-                    selectAction();
                     
                 }
             }
@@ -393,9 +471,10 @@
                 // write initial grid to disk/add to database?
                 if (currentGameID > '0') { $('#game-control-buttons').show(); } // TODO hide instructions
                 // go to main page
-                // reload Eidogo 
-                window.location = "#page1";
+                // reload Eidogo
                 reloadEidogo();
+                window.location = "#page1";
+                
                 // TODO start Automatic Image Capture
                 // NOT IMPLEMENTED YET
             }
@@ -597,7 +676,12 @@
                 <a data-role="button" data-transition="pop" data-icon="plus" data-shadow="false" onclick="newGame();">
                     New
                 </a>
-                <a data-role="button" data-transition="slideup" href="#page4" onclick="listDir(root);">
+                <!--
+                 <a data-role="button" data-transition="slideup" href="#page4" onclick="listDir(root);">
+                    File Archives
+                </a>
+                 -->
+                <a data-role="button" data-transition="slideup" href="#gamesArchive" onclick="listGamesArchive();">
                     Archives
                 </a>
             </div>
@@ -611,11 +695,11 @@
                     <a id="saveButton" data-role="button" data-inline="true" data-mini="true" data-transition="fade" href="#saveGame" data-icon="check" data-iconpos="left">
                         Save
                     </a>
-                   <!--
+                   
                     <a data-role="button" data-inline="true" data-iconpos="notext" data-transition="fade" href="#page1" data-icon="refresh" data-iconpos="left" onclick="reloadEidogo();">
                         Refresh 
                     </a>
-                    -->
+                    
                     </div>
                     <!-- eidogo-player-auto can contain SGF which *should* be displayed 
                     <div class="eidogo-player-auto"></div>-->
@@ -635,10 +719,6 @@
                 <a data-role="button" data-direction="reverse" data-transition="flip" href="#page1" data-icon="back" data-iconpos="left">
                     Cancel
                 </a>
-                <!-- <a data
-                    <a data-role="button" data-direction="reverse" data-transition="flip" href="#page1" data-icon="" onclick="resetNewGame(); reloadEidogo();">
-                    New
-                </a> -->
                 <a data-role="button" data-direction="reverse" data-transition="flip" href="#page1" data-icon="" onclick="acceptGrid();">
                     Accept
                 </a>
@@ -662,7 +742,7 @@
                 </a>
             </div>
             <div data-role="content">
-                <form id="prefsForm" action="#page1" method="POST">
+                <form id="prefsForm" action="#" method="POST"> <!-- action was "#page1" -->
                     <!-- Need to add Rules (RU = Japanese, Chinese, etc) -->
                     <!-- Location/Place (PC), time (TM)(ie length of game) should be added automatically? -->
                     <label for="textinput1">
@@ -702,8 +782,8 @@
                         </label>
                         <input id="textinput4" name="HA" placeholder="Handicap" value="0" type="number" />
                     </div>
-                    <a href="#page1" data-role="button" data-direction="reverse" data-theme="b" data-icon="arrow-r" data-iconpos="right" onclick="SGFpreamble();">Save Settings</a>
-                    <!-- <input type="submit" data-direction="reverse" data-icon="arrow-r" data-iconpos="right" value="Submit Settings" onsubmit="SGFpreamble();" /> -->
+                    <a href="#" data-role="button" data-direction="reverse" data-theme="b" data-icon="arrow-r" data-iconpos="right" onclick="saveGameFormSubmit();">Save Settings</a>
+                    <!-- <input type="submit" data-direction="reverse" data-icon="arrow-r" data-iconpos="right" value="Submit Settings" onsubmit="saveGameFormSubmit();" /> -->
                 </form>
             </div>
         </div>
@@ -712,7 +792,7 @@
         <div data-role="page" id="page4">
             <div data-theme="a" data-role="header">
                 <h3>
-                    Archives
+                    File Archives
                 </h3>
                 <a class="refreshButton" data-role="button" data-transition="fade" href="#page4" data-icon="refresh" data-iconpos="left" onclick="listDir(root);">
                     Refresh
@@ -751,6 +831,21 @@
                 </div>
                 <a id="menu" href="#menuOptions" data-rel="dialog">file details</a>
                 <a id="get_file_details" href="#fileDetails" data-rel="dialog">file details</a>
+            </div>                        
+        </div>
+        
+        
+        <div data-role="page" id="gamesArchive">
+            <div data-theme="a" data-role="header">
+                <h3>
+                    Archives
+                </h3>
+                <a data-role="button" data-transition="slidedown" href="#page1" data-icon="arrow-l" data-iconpos="left">
+                    Back
+                </a>
+            </div>
+            <div data-role="content">
+                <ul id="archive-list" data-role="listview" data-filter="true" ><li>No Saved Games Available</ul>
             </div>                        
         </div>
         

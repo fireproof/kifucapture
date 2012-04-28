@@ -80,6 +80,7 @@ body {
 	width: 300px !important;
 	height: 300px !important;
 	background: url(player/images/board-19-300.gif);
+	-webkit-box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.50);
 }
 /* possibly used with moves slider */
 input#slider {
