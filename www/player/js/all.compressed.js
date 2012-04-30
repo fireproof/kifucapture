@@ -2299,6 +2299,8 @@ ret+=s;
 return ret;
 },createMove:function(_f1){
 var _f2={};
+ console.log("coord sent to Eidogo: " + _f1);
+ console.log("Eidogo currentColor: " + this.currentColor);
 _f2[this.currentColor]=_f1;
 var _f3=new eidogo.GameNode(null,_f2);
 _f3._cached=true;
@@ -2579,6 +2581,7 @@ this.currentColor=_118;
 this.moveNumber=num;
 },playMove:function(_11a,_11b,_11c){
 _11b=_11b||this.currentColor;
+ console.log("playMove coord, color: " + _11a +", "+ _11b);
 this.currentColor=(_11b=="B"?"W":"B");
 _11b=_11b=="W"?this.board.WHITE:this.board.BLACK;
 var pt=this.sgfCoordToPoint(_11a);

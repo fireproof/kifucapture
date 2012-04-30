@@ -89,9 +89,7 @@ input#slider {
 	margin-left: 7px;
 }
 
-label#sliderlabel {
-    display: none;
-}
+
 
 .ui-overlay-a.ui-dialog {
 	opacity: 50%;

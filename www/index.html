@@ -36,6 +36,9 @@
         
         <script type="text/javascript" charset="utf-8">
             
+            
+            // TODO: move some of these functions into sep. documents
+            
             var pictureSource;   // picture source
             var destinationType; // sets the format of returned value
 
@@ -142,7 +145,7 @@
                            var endTime = new Date();
                                                    console.log("GocamPlugin endTime: " + endTime);
                                                    console.log("GocamPlugin took: " + (endTime - startTime) + "ms");
-
+                                                   coords = result;
                             goTracer = new GoTracer(image, canvas);
                             goTracer.setCorners(result);
                             goTracer.startScan();
@@ -336,15 +339,21 @@
             }
             
             function editGameDetails(gameid){
+                console.log('editGameDetails gameid='+gameid);
+                // TODO: are SQL results an array?
+                // TODO: seems like the val() stuff should put the array into the form... but no go.
                 // setup edit Form using supplied GAME id
                 // get game info from DB, load it into an array, populate editGameForm using array
                 var db = window.openDatabase("Database", "1.0", "Moku", 200000);
                 db.transaction(function(tx){
                                tx.executeSql('SELECT * FROM GAMES WHERE id='+gameid, [], function(tx, results) {
                                              // http://stackoverflow.com/questions/172524/populate-a-form-with-data-from-an-associative-array-with-jquery
-                                             console.log(results.rows.item(i));
-                                             $('#editGameForm').each(results, function(i,val) { $('#'+i).val(val); });
-                                             
+                                             // the following isn't working because I don't understand jQuery.
+                                             try {
+                                             $.each(results.rows, function(name,value) { $("#editGameForm input[name='" + name + "']").val(value); console.log(name +" "+ value);});
+                                             }catch(e){
+                                             console.log('editGameDetails jquery error: ' +e);
+                                             }
                                              }, errorCB);
                                }, errorCB);
             }
@@ -675,6 +684,15 @@
                                                problemMode:     false
                                                });
                 console.log("Eidogo reloaded");
+                
+                // TODO: send a move to eidogo - not here, this is just for testing.
+                try {
+//                    player.setColor('B');
+//                    player.createMove('dj');
+                    player.playMove('B','dj');
+                }catch(e){
+                    console.log(e);
+                }
                 // how to add some HTML to this without modifying the source js?
 //                $('.controls-container').append("<form id='sliderform'><label id='sliderlabel' for='slider'>Move:</label><input type='range' name='slider' id='slider' value='50' min='0' max='400' data-highlight='true' /></form>");
 
