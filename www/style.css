@@ -56,22 +56,23 @@ body {
 
 /* SGF preamble form */
 
-#prefsForm #textinput1, #prefsForm #textinput2 {
+#prefsForm #textinput1, #prefsForm #textinput2, #editGameForm #textinput1, #editGameForm #textinput2 {
     width: 70%;
 	float: left;
 	margin-right: 10px;
 	margin-top: 0px;
 }
 
-#prefsForm div.formdetails {
+#prefsForm div.formdetails, #editGameForm div.formdetails {
 	width: 30%;
 	display: inline-block;
 }
 
-#prefsForm #textinput3, #prefsForm #textinput4 {
+#prefsForm #textinput3, #prefsForm #textinput4, #editGameForm #textinput3, #editGameForm #textinput4 {
     width: 4em;
 }
-#prefsForm #textinputbr, #prefsForm #textinputwr {
+
+#prefsForm #textinputbr, #prefsForm #textinputwr, #editGameForm #textinputbr, #editGameForm #textinputwr {
     width: 3em;
 }
 

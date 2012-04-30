@@ -77,7 +77,6 @@
                 destinationType = navigator.camera.DestinationType;
                 getFileSystem();
                 clickItemAction();
-                // DB testing works
                 var db = window.openDatabase("Database", "1.0", "Moku", 200000);
                 db.transaction(populateDB, errorCB, function(){
                                console.log('database populated');
@@ -113,7 +112,6 @@
                     // show loading message
                     // doesn't show when taking a second picture? spinner no spinny?
                     $.mobile.showPageLoadingMsg();
-//                    $('body').addClass('ui-loading');
                     
                     ctx.drawImage(image, 0,0);
                     
@@ -262,9 +260,11 @@
                                              var pb = '';
                                              var pw = '';
                                              var row = results.rows.item(i);
-                                             if (row.PB !== null ){ pb = '<br />Black: '+ row.PB; }
-                                             if (row.PW !== null ){ pw = '<br />White: '+ row.PW; }
-                                             list += "<li><a href=\"#\" onclick=\"viewGameDetails();\"><h3>" + row.DT +"</h3><p>"+ pb +pw  +"<br />Board size: "+ row.SZ +"</p></a></li>";
+                                             if (row.SZ !== null) {
+                                                 if (row.PB !== null ){ pb = '<br />Black: '+ row.PB; }
+                                                 if (row.PW !== null ){ pw = '<br />White: '+ row.PW; }
+                                                 list += "<li><a href=\"#\" onclick=\"viewGameDetails();\"><h3>" + row.DT +"</h3><p>"+ pb +pw  +"<br />Board size: "+ row.SZ +"</p></a></li>";
+                                             }
                                              }
                                              $('ul#archive-list').html(list);
                                              $('ul#archive-list').listview('refresh');
@@ -291,8 +291,10 @@
             
             function viewGameDetails() {
                 // Display game particulars
-                // edit details
-                // link to 
+                
+                
+                // edit details link
+                // link to send/save/display
             }
 
             
@@ -323,12 +325,33 @@
             /* -------------------------- */
             
             function saveGameFormSubmit() {
+                // used when starting a new game
                 savePrefsFormtoDB();
                 selectAction();
             }
             
+            function editGameFormSubmit() {
+                // for editing an existing game
+                savePrefsFormtoDB();
+            }
+            
+            function editGameDetails(gameid){
+                // setup edit Form using supplied GAME id
+                // get game info from DB, load it into an array, populate editGameForm using array
+                var db = window.openDatabase("Database", "1.0", "Moku", 200000);
+                db.transaction(function(tx){
+                               tx.executeSql('SELECT * FROM GAMES WHERE id='+gameid, [], function(tx, results) {
+                                             // http://stackoverflow.com/questions/172524/populate-a-form-with-data-from-an-associative-array-with-jquery
+                                             console.log(results.rows.item(i));
+                                             $('#editGameForm').each(results, function(i,val) { $('#'+i).val(val); });
+                                             
+                                             }, errorCB);
+                               }, errorCB);
+            }
+            
             
             function savePrefsFormtoDB() {
+                // should probably be just :input so that it will work with saveGameForm and editGameForm
                 var fields = $("#prefsForm :input").serializeArray();
                 
                 var d = new Date();
@@ -673,7 +696,7 @@
                     Prefs
                 </a>
                  -->
-                <a data-role="button" data-transition="pop" data-icon="plus" data-shadow="false" onclick="newGame();">
+                <a data-role="button" data-transition="fade" data-icon="plus" data-shadow="false" onclick="newGame();">
                     New
                 </a>
                 <!--
@@ -681,7 +704,7 @@
                     File Archives
                 </a>
                  -->
-                <a data-role="button" data-transition="slideup" href="#gamesArchive" onclick="listGamesArchive();">
+                <a data-role="button" data-transition="slide" href="#gamesArchive" onclick="listGamesArchive();">
                     Archives
                 </a>
             </div>
@@ -692,8 +715,8 @@
                     <a id="gridButton" data-role="button" data-inline="true" data-icon="grid" data-mini="true" data-transition="flip" onclick="selectAction();">
                         Grid
                     </a>
-                    <a id="saveButton" data-role="button" data-inline="true" data-mini="true" data-transition="fade" href="#saveGame" data-icon="check" data-iconpos="left">
-                        Save
+                    <a id="saveButton" data-role="button" data-inline="true" data-mini="true" data-transition="fade" href="#editGame" data-icon="check" data-iconpos="left" onclick="editGameDetails(currentGameID);">
+                        Edit
                     </a>
                    
                     <a data-role="button" data-inline="true" data-iconpos="notext" data-transition="fade" href="#page1" data-icon="refresh" data-iconpos="left" onclick="reloadEidogo();">
@@ -789,6 +812,63 @@
         </div>
         
         
+        <div data-role="page" id="editGame">
+            <div data-theme="a" data-role="header">
+                <h3>
+                    Edit Game
+                </h3>
+                <a data-role="button" data-direction="reverse" data-transition="fade" href="#page1" data-icon="arrow-l" data-iconpos="left">
+                    Cancel
+                </a>
+            </div>
+            <div data-role="content">
+                <form id="editGameForm" action="#" method="POST"> <!-- action was "#page1" -->
+                    <!-- Need to add Rules (RU = Japanese, Chinese, etc) -->
+                    <!-- Location/Place (PC), time (TM)(ie length of game) should be added automatically? -->
+                    <label for="textinput1">
+                        Black:
+                    </label>
+                    <input id="textinput1" name="PB" placeholder="Player Name" value="" type="text" /><input id="textinputbr" name="BR" placeholder="Rank" value="" type="text" />
+                    <label for="textinput2">
+                        White:
+                    </label>
+                    <input id="textinput2" name="PW" placeholder="Player Name" value="" type="text" /><input id="textinputwr" name="WR" placeholder="Rank" value="" type="text" />
+                    <fieldset data-role="controlgroup" data-type="horizontal">
+                        <legend>
+                            Board Size:
+                        </legend>
+                        <input name="SZ" id="radio1" value="19" type="radio" checked="checked" />
+                        <label for="radio1">
+                            19x19
+                        </label>
+                        <input name="SZ" id="radio2" value="13" type="radio" disabled="true" />
+                        <label for="radio2">
+                            13x13
+                        </label>
+                        <input name="SZ" id="radio3" value="9" type="radio" disabled="true" />
+                        <label for="radio3">
+                            9x9
+                        </label>
+                    </fieldset>
+                    <div class="formdetails">
+                        <label for="textinput3">
+                            Komi:
+                        </label>
+                        <input id="textinput3" name="KM" placeholder="Komi" value="5.5" type="number" />
+                    </div>
+                    <div class="formdetails">
+                        <label for="textinput4">
+                            Handicap:
+                        </label>
+                        <input id="textinput4" name="HA" placeholder="Handicap" value="0" type="number" />
+                    </div>
+                    <a href="#" data-role="button" data-direction="reverse" data-theme="b" data-icon="arrow-r" data-iconpos="right" onclick="editGameFormSubmit();">Save Game Details</a>
+                    <!-- <input type="submit" data-direction="reverse" data-icon="arrow-r" data-iconpos="right" value="Submit Settings" onsubmit="saveGameFormSubmit();" /> -->
+                </form>
+            </div>
+        </div>
+        
+        
         <div data-role="page" id="page4">
             <div data-theme="a" data-role="header">
                 <h3>
@@ -840,7 +920,7 @@
                 <h3>
                     Archives
                 </h3>
-                <a data-role="button" data-transition="slidedown" href="#page1" data-icon="arrow-l" data-iconpos="left">
+                <a data-role="button" data-direction="reverse" href="#page1" data-icon="arrow-l" data-iconpos="left">
                     Back
                 </a>
             </div>
