@@ -4,6 +4,7 @@
 #include "gocam.hh"
 #include "im.hh"
 #include "util.hh"
+#include "gtimer.h"
 
 
 namespace gocam {
@@ -46,10 +47,29 @@ namespace gocam {
   void
   Analyser::analyse()
   {
+      gtimer_t *line_images = create_gtimer();
+      gtimer_t *hough = create_gtimer();
+      gtimer_t *grid = create_gtimer();
+      gtimer_t *grow = create_gtimer();
+      
+      start_gtimer(line_images);
     compute_line_images();
+      stop_gtimer(line_images);
+      
+      start_gtimer(hough);
     compute_hough_image();
+      stop_gtimer(hough);
+      
+      start_gtimer(grid);
     compute_initial_grid();
+      stop_gtimer(grid);
+      
+      start_gtimer(grow);
     grow_grid();
+      stop_gtimer(grow);
+      
+      printf("Analyser::analyse [line_images: %f hough: %f", elapsed_seconds(line_images), elapsed_seconds(hough));
+      printf(" grid: %f grow: %f\n", elapsed_seconds(grid), elapsed_seconds(grow));
     if (verbose > 0)
       fprintf(stderr, "Analysis complete.\n");
   }

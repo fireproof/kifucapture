@@ -41,6 +41,7 @@
 		34E317D41518FC6B007BA5BF /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 34E317D31518FC6B007BA5BF /* MainViewController.xib */; };
 		34E317D81518FC6B007BA5BF /* verify.sh in Resources */ = {isa = PBXBuildFile; fileRef = 34E317D71518FC6B007BA5BF /* verify.sh */; };
 		34E317DF1518FD18007BA5BF /* www in Resources */ = {isa = PBXBuildFile; fileRef = 34E317DE1518FD18007BA5BF /* www */; };
+		930405EB154F99B2002E15C8 /* gtimer.c in Sources */ = {isa = PBXBuildFile; fileRef = 930405EA154F99B2002E15C8 /* gtimer.c */; };
 		934537A91534089200AEB8DB /* conf.cc in Sources */ = {isa = PBXBuildFile; fileRef = 9345375E1534089200AEB8DB /* conf.cc */; };
 		934537AB1534089200AEB8DB /* COPYING in Resources */ = {isa = PBXBuildFile; fileRef = 934537611534089200AEB8DB /* COPYING */; };
 		934537AE1534089200AEB8DB /* Doxyfile in Resources */ = {isa = PBXBuildFile; fileRef = 934537641534089200AEB8DB /* Doxyfile */; };
@@ -168,6 +169,8 @@
 		34E317D61518FC6B007BA5BF /* README */ = {isa = PBXFileReference; lastKnownFileType = text; name = README; path = Plugins/README; sourceTree = "<group>"; };
 		34E317D71518FC6B007BA5BF /* verify.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = verify.sh; sourceTree = "<group>"; };
 		34E317DE1518FD18007BA5BF /* www */ = {isa = PBXFileReference; lastKnownFileType = folder; path = www; sourceTree = "<group>"; };
+		930405EA154F99B2002E15C8 /* gtimer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gtimer.c; sourceTree = "<group>"; };
+		930405ED154F99D3002E15C8 /* gtimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gtimer.h; sourceTree = "<group>"; };
 		9345375D1534089200AEB8DB /* CImg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CImg.h; sourceTree = "<group>"; };
 		9345375E1534089200AEB8DB /* conf.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = conf.cc; sourceTree = "<group>"; };
 		9345375F1534089200AEB8DB /* conf.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = conf.hh; sourceTree = "<group>"; };
@@ -580,6 +583,8 @@
 		9345375B1534089200AEB8DB /* gocam-0.3 */ = {
 			isa = PBXGroup;
 			children = (
+				930405ED154F99D3002E15C8 /* gtimer.h */,
+				930405EA154F99B2002E15C8 /* gtimer.c */,
 				9345375D1534089200AEB8DB /* CImg.h */,
 				9345375E1534089200AEB8DB /* conf.cc */,
 				9345375F1534089200AEB8DB /* conf.hh */,
@@ -1044,6 +1049,7 @@
 				3470C2E3153E262300FDD800 /* Canvas2ImagePlugin.m in Sources */,
 				3470C2E4153E262300FDD800 /* NSData+Base64.m in Sources */,
 				3470C2F3153EEFDA00FDD800 /* ActionSheet.m in Sources */,
+				930405EB154F99B2002E15C8 /* gtimer.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1109,6 +1115,9 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_SSE3_EXTENSIONS = NO;
+				GCC_ENABLE_SSE41_EXTENSIONS = NO;
+				GCC_ENABLE_SSE42_EXTENSIONS = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -1116,6 +1125,7 @@
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_THUMB_SUPPORT = NO;
+				GCC_UNROLL_LOOPS = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
@@ -1133,7 +1143,11 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_SSE3_EXTENSIONS = NO;
+				GCC_ENABLE_SSE41_EXTENSIONS = NO;
+				GCC_ENABLE_SSE42_EXTENSIONS = NO;
 				GCC_THUMB_SUPPORT = NO;
+				GCC_UNROLL_LOOPS = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;

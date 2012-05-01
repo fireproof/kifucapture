@@ -1,5 +1,6 @@
 #include "gocam.hh"
 #include "conf.hh"
+#include "gtimer.h"
 
 /** The configuration options of the program. */
 conf::Config config;
@@ -71,33 +72,49 @@ extern "C" {
 int
 run_gocam(char *imgfilename, int result[8], const char* tempfilepath)
 {
+    gtimer_t *overall = create_gtimer();
+    gtimer_t *load = create_gtimer();
+    gtimer_t *normalize = create_gtimer();
+    gtimer_t *reset = create_gtimer();
+    gtimer_t *analyze = create_gtimer();
+    gtimer_t *drawgrid = create_gtimer();
+    
+    start_gtimer(overall);
+    
     cimg::set_temporary_path(tempfilepath);
     
         
-  // Load image file and possible pre-computed hough image
+   // Load image file and possible pre-computed hough image
+   start_gtimer(load);
    CImg<float> original_image(imgfilename);
-   //fprintf(stdout, "%s ", config.arguments[0].c_str());
+   stop_gtimer(load);
+    
+    start_gtimer(normalize);
    original_image.normalize(0, 1);
+    stop_gtimer(normalize);
+    
+    start_gtimer(reset);
    analyser.reset(original_image);
-  // if (config["use-hough"].specified)
-//     analyser.hough_image = 
-//       CImg<float>::load_raw(config["use-hough"].value.c_str());
+    stop_gtimer(reset);
+    
+    start_gtimer(analyze);
+   analyser.analyse();
+    stop_gtimer(analyze);
 
-  // Analyse the image
-  //analyser.verbose = 1;
-  //if (config["intermediate"].specified) 
-   // analyse_step_by_step();
-  //else
-    analyser.analyse();
-
-  // Save the hough image if reguested
-  //if (config['s'].specified)
-    //analyser.hough_image.save_raw(config['s'].value.c_str());
 
   // Display result
     float blue[3] = {0, 0, 1};
+    
+    start_gtimer(drawgrid);
     draw_grid(original_image, blue, result);
-  //CImgDisplay display(original_image, "The final analysis");
+    stop_gtimer(drawgrid);
+ 
+    
+    stop_gtimer(overall);
+    printf("gocam ET: %f\n", elapsed_seconds(overall));
+    printf("load: %f normalize: %f reset: %f\n", elapsed_seconds(load), elapsed_seconds(normalize), elapsed_seconds(reset));
+    printf("analyze: %f drawgrid: %f\n", elapsed_seconds(analyze), elapsed_seconds(drawgrid));
+    
     return(0);
   
 }
