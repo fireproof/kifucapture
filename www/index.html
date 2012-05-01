@@ -157,10 +157,10 @@
                                                    
                             // Approve or Update current moves in SGF file?
                             // temporary - just write all SGF to file.
-//                            writeFile(goTracer.getSGF(), function(){
-//                                                             reloadEidogo();
-//                                                             });
-                            writeFile(goTracer.getSGF());
+                            writeFile(goTracer.getSGF(), function(){
+                                                             reloadEidogo();
+                                                             });
+//                            writeFile(goTracer.getSGF());
                             // save move to databse
                             saveMovetoDB(goTracer.getSGF());
                             
@@ -503,24 +503,24 @@
             //   Select Camera/Photo Lib  //
             /* -------------------------- */
             function selectAction() {
-                capturePhoto();
-//                var actionSheet = window.plugins.actionSheet;
-////                $.mobile.changePage($("#camera"));
-//                // Select Source
-//                actionSheet.create('Select Image Source', ['Camera', 'Photo Library', 'Cancel'], function(buttonValue, buttonIndex) {
-//                                   if (arguments[1] == '0'){
-//                                       capturePhoto();
-//                                       // TODO set default image source?
-//                                   }
-//                                   if (arguments[1] == '1') {
-//                                       getPhoto(pictureSource.PHOTOLIBRARY);
-//                                       // set default image source?
-//                                   }
-//                                   else {
-//                                        $.mobile.changePage($("#page1"));
-//                                   }
-//
-//                                   }, {cancelButtonIndex: 2});
+//                capturePhoto();
+                var actionSheet = window.plugins.actionSheet;
+//                $.mobile.changePage($("#camera"));
+                // Select Source
+                actionSheet.create('Select Image Source', ['Camera', 'Photo Library', 'Cancel'], function(buttonValue, buttonIndex) {
+                                   if (arguments[1] == '0'){
+                                       capturePhoto();
+                                       // TODO set default image source?
+                                   }
+                                   if (arguments[1] == '1') {
+                                       getPhoto(pictureSource.PHOTOLIBRARY);
+                                       // set default image source?
+                                   }
+                                   else {
+                                        $.mobile.changePage($("#page1"));
+                                   }
+
+                                   }, {cancelButtonIndex: 2});
         
             }
             
@@ -561,10 +561,6 @@
 //                $('.controls-container').append("<form id='sliderform'><label id='sliderlabel' for='slider'>Move:</label><input type='range' name='slider' id='slider' value='50' min='0' max='400' data-highlight='true' /></form>");
 
             }
-            
-            function gotocamera(){
-                 $.mobile.changePage($("#camera"));
-            }
                         
             </script>
     </head>
@@ -597,7 +593,6 @@
             <div data-role="content">
                 <div id="sgfdisplay">
                     <div id="player-container"></div>
-                    <div id="testdiv"><a data-role="button" id="testbutton" onclick="gotocamera();">cam view</a></div>
                     <div id="game-control-buttons">
                     <a id="gridButton" data-role="button" data-inline="true" data-icon="grid" data-mini="true" data-transition="flip" onclick="selectAction();">
                         Grid
