@@ -145,7 +145,7 @@
                            var endTime = new Date();
                                                    console.log("GocamPlugin endTime: " + endTime);
                                                    console.log("GocamPlugin took: " + (endTime - startTime) + "ms");
-                                                   coords = result;
+//                                                   coords = result;
                             goTracer = new GoTracer(image, canvas);
                             goTracer.setCorners(result);
                             goTracer.startScan();
@@ -156,9 +156,10 @@
                                                    
                             // Approve or Update current moves in SGF file?
                             // temporary - just write all SGF to file.
-                            writeFile(goTracer.getSGF(), function(){
-                                                             reloadEidogo();
-                                                             });
+//                            writeFile(goTracer.getSGF(), function(){
+//                                                             reloadEidogo();
+//                                                             });
+                            writeFile(goTracer.getSGF());
                             // save move to databse
                             saveMovetoDB(goTracer.getSGF());
                             
@@ -271,7 +272,7 @@
                                              }
                                              $('ul#archive-list').html(list);
                                              $('ul#archive-list').listview('refresh');
-                                             window.location = '#gamesArchive';
+                                             $.mobile.changePage($("#gamesArchive"));
                                              }, errorCB);
                                }, errorCB);                
             }
@@ -329,8 +330,8 @@
             
             function saveGameFormSubmit() {
                 // used when starting a new game
-                savePrefsFormtoDB();
-                selectAction();
+//                savePrefsFormtoDB();
+                selectAction(savePrefsFormtoDB());
             }
             
             function editGameFormSubmit() {
@@ -350,7 +351,9 @@
                                              // http://stackoverflow.com/questions/172524/populate-a-form-with-data-from-an-associative-array-with-jquery
                                              // the following isn't working because I don't understand jQuery.
                                              try {
-                                             $.each(results.rows, function(name,value) { $("#editGameForm input[name='" + name + "']").val(value); console.log(name +" "+ value);});
+                                             $.each(results.rows, function(name,value) { 
+                                                    $("#editGameForm input[name='" + name + "']").val(value); 
+                                                    console.log(name +" "+ value);});
                                              }catch(e){
                                              console.log('editGameDetails jquery error: ' +e);
                                              }
@@ -439,7 +442,7 @@
                                                  console.log('currentGameID is now '+currentGameID);
                                                  });
                                });
-                window.location = "#saveGame";
+                $.mobile.changePage($("#saveGame"));
                 
             }
             
@@ -464,9 +467,7 @@
                     $('#game-control-buttons').show();
                     
                     // go to SaveGame form, save details
-                    window.location = "#saveGame";
-                    
-                    // SaveGame form should then launch selectAction
+                    $.mobile.changePage($("#saveGame"));
                     
                 }
             }
@@ -478,7 +479,7 @@
                 // if there's already a game, check to see if user wants to stop and create a new one:
                 if (currentGameID > 0) {
                     console.log('currentGameID "'+ currentGameID +'" is greater than 0 so a capture session is already running');
-                    navigator.notification.vibrate(1000); // not working?
+//                    navigator.notification.vibrate(1000);
                     navigator.notification.confirm(
                                                    'Stop current game capture and start a new one?',  // message
                                                    confirmNewGame,                                  // callback to invoke with index of button pressed
@@ -490,7 +491,6 @@
                     console.log('currentGameID is NOT greater than 0, so there is NO capture session running');
                     // Otherwise, no existing games, so create new game record, start capture
                     newGameRecord();
-                    // TODO Add step to fill out SGFPreamble first, then launch selectAction
                     
                 }
             }
@@ -505,8 +505,7 @@
                 // go to main page
                 // reload Eidogo
                 reloadEidogo();
-                window.location = "#page1";
-                
+                $.mobile.changePage($("#page1"));
                 // TODO start Automatic Image Capture
                 // NOT IMPLEMENTED YET
             }
@@ -566,8 +565,8 @@
                 // savetoPhotoAlbum is turned on to compare with Canvas2Image Plugin 
                 navigator.camera.getPicture(onPhotoURISuccess, onFail, { 
                                             quality: 50, 
-                                            targetWidth: 640,
-                                            targetHeight: 480,
+                                            targetWidth: idealWidth,
+                                            targetHeight: idealHeight,
                                             correctOrientation: 1,
                                             saveToPhotoAlbum: 1
                                             });
@@ -638,22 +637,19 @@
             /* -------------------------- */
             function selectAction() {
                 var actionSheet = window.plugins.actionSheet;
-                window.location = "#camera";
-                // check for currentGameID - if it's 0, create a new one?
-                // Nope, can't do that. sometimes we'll be clicking this to update Grid...
-                
+                $.mobile.changePage($("#camera"));
                 // Select Source
                 actionSheet.create('Select Image Source', ['Camera', 'Photo Library', 'Cancel'], function(buttonValue, buttonIndex) {
                                    if (arguments[1] == '0'){
                                    capturePhoto();
-                                   // set default image source?
+                                   // TODO set default image source?
                                    }
                                    if (arguments[1] == '1') {
                                    getPhoto(pictureSource.PHOTOLIBRARY);
                                    // set default image source?
                                    }
                                    else {
-                                   window.location = "#page1"; // return to main page.
+//                                   $.mobile.changePage($("#page1"));
                                    }
 
                                    }, {cancelButtonIndex: 2});
@@ -698,6 +694,10 @@
 
             }
             
+            function gotocamera(){
+                 $.mobile.changePage($("#camera"));
+            }
+                        
             </script>
     </head>
     
@@ -729,6 +729,7 @@
             <div data-role="content">
                 <div id="sgfdisplay">
                     <div id="player-container"></div>
+                    <div id="testdiv"><a data-role="button" id="testbutton" onclick="gotocamera();">cam view</a></div>
                     <div id="game-control-buttons">
                     <a id="gridButton" data-role="button" data-inline="true" data-icon="grid" data-mini="true" data-transition="flip" onclick="selectAction();">
                         Grid
@@ -783,9 +784,10 @@
                 </a>
             </div>
             <div data-role="content">
-                <form id="prefsForm" action="#" method="POST"> <!-- action was "#page1" -->
+                <form id="prefsForm" onsubmit="saveGameFormSubmit();" method="POST">
                     <!-- Need to add Rules (RU = Japanese, Chinese, etc) -->
-                    <!-- Location/Place (PC), time (TM)(ie length of game) should be added automatically? -->
+                    <!-- Location/Place (PC), handicap (HA), time (TM)(ie length of game) 
+                     should be added automatically, or via edit form? -->
                     <label for="textinput1">
                         Black:
                     </label>
@@ -823,8 +825,8 @@
                         </label>
                         <input id="textinput4" name="HA" placeholder="Handicap" value="0" type="number" />
                     </div>
-                    <a href="#" data-role="button" data-direction="reverse" data-theme="b" data-icon="arrow-r" data-iconpos="right" onclick="saveGameFormSubmit();">Save Settings</a>
-                    <!-- <input type="submit" data-direction="reverse" data-icon="arrow-r" data-iconpos="right" value="Submit Settings" onsubmit="saveGameFormSubmit();" /> -->
+                    
+                    <input type="submit" data-direction="reverse" data-icon="arrow-r" data-iconpos="right" value="Save Settings" onsubmit="saveGameFormSubmit();" />
                 </form>
             </div>
         </div>
@@ -840,7 +842,7 @@
                 </a>
             </div>
             <div data-role="content">
-                <form id="editGameForm" action="#" method="POST"> <!-- action was "#page1" -->
+                <form id="editGameForm" onsubmit="editGameFormSubmit();" method="POST"> <!-- action was "#page1" -->
                     <!-- Need to add Rules (RU = Japanese, Chinese, etc) -->
                     <!-- Location/Place (PC), time (TM)(ie length of game) should be added automatically? -->
                     <label for="textinput1">
@@ -880,8 +882,7 @@
                         </label>
                         <input id="textinput4" name="HA" placeholder="Handicap" value="0" type="number" />
                     </div>
-                    <a href="#" data-role="button" data-direction="reverse" data-theme="b" data-icon="arrow-r" data-iconpos="right" onclick="editGameFormSubmit();">Save Game Details</a>
-                    <!-- <input type="submit" data-direction="reverse" data-icon="arrow-r" data-iconpos="right" value="Submit Settings" onsubmit="saveGameFormSubmit();" /> -->
+                    <input type="submit" data-direction="reverse" data-icon="arrow-r" data-iconpos="right" value="Save Game Details" onsubmit="saveGameFormSubmit();" /> 
                 </form>
             </div>
         </div>
