@@ -20,7 +20,7 @@
                              });
         </script>
         <script type="text/javascript" charset="utf-8" src="jquery/jquery.mobile-1.0.1.min.js"></script>
-        <script type="text/javascript" charset="utf-8" src="cordova-1.7.0rc1.js"></script>
+        <script type="text/javascript" charset="utf-8" src="cordova-1.6.1.js"></script>
         
         <!-- plugin JS -->
         <script type="text/javascript" charset="utf-8" src="gocam-plugin.js"></script>
@@ -647,7 +647,7 @@
                 </a>
             </div>
             <div data-role="content">
-                <form id="prefsForm" onsubmit="saveGameFormSubmit();" method="POST">
+                <form id="prefsForm" action="#" onsubmit="saveGameFormSubmit();" method="post">
                     <!-- Need to add Rules (RU = Japanese, Chinese, etc) -->
                     <!-- Location/Place (PC), handicap (HA), time (TM)(ie length of game) 
                      should be added automatically, or via edit form? -->
@@ -705,45 +705,45 @@
                 </a>
             </div>
             <div data-role="content">
-                <form id="editGameForm" onsubmit="editGameFormSubmit();" method="POST"> <!-- action was "#page1" -->
+                <form id="editGameForm" action="#" onsubmit="editGameFormSubmit();" method="post"> <!-- action was "#page1" -->
                     <!-- Need to add Rules (RU = Japanese, Chinese, etc) -->
                     <!-- Location/Place (PC), time (TM)(ie length of game) should be added automatically? -->
-                    <label for="textinput1">
+                    <label for="textinput1b">
                         Black:
                     </label>
-                    <input id="textinput1" name="PB" placeholder="Player Name" value="" type="text" /><input id="textinputbr" name="BR" placeholder="Rank" value="" type="text" />
-                    <label for="textinput2">
+                    <input id="textinput1b" name="PB" placeholder="Player Name" value="" type="text" /><input id="textinputbrb" name="BR" placeholder="Rank" value="" type="text" />
+                    <label for="textinput2b">
                         White:
                     </label>
-                    <input id="textinput2" name="PW" placeholder="Player Name" value="" type="text" /><input id="textinputwr" name="WR" placeholder="Rank" value="" type="text" />
+                    <input id="textinput2b" name="PW" placeholder="Player Name" value="" type="text" /><input id="textinputwrb" name="WR" placeholder="Rank" value="" type="text" />
                     <fieldset data-role="controlgroup" data-type="horizontal">
                         <legend>
                             Board Size:
                         </legend>
-                        <input name="SZ" id="radio1" value="19" type="radio" checked="checked" />
+                        <input name="SZ" id="radio1b" value="19" type="radio" checked="checked" />
                         <label for="radio1">
                             19x19
                         </label>
-                        <input name="SZ" id="radio2" value="13" type="radio" disabled="true" />
+                        <input name="SZ" id="radio2b" value="13" type="radio" disabled="true" />
                         <label for="radio2">
                             13x13
                         </label>
-                        <input name="SZ" id="radio3" value="9" type="radio" disabled="true" />
+                        <input name="SZ" id="radio3b" value="9" type="radio" disabled="true" />
                         <label for="radio3">
                             9x9
                         </label>
                     </fieldset>
                     <div class="formdetails">
-                        <label for="textinput3">
+                        <label for="textinput3b">
                             Komi:
                         </label>
-                        <input id="textinput3" name="KM" placeholder="Komi" value="5.5" type="number" />
+                        <input id="textinput3b" name="KM" placeholder="Komi" value="5.5" type="number" />
                     </div>
                     <div class="formdetails">
-                        <label for="textinput4">
+                        <label for="textinput4b">
                             Handicap:
                         </label>
-                        <input id="textinput4" name="HA" placeholder="Handicap" value="0" type="number" />
+                        <input id="textinput4b" name="HA" placeholder="Handicap" value="0" type="number" />
                     </div>
                     <input type="submit" data-direction="reverse" data-icon="arrow-r" data-iconpos="right" value="Save Game Details" onsubmit="saveGameFormSubmit();" /> 
                 </form>
@@ -807,7 +807,9 @@
                 </a>
             </div>
             <div data-role="content">
-                <ul id="archive-list" data-role="listview" data-filter="true" ><li>No Saved Games Available</ul>
+                <ul id="archive-list" data-role="listview" data-filter="true" >
+                    <li>No Saved Games Available</li>
+                </ul>
             </div>                        
         </div>
         
@@ -838,7 +840,7 @@
             <div data-role="header">
                 <h1>Preferences</h1>                
             </div>
-            <div id="file_details" data-role="content">
+            <div id="prefs_details" data-role="content">
             <p>Player name, default ruleset, dropbox integration, email address</p>
             </div>
         </div>
