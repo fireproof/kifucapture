@@ -3,7 +3,7 @@
     <head>
         <title>Capture SGF</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
-        <link rel="stylesheet" type="text/css" href="jquery/jquery.mobile-1.0.1.min.css" />
+        <link rel="stylesheet" type="text/css" href="jquery/jquery.mobile-1.1.0.min.css" />
         
         <link rel="stylesheet" media="screen" href="style.css" type="text/css" />
         <!-- iPad/iPhone specific css below, add after your main css >
@@ -19,7 +19,7 @@
                              $.mobile.loadingMessageTextVisible = true;
                              });
         </script>
-        <script type="text/javascript" charset="utf-8" src="jquery/jquery.mobile-1.0.1.min.js"></script>
+        <script type="text/javascript" charset="utf-8" src="jquery/jquery.mobile-1.1.0.min.js"></script>
         <script type="text/javascript" charset="utf-8" src="cordova-1.6.1.js"></script>
         
         <!-- plugin JS -->
@@ -257,12 +257,7 @@
             }
             
             
-            // Takes the contents of a form and turns it into a string, adds to DB
-//            function SGFpreamble() {
-//                console.log("SGFpreamble begins");
-//                var d = new Date();
-//                var DTval = d.getFullYear() +"-"+ d.getMonth() +"-"+ d.getDate();
-//                var $inputs = $('#prefsForm :input');
+
 //                var preambleText = "(\r\n;FF[4]\r\nGM[1]\r\nAP[Moku]\r\nDT["+DTval+"]\r\n";
 //                
 //                $inputs.each(function() {
@@ -277,17 +272,7 @@
 //                             preambleText += this.name + "[" + $(this).val() + "]\r\n";
 //                             }
 //                             });
-//                // console.log(preambleText);
-//                // save Preamble to database
-//                var db = window.openDatabase("Database", "1.0", "Moku", 200000);
-//                db.transaction(
-//                               function(tx){
-//                               // this will actually require finding the currentGameID, then UPDATE that row 
-//                               // also, if there is no record it will have to be created?
-//                               tx.executeSql('UPDATE GAMES SET gamedata="'+preambleText+'" WHERE id='+currentGameID);
-//                               }, errorCB, listGamesDB);
-//                selectAction();
-//            }
+
 
             /* -------------------------- */
             //    New Game Functions
@@ -367,10 +352,12 @@
                 // If the grid looks good
                 // write initial grid to disk/add to database?
                 if (currentGameID > '0') { $('#game-control-buttons').show(); } // TODO hide instructions
+                
                 // go to main page
                 // reload Eidogo
                 reloadEidogo();
                 $.mobile.changePage($("#page1"));
+                
                 // TODO start Automatic Image Capture
                 // NOT IMPLEMENTED YET
             }
@@ -573,19 +560,9 @@
                 <h3>
                     Moku
                 </h3>
-                <!--
-                <a data-role="button" data-rel="dialog" data-transition="pop" href="#prefs" data-icon="gear" data-iconpos="notext" data-shadow="false">
-                    Prefs
-                </a>
-                 -->
                 <a data-role="button" data-transition="fade" data-icon="plus" data-shadow="false" onclick="newGame();">
                     New
                 </a>
-                <!--
-                 <a data-role="button" data-transition="slideup" href="#page4" onclick="listDir(root);">
-                    File Archives
-                </a>
-                 -->
                 <a data-role="button" data-transition="slide" href="#gamesArchive" onclick="listGamesArchive();">
                     Archives
                 </a>
@@ -600,16 +577,10 @@
                     <a id="saveButton" data-role="button" data-inline="true" data-mini="true" data-transition="fade" href="#editGame" data-icon="check" data-iconpos="left" onclick="editGameDetails(currentGameID);">
                         Edit
                     </a>
-                   
                     <a data-role="button" data-inline="true" data-iconpos="notext" data-transition="fade" href="#page1" data-icon="refresh" data-iconpos="left" onclick="reloadEidogo();">
                         Refresh 
                     </a>
-                    
                     </div>
-                    <!-- eidogo-player-auto can contain SGF which *should* be displayed 
-                    <div class="eidogo-player-auto"></div>-->
-                    <div id="sgfoutput"></div>
-                    
                 </div>
             </div>
         </div>
@@ -624,7 +595,7 @@
                 <a data-role="button" data-direction="reverse" data-transition="flip" href="#page1" data-icon="back" data-iconpos="left">
                     Cancel
                 </a>
-                <a data-role="button" data-direction="reverse" data-transition="flip" href="#" data-icon="" onclick="acceptGrid();">
+                <a data-role="button" data-direction="reverse" data-transition="flip" href="#page1" data-icon="" onclick="acceptGrid();">
                     Accept
                 </a>
             </div>
@@ -694,108 +665,7 @@
             </div>
         </div>
         
-        
-        <div data-role="page" id="editGame">
-            <div data-theme="a" data-role="header">
-                <h3>
-                    Edit Game
-                </h3>
-                <a data-role="button" data-direction="reverse" data-transition="fade" href="#page1" data-icon="arrow-l" data-iconpos="left">
-                    Cancel
-                </a>
-            </div>
-            <div data-role="content">
-                <form id="editGameForm" action="#" onsubmit="editGameFormSubmit();" method="post"> <!-- action was "#page1" -->
-                    <!-- Need to add Rules (RU = Japanese, Chinese, etc) -->
-                    <!-- Location/Place (PC), time (TM)(ie length of game) should be added automatically? -->
-                    <label for="textinput1b">
-                        Black:
-                    </label>
-                    <input id="textinput1b" name="PB" placeholder="Player Name" value="" type="text" /><input id="textinputbrb" name="BR" placeholder="Rank" value="" type="text" />
-                    <label for="textinput2b">
-                        White:
-                    </label>
-                    <input id="textinput2b" name="PW" placeholder="Player Name" value="" type="text" /><input id="textinputwrb" name="WR" placeholder="Rank" value="" type="text" />
-                    <fieldset data-role="controlgroup" data-type="horizontal">
-                        <legend>
-                            Board Size:
-                        </legend>
-                        <input name="SZ" id="radio1b" value="19" type="radio" checked="checked" />
-                        <label for="radio1">
-                            19x19
-                        </label>
-                        <input name="SZ" id="radio2b" value="13" type="radio" disabled="true" />
-                        <label for="radio2">
-                            13x13
-                        </label>
-                        <input name="SZ" id="radio3b" value="9" type="radio" disabled="true" />
-                        <label for="radio3">
-                            9x9
-                        </label>
-                    </fieldset>
-                    <div class="formdetails">
-                        <label for="textinput3b">
-                            Komi:
-                        </label>
-                        <input id="textinput3b" name="KM" placeholder="Komi" value="5.5" type="number" />
-                    </div>
-                    <div class="formdetails">
-                        <label for="textinput4b">
-                            Handicap:
-                        </label>
-                        <input id="textinput4b" name="HA" placeholder="Handicap" value="0" type="number" />
-                    </div>
-                    <input type="submit" data-direction="reverse" data-icon="arrow-r" data-iconpos="right" value="Save Game Details" onsubmit="saveGameFormSubmit();" /> 
-                </form>
-            </div>
-        </div>
-        
-        
-        <div data-role="page" id="page4">
-            <div data-theme="a" data-role="header">
-                <h3>
-                    File Archives
-                </h3>
-                <a class="refreshButton" data-role="button" data-transition="fade" href="#page4" data-icon="refresh" data-iconpos="left" onclick="listDir(root);">
-                    Refresh
-                </a>
-                <a data-role="button" data-transition="slidedown" href="#page1" data-icon="arrow-l" data-iconpos="left">
-                    Back
-                </a>
-            </div>
-            <div data-role="content">
-                <div class="ui-grid-c" id="dirContent">
-                    <div class="ui-block-a">
-                        <div class="folder"><p>folder name</p></div>
-                    </div>
-                    <div class="ui-block-b">
-                        <div class="folder"><p>folder name</p></div>
-                    </div>
-                    <div class="ui-block-c">
-                        <div class="folder"><p>folder name</p></div>
-                    </div>
-                    <div class="ui-block-d">
-                        <div class="folder"><p>folder name</p></div>
-                    </div>
-                    <!-- next row -->
-                    <div class="ui-block-a">
-                        <div class="file"><p>file name</p></div>
-                    </div>
-                    <div class="ui-block-b">
-                        <div class="file"><p>file name</p></div>
-                    </div>
-                    <div class="ui-block-c">
-                        <div class="file"><p>file name</p></div>
-                    </div>
-                    <div class="ui-block-d">
-                        <div class="file"><p>file name</p></div>
-                    </div>
-                </div>
-                <a id="menu" href="#menuOptions" data-rel="dialog">file details</a>
-                <a id="get_file_details" href="#fileDetails" data-rel="dialog">file details</a>
-            </div>                        
-        </div>
-        
+       
         
         <div data-role="page" id="gamesArchive">
             <div data-theme="a" data-role="header">
@@ -812,37 +682,6 @@
                 </ul>
             </div>                        
         </div>
-        
-        
-        <div id="menuOptions" data-role="page">
-            <div data-role="header">
-                <h1>Select</h1>
-            </div>
-            <div data-role="content">
-                <input type="button" id="openBtn" data-theme="e" value="Details" />
-                <!-- <input type="button" id="copyBtn" value="Copy" />
-                 <input type="button" id="moveBtn" value="Move" />
-                 <input type="button" id="pasteBtn" value="Paste" disabled /> -->
-                <input type="button" id="deleteBtn" value="Delete" />
-            </div>
-        </div>
-        
-        
-        <div id="fileDetails" data-role="page">
-            <div data-role="header">
-                <h1>File</h1>
-            </div>
-            <div id="file_details" data-role="content"></div>
-        </div>
-        
-        
-        <div id="prefs" data-role="page">
-            <div data-role="header">
-                <h1>Preferences</h1>                
-            </div>
-            <div id="prefs_details" data-role="content">
-            <p>Player name, default ruleset, dropbox integration, email address</p>
-            </div>
-        </div>
+
     </body>
 </html>
