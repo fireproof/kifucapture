@@ -20,7 +20,7 @@
                              });
         </script>
         <script type="text/javascript" charset="utf-8" src="jquery/jquery.mobile-1.0.1.min.js"></script>
-        <script type="text/javascript" charset="utf-8" src="cordova-1.6.0.js"></script>
+        <script type="text/javascript" charset="utf-8" src="cordova-1.7.0rc1.js"></script>
         
         <!-- plugin JS -->
         <script type="text/javascript" charset="utf-8" src="gocam-plugin.js"></script>
@@ -566,10 +566,10 @@
                 // savetoPhotoAlbum is turned on to compare with Canvas2Image Plugin 
                 navigator.camera.getPicture(onPhotoURISuccess, onFail, { 
                                             quality: 50, 
-                                            targetWidth: idealWidth,
-                                            targetHeight: idealHeight,
-                                            correctOrientation: 0,
-                                            saveToPhotoAlbum: 0
+                                            targetWidth: 640,
+                                            targetHeight: 480,
+                                            correctOrientation: 1,
+                                            saveToPhotoAlbum: 1
                                             });
             }
             
@@ -686,13 +686,13 @@
                 console.log("Eidogo reloaded");
                 
                 // TODO: send a move to eidogo - not here, this is just for testing.
-                try {
-//                    player.setColor('B');
-//                    player.createMove('dj');
-                    player.playMove('B','dj');
-                }catch(e){
-                    console.log(e);
-                }
+//                try {
+////                    player.setColor('B');
+////                    player.createMove('dj');
+//                    player.playMove('B','dj');
+//                }catch(e){
+//                    console.log(e);
+//                }
                 // how to add some HTML to this without modifying the source js?
 //                $('.controls-container').append("<form id='sliderform'><label id='sliderlabel' for='slider'>Move:</label><input type='range' name='slider' id='slider' value='50' min='0' max='400' data-highlight='true' /></form>");
 
