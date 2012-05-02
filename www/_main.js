@@ -86,7 +86,8 @@ function listGamesArchive() {
                                  }
                                  $('ul#archive-list').html(list);
                                  $('ul#archive-list').listview('refresh');
-                                 $.mobile.changePage($("#gamesArchive"));
+                                 console.log("listGamesArchive says -- mobile.chanagePage: gamesArchive");
+                                 $.mobile.changePage("#gamesArchive");
                                  }, errorCB);
                    }, errorCB);                
 }
@@ -194,8 +195,6 @@ function savePrefsFormtoDB() {
                    function(tx){
                    tx.executeSql(updateGameSQL);
                    }, errorCB, listGamesDB);
-    
-    
 }
 
 
@@ -235,7 +234,8 @@ function newGameRecord() {
                                     console.log('currentGameID is now '+currentGameID);
                                     });
                    });
-    $.mobile.changePage($("#saveGame"));
+    console.log("newGameRecord says -- mobile.changePage: saveGame");
+    $.mobile.changePage("#saveGame");
     
 }
 
@@ -260,7 +260,8 @@ function confirmNewGame(button) {
         $('#game-control-buttons').show();
         
         // go to SaveGame form, save details
-        $.mobile.changePage($("#saveGame"));
+        console.log("confirmNewGame says -- mobile.changePage: saveGame");
+        $.mobile.changePage("#saveGame");
         
     }
 }
@@ -298,7 +299,8 @@ function acceptGrid() {
     // go to main page
     // reload Eidogo
     reloadEidogo();
-    $.mobile.changePage($("#page1"));
+    console.log("acceptGrid says -- mobile.changePage: page1");
+    $.mobile.changePage("#page1");
     
     // TODO start Automatic Image Capture
     // NOT IMPLEMENTED YET
@@ -356,14 +358,14 @@ function capturePhoto() {
      picture taken sideways, image has object pointing up (image resized to correct dimensions)
           
      */
-    
-    $.mobile.changePage($("#camera"));
+    console.log("capturePhoto says -- mobile.changePage: camera");
+    $.mobile.changePage("#camera");
     navigator.camera.getPicture(onPhotoURISuccess, onFail, { 
                                 quality: 50, 
                                 targetWidth: idealWidth,
                                 targetHeight: idealHeight,
                                 correctOrientation: 1,
-                                saveToPhotoAlbum: 1
+                                saveToPhotoAlbum: 0
                                 });
     
 }
@@ -371,7 +373,8 @@ function capturePhoto() {
 // PHOTO LIBRARY
 // Retrieve image file location from Photo Library
 function getPhoto(source) {
-    $.mobile.changePage($("#camera"));
+    console.log("getPhoto says -- mobile.changePage: camera");
+    $.mobile.changePage("#camera");
     navigator.camera.getPicture(onPhotoURISuccess, onFail, { 
                                 quality: 50, 
                                 destinationType: destinationType.FILE_URI,
@@ -418,7 +421,7 @@ function onPhotoURISuccess(imageURI) {
         // show loading message
         // TODO - fix display. doesn't show when taking a second picture? spinner no spinny?
         
-        $.mobile.showPageLoadingMsg();
+//        $.mobile.showPageLoadingMsg("b", "This is only a test", true);
         
         ctx.drawImage(image, 0,0);
         
@@ -456,12 +459,15 @@ function onPhotoURISuccess(imageURI) {
                                        console.log(goTracer.getSGF());
                                        
                                        // all done, hide loading message
-                                       $.mobile.hidePageLoadingMsg();
+//                                       $.mobile.hidePageLoadingMsg();
                                        
                                        // Approve or Update current moves in SGF file?
                                        // temporary - just write all SGF to file.
+//                                       writeFile(goTracer.getSGF(), function(){
+//                                                 reloadEidogo();
+//                                                 });
                                        writeFile(goTracer.getSGF(), function(){
-                                                 reloadEidogo();
+                                                 console.log('this is where we used to reload Eidogo');
                                                  });
                                        // save move to databse
                                        saveMovetoDB(goTracer.getSGF());
@@ -528,22 +534,42 @@ function onFail(err) {
 //   Select Camera/Photo Lib  //
 /* -------------------------- */
 function selectAction() {
-    //                capturePhoto();
     var actionSheet = window.plugins.actionSheet;
-    //                $.mobile.changePage($("#camera"));
+//    console.log("selectAction says -- mobile.changePage: camera");
+//    $.mobile.changePage("#camera");
     // Select Source
     actionSheet.create('Select Image Source', ['Camera', 'Photo Library', 'Cancel'], function(buttonValue, buttonIndex) {
-                       if (arguments[1] == '0'){
+                       console.log("arguments[1]: " + arguments[1]);
+//                       if (arguments[1] == '0'){
+//                       capturePhoto();
+//                       // set default image source
+//                       imageSource = "camera";
+//                       }
+//                       if (arguments[1] == '1') {
+//                       getPhoto(pictureSource.PHOTOLIBRARY);
+//                       // set default image source
+//                       imageSource = "photolibrary";
+//                       }
+//                       else {
+//                       console.log("selectAction says -- mobile.changePage: page1");
+////                       $.mobile.changePage("#page1");
+//                       }
+                       
+                       switch (arguments[1])
+                       {
+                       case 0:
                        capturePhoto();
-                       // TODO set default image source?
-                       }
-                       if (arguments[1] == '1') {
+                       imageSource = "camera"; // set default image source
+                       break;
+                       case 1:
                        getPhoto(pictureSource.PHOTOLIBRARY);
-                       // set default image source?
+                       imageSource = "photolibrary";
+                       break;
+                       default:
+//                       $.mobile.changePage("#page1");
+                       console.log('selectAction default case says: go back to page1');
                        }
-                       else {
-                       $.mobile.changePage($("#page1"));
-                       }
+
                        
                        }, {cancelButtonIndex: 2});
     
