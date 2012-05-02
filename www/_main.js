@@ -130,103 +130,6 @@ function getHighestGameID(callback) {
 
 
 
-/*--------------------------------------------- */
-//         initial GRID DETECTION               //
-/*--------------------------------------------- */
-
-// Called when a photo is successfully retrieved
-// and coordinates are needed.
-function onPhotoURISuccess(imageURI) {
-    currentMoveID = currentMoveID + 1;
-    var canvas = document.getElementById("canvas");
-    var ctx = canvas.getContext("2d");
-    
-    var secondCanvas = document.getElementById("secondcanvas");
-    var secondCtx = secondCanvas.getContext("2d");
-    
-    var image = new Image();
-    
-    image.onload = function(){
-        
-        // ------------------------------------------------------------------
-        // default size
-        
-        // set canvas height and width to match image.
-        ctx.canvas.width = idealWidth;
-        ctx.canvas.height = idealHeight;
-        
-        // show loading message
-        // TODO - fix display. doesn't show when taking a second picture? spinner no spinny?
-        
-        $.mobile.showPageLoadingMsg();
-        
-        ctx.drawImage(image, 0,0);
-        
-        // ------------------------------------------------------------------
-        // Canvas2ImagePlugin saves to Photo Library (maybe sends to Documents or temp dir instead?)
-        // might not be necessary if capturePhoto can specify w x h 
-        try {
-//            saveImage();
-            console.log("Image would be saved, but hey, let's not fill up the library right now");
-        } catch (e) {
-            console.log("can't save image - Exception: "+e);
-        }
-        
-        // ------------------------------------------------------------------
-        // a good point at which to get the corner coordinates from GoCam
-        // First pass only, unless following image changes considerably.
-        
-        console.log("About to run GocamPlugin");
-        
-        // try timing GocamPlugin
-        var startTime = new Date();
-        console.log("GocamPlugin startTime: " + startTime);
-        
-        filename = imageURI.replace("file://localhost", '');
-        try {
-            GocamPlugin.nativeFunction([filename] ,
-                                       function(result) {
-                                       var endTime = new Date();
-                                       console.log("GocamPlugin endTime: " + endTime);
-                                       console.log("GocamPlugin took: " + (endTime - startTime) + "ms");
-                                       //                                                   coords = result;
-                                       goTracer = new GoTracer(image, canvas);
-                                       goTracer.setCorners(result);
-                                       goTracer.startScan();
-                                       console.log(goTracer.getSGF());
-                                       
-                                       // all done, hide loading message
-                                       $.mobile.hidePageLoadingMsg();
-                                       
-                                       // Approve or Update current moves in SGF file?
-                                       // temporary - just write all SGF to file.
-                                       writeFile(goTracer.getSGF(), function(){
-                                                 reloadEidogo();
-                                                 });
-                                       // save move to databse
-                                       saveMovetoDB(goTracer.getSGF());
-                                       
-                                       // ------------------------------------------------------------------
-                                       // save SGF to disk? Send via Email? Open in Browser? Display using eidogo?
-                                       // save in iTunes
-                                       
-                                       },
-                                       
-                                       function(error) {
-                                       console.log("GoCam - Error : \r\n"+error);      
-                                       }
-                                       ); 
-        } catch (e) {
-            console.log("Exception: "+e);
-        }
-        
-    };
-    image.src = imageURI;
-    
-    
-}
-
-
 /* -------------------------- */
 //       Save Forms
 /* -------------------------- */
@@ -480,10 +383,107 @@ function getPhoto(source) {
                                 });
 }
 
-/ NOT CURRENTLY USED
+// NOT CURRENTLY USED
 // Take picture using device camera, allow edit, and retrieve image as base64-encoded string  
 function capturePhotoEdit() {
     navigator.camera.getPicture(onPhotoURISuccess, onFail, { quality: 20, allowEdit: true }); 
+}
+
+
+/*--------------------------------------------- */
+//         initial GRID DETECTION               //
+/*--------------------------------------------- */
+
+// Called when a photo is successfully retrieved
+// and coordinates are needed.
+function onPhotoURISuccess(imageURI) {
+    currentMoveID = currentMoveID + 1;
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+    
+    var secondCanvas = document.getElementById("secondcanvas");
+    var secondCtx = secondCanvas.getContext("2d");
+    
+    var image = new Image();
+    
+    image.onload = function(){
+        
+        // ------------------------------------------------------------------
+        // default size
+        
+        // set canvas height and width to match image.
+        ctx.canvas.width = idealWidth;
+        ctx.canvas.height = idealHeight;
+        
+        // show loading message
+        // TODO - fix display. doesn't show when taking a second picture? spinner no spinny?
+        
+        $.mobile.showPageLoadingMsg();
+        
+        ctx.drawImage(image, 0,0);
+        
+        // ------------------------------------------------------------------
+        // Canvas2ImagePlugin saves to Photo Library (maybe sends to Documents or temp dir instead?)
+        // might not be necessary if capturePhoto can specify w x h 
+        try {
+            //            saveImage();
+            console.log("Image would be saved, but hey, let's not fill up the library right now");
+        } catch (e) {
+            console.log("can't save image - Exception: "+e);
+        }
+        
+        // ------------------------------------------------------------------
+        // a good point at which to get the corner coordinates from GoCam
+        // First pass only, unless following image changes considerably.
+        
+        console.log("About to run GocamPlugin");
+        
+        // try timing GocamPlugin
+        var startTime = new Date();
+        console.log("GocamPlugin startTime: " + startTime);
+        
+        filename = imageURI.replace("file://localhost", '');
+        try {
+            GocamPlugin.nativeFunction([filename] ,
+                                       function(result) {
+                                       var endTime = new Date();
+                                       console.log("GocamPlugin endTime: " + endTime);
+                                       console.log("GocamPlugin took: " + (endTime - startTime) + "ms");
+                                       //                                                   coords = result;
+                                       goTracer = new GoTracer(image, canvas);
+                                       goTracer.setCorners(result);
+                                       goTracer.startScan();
+                                       console.log(goTracer.getSGF());
+                                       
+                                       // all done, hide loading message
+                                       $.mobile.hidePageLoadingMsg();
+                                       
+                                       // Approve or Update current moves in SGF file?
+                                       // temporary - just write all SGF to file.
+                                       writeFile(goTracer.getSGF(), function(){
+                                                 reloadEidogo();
+                                                 });
+                                       // save move to databse
+                                       saveMovetoDB(goTracer.getSGF());
+                                       
+                                       // ------------------------------------------------------------------
+                                       // save SGF to disk? Send via Email? Open in Browser? Display using eidogo?
+                                       // save in iTunes
+                                       
+                                       },
+                                       
+                                       function(error) {
+                                       console.log("GoCam - Error : \r\n"+error);      
+                                       }
+                                       ); 
+        } catch (e) {
+            console.log("Exception: "+e);
+        }
+        
+    };
+    image.src = imageURI;
+    
+    
 }
 
 
