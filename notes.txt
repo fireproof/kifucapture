@@ -2,10 +2,10 @@
 iOS developers - odesk, okori, brian fox
 
 
-WTF is up with image sizes?
-	read up on canvas and images and all that shit.
+Image sizes - cordova 1.7 should fix.
 
 Eidogo: loading data into hidden div? initGame hook to load as the game progresses?
+player.playMove('B','je'); might be a clue
 
 jhead (or other EXIF rotation fix) will be necessary.
 
@@ -21,36 +21,13 @@ NativeControls plugin
 BUGS:
   spinner don't spin
   Tilt counter clock-wise causes flip! EXIF? Check on code in goatracer...
-  
-  New Capture step at launch?
-    save existing, continue, or new capture? -- a good point to select camera or photolibrary?
     
-  Camera button should just launch camera.
-  
   Eidogo - how to load new moves progressively?
   
-  Select 
   
-  TABLE STRUCTURE
-    moves uniqID gameID moveID(for sequence) move (coordinates or SGF)
-    
-    gameID date, other preamble stuff
-    
-    preferences
+
 ------------
 Things to think about 
-
-Create directories
-	/tmp for storing in-progress SGF files
-	Settings - current SGF header values (settings.txt)
-	Directory for each saved game - settings.txt, SGF.txt, preview.png?
-view directories + contents as list (review/download past games)
-	File listing
-		Tap on file needs "selected" style
-		Delete button needs confirmation
-			Can't add new files after deleting?
-		Open - shows details, briefly. WTF?
-		Needs: Email, View
 
 Debugging:
 http://www.daveoncode.com/2010/01/12/debugging-phonegap-applications-using-xcode-console/
@@ -59,3 +36,19 @@ http://www.daveoncode.com/2010/01/12/debugging-phonegap-applications-using-xcode
 UI layout crutch
 	http://www.codiqa.com/
 	
+SGF bits:
+	
+var preambleText = "(\r\n;FF[4]\r\nGM[1]\r\nAP[Moku]\r\nDT["+DTval+"]\r\n";
+
+$inputs.each(function() {
+			 // add form values - watch out for radio buttons.
+			 if (this.name == 'SZ') {
+			 if ($(this).attr('checked')) {
+			 preambleText += this.name + "[" + $(this).val() + "]\r\n";
+			 currentBoardSize = $(this).val();
+			 }
+			 } 
+			 else {
+			 preambleText += this.name + "[" + $(this).val() + "]\r\n";
+			 }
+			 });

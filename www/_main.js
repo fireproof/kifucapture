@@ -115,16 +115,15 @@ function getHighestGameID(callback) {
                    tx.executeSql("SELECT id FROM GAMES", [], function (tx, result) {
                                  var highestGameIDinDB = 0;
                                  for (var i = 0; i < result.rows.length; ++i) {
-                                 var row = result.rows.item(i);
-                                 if (row['id'] > highestGameIDinDB) {
-                                 highestGameIDinDB = row['id'];
+                                     var row = result.rows.item(i);
+                                     if (row['id'] > highestGameIDinDB) {
+                                        highestGameIDinDB = row['id'];
+                                     }
                                  }
-                                 }
-                                 console.log('getHighestGameID says: ' + highestGameIDinDB);
                                  callback(highestGameIDinDB);
                                  }, function (tx, error) {
-                                 console.log('could not SELECT id FROM GAMES - ' + error.message);
-                                 return;
+                                    console.log('could not SELECT id FROM GAMES - ' + error.message);
+                                    return;
                                  });
                    });            
 }
@@ -198,23 +197,6 @@ function savePrefsFormtoDB() {
 }
 
 
-
-//                var preambleText = "(\r\n;FF[4]\r\nGM[1]\r\nAP[Moku]\r\nDT["+DTval+"]\r\n";
-//                
-//                $inputs.each(function() {
-//                             // add form values - watch out for radio buttons.
-//                             if (this.name == 'SZ') {
-//                             if ($(this).attr('checked')) {
-//                             preambleText += this.name + "[" + $(this).val() + "]\r\n";
-//                             currentBoardSize = $(this).val();
-//                             }
-//                             } 
-//                             else {
-//                             preambleText += this.name + "[" + $(this).val() + "]\r\n";
-//                             }
-//                             });
-
-
 /* -------------------------- */
 //    New Game Functions
 /* -------------------------- */
@@ -223,7 +205,7 @@ function savePrefsFormtoDB() {
     then go to SaveGame page to set details
 */
 function newGameRecord() {
-        console.log('newGameRecord called');
+    console.log('newGameRecord called');
     var db = window.openDatabase("Database", "1.0", "Moku", 200000);
     db.transaction(function (tx) {
                    tx.executeSql('INSERT INTO GAMES (gamedata) VALUES ("")');
@@ -258,10 +240,6 @@ function confirmNewGame(button) {
         
         // enable Grid and Save buttons
         $('#game-control-buttons').show();
-        
-        // go to SaveGame form, save details
-        console.log("confirmNewGame says -- mobile.changePage: saveGame");
-        $.mobile.changePage("#saveGame");
         
     }
 }
@@ -364,14 +342,14 @@ function capturePhoto() {
                                 quality: 50, 
                                 targetWidth: idealWidth,
                                 targetHeight: idealHeight,
-                                correctOrientation: 1,
+                                correctOrientation: 0,
                                 saveToPhotoAlbum: 0
                                 });
     
 }
 
 // PHOTO LIBRARY
-// Retrieve image file location from Photo Library
+// Retrieve image file location from var source (eg Photo Library)
 function getPhoto(source) {
     console.log("getPhoto says -- mobile.changePage: camera");
     $.mobile.changePage("#camera");
@@ -539,21 +517,6 @@ function selectAction() {
 //    $.mobile.changePage("#camera");
     // Select Source
     actionSheet.create('Select Image Source', ['Camera', 'Photo Library', 'Cancel'], function(buttonValue, buttonIndex) {
-                       console.log("arguments[1]: " + arguments[1]);
-//                       if (arguments[1] == '0'){
-//                       capturePhoto();
-//                       // set default image source
-//                       imageSource = "camera";
-//                       }
-//                       if (arguments[1] == '1') {
-//                       getPhoto(pictureSource.PHOTOLIBRARY);
-//                       // set default image source
-//                       imageSource = "photolibrary";
-//                       }
-//                       else {
-//                       console.log("selectAction says -- mobile.changePage: page1");
-////                       $.mobile.changePage("#page1");
-//                       }
                        
                        switch (arguments[1])
                        {
