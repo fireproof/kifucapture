@@ -12,32 +12,32 @@ function populateDB(tx) {
 	// PB, BR, PW, WR, SZ, KM, HA, DT, 
 }
 
-// Query the database
-function queryDB(tx) {
-	console.log("queryDB called");
-	tx.executeSql('SELECT * FROM MOVES', [], querySuccess, errorCB);
-}
-
-// Query the success callback
-function querySuccess(tx, results) {
-	var len = results.rows.length;
-	console.log("MOVES table: " + len + " rows found.");
-	for (var i=0; i<len; i++){
-		console.log("Row = " + i + " ID = " + results.rows.item(i).id + " movedata = " + results.rows.item(i).movedata);
-	}
-}
+//// Query the database
+//function queryDB(tx) {
+//	console.log("queryDB called");
+//	tx.executeSql('SELECT * FROM MOVES', [], querySuccess, errorCB);
+//}
+//
+//// Query the success callback
+//function querySuccess(tx, results) {
+//	var len = results.rows.length;
+//	console.log("MOVES table: " + len + " rows found.");
+//	for (var i=0; i<len; i++){
+//		console.log("Row = " + i + " ID = " + results.rows.item(i).id + " movedata = " + results.rows.item(i).movedata);
+//	}
+//}
 
 // Error callback
 function errorCB(err) {
 	console.log("ERROR processing SQL: "+err.code);
 }
 
-// Success callback
-function successCB() {
-	console.log("successCB called");
-	var db = window.openDatabase("Database", "1.0", "Moku", 200000);
-	db.transaction(queryDB, errorCB);
-}
+//// Success callback
+//function successCB() {
+//	console.log("successCB called");
+//	var db = window.openDatabase("Database", "1.0", "Moku", 200000);
+//	db.transaction(queryDB, errorCB);
+//}
 
 /* -------------------------- */
 //       Save Move
@@ -193,7 +193,7 @@ function savePrefsFormtoDB() {
     db.transaction(
                    function(tx){
                    tx.executeSql(updateGameSQL);
-                   }, errorCB, listGamesDB);
+                   }, errorCB, function(){ console.log('GAMES db updated'); }); // or listGamesDB();
 }
 
 
@@ -507,35 +507,50 @@ function onFail(err) {
 }
 
 
-/* -------------------------- */
-//    ActionSheet Function    //
-//   Select Camera/Photo Lib  //
-/* -------------------------- */
-function selectAction() {
-    var actionSheet = window.plugins.actionSheet;
-//    console.log("selectAction says -- mobile.changePage: camera");
-//    $.mobile.changePage("#camera");
-    // Select Source
-    actionSheet.create('Select Image Source', ['Camera', 'Photo Library', 'Cancel'], function(buttonValue, buttonIndex) {
-                       
-                       switch (arguments[1])
-                       {
-                       case 0:
-                       capturePhoto();
-                       imageSource = "camera"; // set default image source
-                       break;
-                       case 1:
-                       getPhoto(pictureSource.PHOTOLIBRARY);
-                       imageSource = "photolibrary";
-                       break;
-                       default:
-//                       $.mobile.changePage("#page1");
-                       console.log('selectAction default case says: go back to page1');
-                       }
+///* -------------------------- */
+////    ActionSheet Function    //
+////   Select Camera/Photo Lib  //
+///* -------------------------- */
+//function selectAction() {
+//    var actionSheet = window.plugins.actionSheet;
+////    console.log("selectAction says -- mobile.changePage: camera");
+////    $.mobile.changePage("#camera");
+//    // Select Source
+//    actionSheet.create('Select Image Source', ['Camera', 'Photo Library', 'Cancel'], function(buttonValue, buttonIndex) {
+//                       
+//                       switch (arguments[1])
+//                       {
+//                       case 0:
+//                       capturePhoto();
+//                       imageSource = "camera"; // set default image source
+//                       break;
+//                       case 1:
+//                       getPhoto(pictureSource.PHOTOLIBRARY);
+//                       imageSource = "photolibrary";
+//                       break;
+//                       default:
+////                       $.mobile.changePage("#page1");
+//                       console.log('selectAction default case says: go back to page1');
+//                       }
+//
+//                       
+//                       }, {cancelButtonIndex: 2});
+//    
+//}
 
-                       
-                       }, {cancelButtonIndex: 2});
-    
+// this version doesn't use a plug-in -- just a popup 
+function selectAction() {
+	navigator.notification.confirm(
+                                   'Please select',			// message
+                                   function(button){
+                                   if(button == 2) {
+                                   capturePhoto();
+                                   } else {
+                                   getPhoto(pictureSource.PHOTOLIBRARY);
+                                   }}, 
+                                   'Image Source', 
+                                   'Photo Library,Camera' 	// buttonLabels
+                                   );
 }
 
 /* -------------------------- */
