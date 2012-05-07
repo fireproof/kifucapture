@@ -45,20 +45,10 @@ function errorCB(err) {
 
 // Save a move to the Database
 function saveMovetoDB(newMove) {
-	var db = window.openDatabase("Database", "1.0", "Moku", 200000);
+//	var db = window.openDatabase("Database", "1.0", "Moku", 200000);
 	db.transaction(function(tx){
                    tx.executeSql('INSERT INTO MOVES (gameid, movedata) VALUES ('+ currentGameID +', "'+ newMove +'")');
-                   }, errorCB, function() {
-                   var db = window.openDatabase("Database", "1.0", "Moku", 200000);
-                   db.transaction(function(tx){
-                                  tx.executeSql('SELECT * FROM MOVES', [], function(tx, results) {
-                                                var len = results.rows.length;
-                                                console.log("MOVES table: " + len + " rows found.");
-                                                for (var i=0; i<len; i++){
-                                                console.log("Row = " + i + " ID = " + results.rows.item(i).id + " gameid = "+ results.rows.item(i).gameid +" movedata = " + results.rows.item(i).movedata);
-                                                }
-                                                }, errorCB);
-                                  }, errorCB);
+                   }, errorCB, function() { console.log('move saved to DB');
                    });
 }
 
@@ -69,7 +59,7 @@ function saveMovetoDB(newMove) {
 function listGamesArchive() {
 	// lists GAMES db on gamesArchive page
 	var list = '';
-	var db = window.openDatabase("Database", "1.0", "Moku", 200000);
+//	var db = window.openDatabase("Database", "1.0", "Moku", 200000);
 	db.transaction(function(tx){
                    tx.executeSql('SELECT * FROM GAMES', [], function(tx, results) {
                                  var len = results.rows.length;
@@ -86,7 +76,7 @@ function listGamesArchive() {
                                  }
                                  $('ul#archive-list').html(list);
                                  $('ul#archive-list').listview('refresh');
-                                 console.log("listGamesArchive says -- mobile.chanagePage: gamesArchive");
+                                 console.log("listGamesArchive says -- mobile.changePage: gamesArchive");
                                  $.mobile.changePage("#gamesArchive");
                                  }, errorCB);
                    }, errorCB);                
@@ -94,7 +84,7 @@ function listGamesArchive() {
 
 function listGamesDB() {
 	// spit GAMES db to console.
-	var db = window.openDatabase("Database", "1.0", "Moku", 200000);
+//	var db = window.openDatabase("Database", "1.0", "Moku", 200000);
 	db.transaction(function(tx){
                    tx.executeSql('SELECT * FROM GAMES', [], function(tx, results) {
                                  var len = results.rows.length;
@@ -110,7 +100,7 @@ function listGamesDB() {
 
 
 function getHighestGameID(callback) {
-	var db = window.openDatabase("Database", "1.0", "Moku", 200000);
+//	var db = window.openDatabase("Database", "1.0", "Moku", 200000);
 	db.transaction(function (tx) {
                    tx.executeSql("SELECT id FROM GAMES", [], function (tx, result) {
                                  var highestGameIDinDB = 0;
@@ -151,7 +141,7 @@ function editGameDetails(gameid){
     // TODO: seems like the val() stuff should put the array into the form... but no go.
     // setup edit Form using supplied GAME id
     // get game info from DB, load it into an array, populate editGameForm using array
-    var db = window.openDatabase("Database", "1.0", "Moku", 200000);
+//    var db = window.openDatabase("Database", "1.0", "Moku", 200000);
     db.transaction(function(tx){
                    tx.executeSql('SELECT * FROM GAMES WHERE id='+gameid, [], function(tx, results) {
                                  // http://stackoverflow.com/questions/172524/populate-a-form-with-data-from-an-associative-array-with-jquery
@@ -189,7 +179,7 @@ function savePrefsFormtoDB() {
     
     var updateGameSQL = 'UPDATE GAMES SET '+ updateString +' WHERE id='+ currentGameID;
     
-    var db = window.openDatabase("Database", "1.0", "Moku", 200000);
+//    var db = window.openDatabase("Database", "1.0", "Moku", 200000);
     db.transaction(
                    function(tx){
                    tx.executeSql(updateGameSQL);
@@ -206,7 +196,7 @@ function savePrefsFormtoDB() {
 */
 function newGameRecord() {
     console.log('newGameRecord called');
-    var db = window.openDatabase("Database", "1.0", "Moku", 200000);
+//    var db = window.openDatabase("Database", "1.0", "Moku", 200000);
     db.transaction(function (tx) {
                    tx.executeSql('INSERT INTO GAMES (gamedata) VALUES ("")');
                    }, errorCB, function () {
@@ -276,10 +266,10 @@ function acceptGrid() {
     
     // go to main page
     // reload Eidogo
-    reloadEidogo();
+    
     console.log("acceptGrid says -- mobile.changePage: page1");
     $.mobile.changePage("#page1");
-    
+    reloadEidogo();
     // TODO start Automatic Image Capture
     // NOT IMPLEMENTED YET
 }
@@ -399,7 +389,7 @@ function onPhotoURISuccess(imageURI) {
         // show loading message
         // TODO - fix display. doesn't show when taking a second picture? spinner no spinny?
         
-//        $.mobile.showPageLoadingMsg("b", "This is only a test", true);
+        $.mobile.showPageLoadingMsg("a", "Detecting Grid...", true);
         
         ctx.drawImage(image, 0,0);
         
@@ -437,7 +427,7 @@ function onPhotoURISuccess(imageURI) {
                                        console.log(goTracer.getSGF());
                                        
                                        // all done, hide loading message
-//                                       $.mobile.hidePageLoadingMsg();
+                                       $.mobile.hidePageLoadingMsg();
                                        
                                        // Approve or Update current moves in SGF file?
                                        // temporary - just write all SGF to file.
@@ -556,7 +546,7 @@ function selectAction() {
 /* -------------------------- */
 //     Eidogo SGF display     //
 /* -------------------------- */
-function reloadEidogo() {
+function loadEidogo() {
     // set sgfUrl to "SGF.txt" for local browser testing
     // set sgfUrl to "../../Documents/SGF.txt" (saved by writeFile) for other tests
     var player = new eidogo.Player({
@@ -576,7 +566,7 @@ function reloadEidogo() {
                                    enableShortcuts: false,
                                    problemMode:     false
                                    });
-    console.log("Eidogo reloaded");
+    console.log("Eidogo LOAD");
     
     // TODO: send a move to eidogo - not here, this is just for testing.
     //                try {
@@ -589,4 +579,9 @@ function reloadEidogo() {
     // how to add some HTML to this without modifying the source js?
     //                $('.controls-container').append("<form id='sliderform'><label id='sliderlabel' for='slider'>Move:</label><input type='range' name='slider' id='slider' value='50' min='0' max='400' data-highlight='true' /></form>");
     
+}
+
+function reloadEidogo() {
+    console.log('player.refresh() called');
+    player.refresh();
 }
