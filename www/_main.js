@@ -68,7 +68,7 @@ function listGamesArchive() {
                                  if (row.SZ !== null) {
                                  if (row.PB !== null ){ pb = '<br />Black: '+ row.PB; }
                                  if (row.PW !== null ){ pw = '<br />White: '+ row.PW; }
-                                 list += "<li><a onclick=\"editGameDetails("+ row.id +");\"><h3>" + row.DT +"</h3><p>"+ pb +pw  +"<br />Board size: "+ row.SZ +"</p></a></li>";
+                                 list += "<li><a onclick=\"editGameDetails("+ row.id +");\"><h3>" + row.DT +"</h3><p>"+ pb +pw  +"<br />Board size: "+ row.SZ +"x"+ row.SZ +"</p></a></li>";
                                  }
                                  }
                                  $('ul#archive-list').html(list);
@@ -121,59 +121,83 @@ function getHighestGameID(callback) {
 
 function saveGameFormSubmit() {
     // used when starting a new game
-    savePrefsFormtoDB();
+    saveGameDetails();
     selectAction();
 }
 
 function editGameFormSubmit() {
     // for editing an existing game
-    savePrefsFormtoDB();
+    saveGameDetails();
+    // TODO: then what? back to the archive?
 }
 
 function editGameDetails(gameid){
     console.log('editGameDetails gameid='+gameid);
-    // TODO: are SQL results an array?
-    // TODO: seems like the val() stuff should put the array into the form... but no go.
     // setup edit Form using supplied GAME id
     // get game info from DB, load it into an array, populate editGameForm using array
     db.transaction(function(tx){
                    tx.executeSql('SELECT * FROM GAMES WHERE id='+gameid, [], function(tx, results) {
-                                 // http://stackoverflow.com/questions/172524/populate-a-form-with-data-from-an-associative-array-with-jquery
-                                 // the following isn't working because I don't understand jQuery.
+                                 var row = results.rows.item(0);
                                  try {
-                                 $.each(results.rows, function(name,value) { 
-                                        $("#prefsForm input[name='" + name + "']").val(value); 
-                                        console.log("trying to output name and value: "+ name +" "+ value);});
-                                 }catch(e){
+                                 $.each(row, function (name,value) {
+                                        $("input[name='"+name+"'],select[name='"+name+"']").each(function() {
+                                                                                                 switch (this.nodeName.toLowerCase()) {
+                                                                                                 case "input":
+                                                                                                 switch (this.type) {
+                                                                                                 case "radio":
+                                                                                                 case "checkbox":
+                                                                                                 if (this.value==value) { $(this).click(); }
+                                                                                                 break;
+                                                                                                 default:
+                                                                                                 $(this).val(value);
+                                                                                                 break;
+                                                                                                 }
+                                                                                                 break;
+                                                                                                 case "select":
+                                                                                                 $("option",this).each(function(){
+                                                                                                                       if (this.value==value) { this.selected=true; }
+                                                                                                                       });
+                                                                                                 break;
+                                                                                                 }
+                                                                                                 });
+                                        });
+                                 } catch(e){
                                  console.log('editGameDetails jquery error: ' +e);
                                  }
+                                 // also reveal other details: score, comments, gameID?
                                  $.mobile.changePage('#saveGame');
                                  }, errorCB);
                    }, errorCB);
 }
 
 
-function savePrefsFormtoDB() {
-    // TODO - should probably be just :input so that it will work with saveGameForm and editGameForm
+function saveGameDetails() {
+    // TODO - change currentGameID to something passed as a variable, so this will work with Save and Update form
     // ... 
-    var fields = $("#prefsForm :input").serializeArray();
+    var fields = $("#gameDetailsForm :input").serializeArray();
     
     var d = new Date();
     var DTval = d.getFullYear() +"-"+ d.getMonth() +"-"+ d.getDate();
-    
     var updateString = " ";
+    var thisGameID = '';
     jQuery.each(fields, function(i, field){
+                if (field.name == 'id') {
+                thisGameID = field.value;
+                console.log('thisGameID is '+ thisGameID);
+                }
                 if (field.name == 'SZ') {
                 currentBoardSize = field.value;
+                console.log('board size: '+ currentBoardSize);
                 }
-                if (field.value != '') {
+                if ((field.value != '') &&(field.name !== 'id')){
                 updateString += field.name +'="'+ field.value +'",';
+                console.log(field.name +": "+ field.value);
                 }
                 });
     updateString += 'DT="'+DTval+'"';
-    
-    var updateGameSQL = 'UPDATE GAMES SET '+ updateString +' WHERE id='+ currentGameID;
-    
+    console.log('thisGameID is '+ thisGameID);
+    var updateGameSQL = 'UPDATE GAMES SET '+ updateString +' WHERE id='+ thisGameID;
+    console.log(updateGameSQL);
     db.transaction(
                    function(tx){
                    tx.executeSql(updateGameSQL);
@@ -197,11 +221,13 @@ function newGameRecord() {
                    getHighestGameID(function (highestId) {
                                     currentGameID = highestId;
                                     console.log('currentGameID is now '+currentGameID);
+                                    // TODO: clear all fields in form, then put currentGameID into hidden field
+                                    $('#gameDetailsForm')[0].reset();
+                                    $('input[id=id]').val(currentGameID); // currentGameID is put into hidden field on Game Details form
                                     });
                    });
     console.log("newGameRecord says -- mobile.changePage: saveGame");
     $.mobile.changePage("#saveGame");
-    
 }
 
 
@@ -262,7 +288,6 @@ function acceptGrid() {
     
     console.log("acceptGrid says -- mobile.changePage: page1");
     $.mobile.changePage("#page1");
-    ;
     reloadEidogo();
     // TODO start Automatic Image Capture
     // NOT IMPLEMENTED YET
@@ -425,7 +450,7 @@ function onPhotoURISuccess(imageURI) {
                                                  });
                                        // save move to databse
                                        saveMovetoDB(goTracer.getSGF());
-                                       $("#acceptbutton").addClass("acceptbutton-live")
+                                       $("#acceptbutton").addClass("acceptbutton-live");
                                        // ------------------------------------------------------------------
                                        // save SGF to disk? Send via Email? Open in Browser? Display using eidogo?
                                        // save in iTunes

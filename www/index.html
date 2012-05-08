@@ -126,14 +126,14 @@
         <div data-role="page" id="saveGame">
             <div data-theme="a" data-role="header">
                 <h3>
-                    Save Game
+                     Game Details
                 </h3>
                 <a data-role="button" data-direction="reverse" data-transition="fade" href="#page1" data-icon="arrow-l" data-iconpos="left">
                     Cancel
                 </a>
             </div>
             <div data-role="content">
-                <form id="prefsForm" onsubmit="saveGameFormSubmit();" method="post">
+                <form id="gameDetailsForm" onsubmit="saveGameFormSubmit();" method="post">
                     <!-- Need to add Rules (RU = Japanese, Chinese, etc) -->
                     <!-- Location/Place (PC), handicap (HA), time (TM)(ie length of game) 
                      should be added automatically, or via edit form? -->
@@ -174,7 +174,8 @@
                         </label>
                         <input id="textinput4" name="HA" placeholder="Handicap" value="0" type="number" />
                     </div>
-                    
+                    <!-- game id -->
+                    <input type="hidden" name="id" id="id" value="" />
                     <input type="submit" data-icon="arrow-r" data-iconpos="right" value="Save Settings" />
                 </form>
             </div>
