@@ -5,8 +5,8 @@
 // Populate the database 
 function populateDB(tx) {
 	console.log('populateDB called');
-	tx.executeSql('DROP TABLE IF EXISTS MOVES');
-	tx.executeSql('DROP TABLE IF EXISTS GAMES');
+//	tx.executeSql('DROP TABLE IF EXISTS MOVES');
+//	tx.executeSql('DROP TABLE IF EXISTS GAMES');
 	tx.executeSql('CREATE TABLE IF NOT EXISTS MOVES (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, gameid, movedata)');
 	tx.executeSql('CREATE TABLE IF NOT EXISTS GAMES (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, PB, BR, PW, WR, SZ, KM, HA, DT, gamedata)');
 	// PB, BR, PW, WR, SZ, KM, HA, DT, 
@@ -35,7 +35,6 @@ function errorCB(err) {
 //// Success callback
 //function successCB() {
 //	console.log("successCB called");
-//	var db = window.openDatabase("Database", "1.0", "Moku", 200000);
 //	db.transaction(queryDB, errorCB);
 //}
 
@@ -45,7 +44,6 @@ function errorCB(err) {
 
 // Save a move to the Database
 function saveMovetoDB(newMove) {
-//	var db = window.openDatabase("Database", "1.0", "Moku", 200000);
 	db.transaction(function(tx){
                    tx.executeSql('INSERT INTO MOVES (gameid, movedata) VALUES ('+ currentGameID +', "'+ newMove +'")');
                    }, errorCB, function() { console.log('move saved to DB');
@@ -59,7 +57,6 @@ function saveMovetoDB(newMove) {
 function listGamesArchive() {
 	// lists GAMES db on gamesArchive page
 	var list = '';
-//	var db = window.openDatabase("Database", "1.0", "Moku", 200000);
 	db.transaction(function(tx){
                    tx.executeSql('SELECT * FROM GAMES', [], function(tx, results) {
                                  var len = results.rows.length;
@@ -71,7 +68,7 @@ function listGamesArchive() {
                                  if (row.SZ !== null) {
                                  if (row.PB !== null ){ pb = '<br />Black: '+ row.PB; }
                                  if (row.PW !== null ){ pw = '<br />White: '+ row.PW; }
-                                 list += "<li><a href=\"#\" onclick=\"viewGameDetails();\"><h3>" + row.DT +"</h3><p>"+ pb +pw  +"<br />Board size: "+ row.SZ +"</p></a></li>";
+                                 list += "<li><a onclick=\"editGameDetails("+ row.id +");\"><h3>" + row.DT +"</h3><p>"+ pb +pw  +"<br />Board size: "+ row.SZ +"</p></a></li>";
                                  }
                                  }
                                  $('ul#archive-list').html(list);
@@ -84,7 +81,6 @@ function listGamesArchive() {
 
 function listGamesDB() {
 	// spit GAMES db to console.
-//	var db = window.openDatabase("Database", "1.0", "Moku", 200000);
 	db.transaction(function(tx){
                    tx.executeSql('SELECT * FROM GAMES', [], function(tx, results) {
                                  var len = results.rows.length;
@@ -100,7 +96,6 @@ function listGamesDB() {
 
 
 function getHighestGameID(callback) {
-//	var db = window.openDatabase("Database", "1.0", "Moku", 200000);
 	db.transaction(function (tx) {
                    tx.executeSql("SELECT id FROM GAMES", [], function (tx, result) {
                                  var highestGameIDinDB = 0;
@@ -141,18 +136,18 @@ function editGameDetails(gameid){
     // TODO: seems like the val() stuff should put the array into the form... but no go.
     // setup edit Form using supplied GAME id
     // get game info from DB, load it into an array, populate editGameForm using array
-//    var db = window.openDatabase("Database", "1.0", "Moku", 200000);
     db.transaction(function(tx){
                    tx.executeSql('SELECT * FROM GAMES WHERE id='+gameid, [], function(tx, results) {
                                  // http://stackoverflow.com/questions/172524/populate-a-form-with-data-from-an-associative-array-with-jquery
                                  // the following isn't working because I don't understand jQuery.
                                  try {
                                  $.each(results.rows, function(name,value) { 
-                                        $("#editGameForm input[name='" + name + "']").val(value); 
-                                        console.log(name +" "+ value);});
+                                        $("#prefsForm input[name='" + name + "']").val(value); 
+                                        console.log("trying to output name and value: "+ name +" "+ value);});
                                  }catch(e){
                                  console.log('editGameDetails jquery error: ' +e);
                                  }
+                                 $.mobile.changePage('#saveGame');
                                  }, errorCB);
                    }, errorCB);
 }
@@ -179,7 +174,6 @@ function savePrefsFormtoDB() {
     
     var updateGameSQL = 'UPDATE GAMES SET '+ updateString +' WHERE id='+ currentGameID;
     
-//    var db = window.openDatabase("Database", "1.0", "Moku", 200000);
     db.transaction(
                    function(tx){
                    tx.executeSql(updateGameSQL);
@@ -196,7 +190,6 @@ function savePrefsFormtoDB() {
 */
 function newGameRecord() {
     console.log('newGameRecord called');
-//    var db = window.openDatabase("Database", "1.0", "Moku", 200000);
     db.transaction(function (tx) {
                    tx.executeSql('INSERT INTO GAMES (gamedata) VALUES ("")');
                    }, errorCB, function () {
@@ -269,6 +262,7 @@ function acceptGrid() {
     
     console.log("acceptGrid says -- mobile.changePage: page1");
     $.mobile.changePage("#page1");
+    ;
     reloadEidogo();
     // TODO start Automatic Image Capture
     // NOT IMPLEMENTED YET
@@ -354,12 +348,6 @@ function getPhoto(source) {
                                 });
 }
 
-// NOT CURRENTLY USED
-// Take picture using device camera, allow edit, and retrieve image as base64-encoded string  
-function capturePhotoEdit() {
-    navigator.camera.getPicture(onPhotoURISuccess, onFail, { quality: 20, allowEdit: true }); 
-}
-
 
 /*--------------------------------------------- */
 //         initial GRID DETECTION               //
@@ -387,8 +375,6 @@ function onPhotoURISuccess(imageURI) {
         ctx.canvas.height = idealHeight;
         
         // show loading message
-        // TODO - fix display. doesn't show when taking a second picture? spinner no spinny?
-        
         $.mobile.showPageLoadingMsg("a", "Detecting Grid...", true);
         
         ctx.drawImage(image, 0,0);
@@ -397,7 +383,7 @@ function onPhotoURISuccess(imageURI) {
         // Canvas2ImagePlugin saves to Photo Library (maybe sends to Documents or temp dir instead?)
         // might not be necessary if capturePhoto can specify w x h 
         try {
-            //            saveImage();
+//            saveImage();
             console.log("Image would be saved, but hey, let's not fill up the library right now");
         } catch (e) {
             console.log("can't save image - Exception: "+e);
@@ -439,7 +425,7 @@ function onPhotoURISuccess(imageURI) {
                                                  });
                                        // save move to databse
                                        saveMovetoDB(goTracer.getSGF());
-                                       
+                                       $("#acceptbutton").addClass("acceptbutton-live")
                                        // ------------------------------------------------------------------
                                        // save SGF to disk? Send via Email? Open in Browser? Display using eidogo?
                                        // save in iTunes
@@ -566,19 +552,7 @@ function loadEidogo() {
                                    enableShortcuts: false,
                                    problemMode:     false
                                    });
-    console.log("Eidogo LOAD");
-    
-    // TODO: send a move to eidogo - not here, this is just for testing.
-    //                try {
-    ////                    player.setColor('B');
-    ////                    player.createMove('dj');
-    //                    player.playMove('B','dj');
-    //                }catch(e){
-    //                    console.log(e);
-    //                }
-    // how to add some HTML to this without modifying the source js?
-    //                $('.controls-container').append("<form id='sliderform'><label id='sliderlabel' for='slider'>Move:</label><input type='range' name='slider' id='slider' value='50' min='0' max='400' data-highlight='true' /></form>");
-    
+    console.log("Eidogo LOADED");
 }
 
 function reloadEidogo() {

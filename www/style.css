@@ -95,3 +95,15 @@ input#slider {
 	opacity: 50%;
 }
 
+/* archives list - scrolling issues */
+
+/*
+#archive-list {
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+}
+*/
+
+.acceptbutton-live {
+    background-color: green;
+}

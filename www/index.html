@@ -7,14 +7,6 @@
         <link rel="stylesheet" media="screen" href="style.css" type="text/css" />
         
         <script type="text/javascript" charset="utf-8" src="jquery/jquery-1.7.1.min.js"></script>
-        <script type="text/javascript" charset="utf-8">
-//            $(document).bind("mobileinit", function(){
-//                             $.mobile.loadingMessage = "Detecting Grid";
-//                             });
-//            $(document).bind("mobileinit", function(){
-//                             $.mobile.loadingMessageTextVisible = true;
-//                             });
-        </script>
         <script type="text/javascript" charset="utf-8" src="jquery/jquery.mobile-1.1.0.min.js"></script>
         
         <script type="text/javascript" charset="utf-8" src="cordova-1.6.1.js"></script>
@@ -46,13 +38,13 @@
             var idealHeight = 400; // 402?
             var imageSource = '';
             
-            // Disable Scrolling 
-            function preventBehavior(e) { 
-                e.preventDefault(); 
-            };
-            document.addEventListener("touchmove", preventBehavior, false);
-            
-            
+            // Disable Scrolling -- will adversely affect list on Archive page
+//            function preventBehavior(e) { 
+//                e.preventDefault(); 
+//            };
+//            document.addEventListener("touchmove", preventBehavior, false);
+//            
+//            
             function onBodyLoad() {
                 document.addEventListener("deviceready", onDeviceReady, false);
             }
@@ -65,7 +57,7 @@
                 db.transaction(populateDB, errorCB, function(){
                                console.log('database populated');
                                });
-//                if (currentGameID == '0') { $('#game-control-buttons').hide(); }
+                if (currentGameID == '0') { $('#game-control-buttons').hide(); }
             }
             
                         
@@ -100,6 +92,9 @@
                     <a data-role="button" data-inline="true" data-iconpos="notext" data-transition="fade" href="#page1" data-icon="refresh" data-iconpos="left" onclick="reloadEidogo();">
                         Refresh 
                     </a>
+                        <a data-role="button" data-inline="true" data-transition="fade" href="#page1" data-icon="refresh"  data-mini="true"  data-iconpos="left" onclick="loadEidogo();">
+                            load 
+                        </a>
                     </div>
                 </div>
             </div>
@@ -115,7 +110,7 @@
                 <a data-role="button" data-direction="reverse" data-transition="flip" href="#page1" data-icon="back" data-iconpos="left">
                     Cancel
                 </a>
-                <a data-role="button" data-direction="reverse" data-transition="flip" href="#page1" data-icon="" onclick="acceptGrid();">
+                <a id="acceptbutton" data-role="button" data-direction="reverse" data-transition="flip" href="#page1" data-icon="" onclick="acceptGrid();">
                     Accept
                 </a>
             </div>

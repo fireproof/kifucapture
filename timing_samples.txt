@@ -1,0 +1,161 @@
+Example 1
+
+GocamPlugin startTime: Mon May 07 2012 14:14:12 GMT-0700 (PDT)
+Computing the line images.
+Computing the hough image.
+Computing the initial grid.
+Growing the grid.
+Analyser::analyse [line_images: 0.161017 hough: 2.516116 grid: 0.065697 grow: 0.592914
+Analysis complete.
+343,165,119,86,208,322,-53,206
+gocam ET: 3.387631
+load: 0.028854 normalize: 0.009881 reset: 0.012380
+analyze: 3.335794 drawgrid: 0.000706
+2012-05-07 14:14:16.478 Moku[19171:13403] [INFO] GocamPlugin endTime: Mon May 07 2012 14:14:16 GMT-0700 (PDT)
+2012-05-07 14:14:16.480 Moku[19171:13403] [INFO] GocamPlugin took: 3404ms
+
+2
+
+GocamPlugin startTime: Mon May 07 2012 14:15:22 GMT-0700 (PDT)
+Computing the line images.
+Computing the hough image.
+Computing the initial grid.
+Growing the grid.
+Analyser::analyse [line_images: 0.170669 hough: 2.434560 grid: 0.091238 grow: 0.428304
+Analysis complete.
+314,273,68,347,199,124,23,165
+gocam ET: 3.176146
+load: 0.024874 normalize: 0.013599 reset: 0.012098
+analyze: 3.124813 drawgrid: 0.000759
+2012-05-07 14:15:26.278 Moku[19171:13403] [INFO] GocamPlugin endTime: Mon May 07 2012 14:15:26 GMT-0700 (PDT)
+2012-05-07 14:15:26.280 Moku[19171:13403] [INFO] GocamPlugin took: 3185ms
+
+3
+
+GocamPlugin startTime: Mon May 07 2012 14:16:03 GMT-0700 (PDT)
+Computing the line images.
+Computing the hough image.
+Computing the initial grid.
+Growing the grid.
+Analyser::analyse [line_images: 0.163688 hough: 2.440677 grid: 0.070248 grow: 0.269717
+Analysis complete.
+293,249,64,327,198,127,24,167
+gocam ET: 2.991258
+load: 0.024295 normalize: 0.009756 reset: 0.012189
+analyze: 2.944371 drawgrid: 0.000646
+2012-05-07 14:16:06.343 Moku[19171:13403] [INFO] GocamPlugin endTime: Mon May 07 2012 14:16:06 GMT-0700 (PDT)
+2012-05-07 14:16:06.344 Moku[19171:13403] [INFO] GocamPlugin took: 2998ms
+
+4
+
+GocamPlugin startTime: Mon May 07 2012 14:16:38 GMT-0700 (PDT)
+Computing the line images.
+Computing the hough image.
+Computing the initial grid.
+Growing the grid.
+Analyser::analyse [line_images: 0.154720 hough: 2.433772 grid: 0.064180 grow: 0.280330
+Analysis complete.
+291,253,62,331,197,129,23,168
+gocam ET: 2.980728
+load: 0.024718 normalize: 0.009922 reset: 0.012202
+analyze: 2.933042 drawgrid: 0.000841
+2012-05-07 14:16:41.862 Moku[19171:13403] [INFO] GocamPlugin endTime: Mon May 07 2012 14:16:41 GMT-0700 (PDT)
+2012-05-07 14:16:41.863 Moku[19171:13403] [INFO] GocamPlugin took: 2989ms
+
+5
+
+GocamPlugin startTime: Mon May 07 2012 14:17:12 GMT-0700 (PDT)
+Computing the line images.
+Computing the hough image.
+Computing the initial grid.
+Growing the grid.
+Analyser::analyse [line_images: 0.149868 hough: 2.451312 grid: 0.065373 grow: 0.296159
+Analysis complete.
+291,256,60,335,198,130,21,171
+gocam ET: 3.008845
+load: 0.023513 normalize: 0.009900 reset: 0.011543
+analyze: 2.962754 drawgrid: 0.001132
+2012-05-07 14:17:15.582 Moku[19171:13403] [INFO] GocamPlugin endTime: Mon May 07 2012 14:17:15 GMT-0700 (PDT)
+2012-05-07 14:17:15.582 Moku[19171:13403] [INFO] GocamPlugin took: 3014ms
+
+---------------------------------------------------
+Hardware:
+1
+
+GocamPlugin startTime: Mon May 07 2012 16:05:42 GMT-0700 (PDT)
+Computing the line images.
+Computing the hough image.
+Computing the initial grid.
+Growing the grid.
+Analyser::analyse [line_images: 1.129501 hough: 19.420059 grid: 0.446049 grow: 7.225003
+Analysis complete.
+344,164,118,87,208,322,-52,206
+gocam ET: 28.843412
+load: 0.256795 normalize: 0.200845 reset: 0.156662
+analyze: 28.223387 drawgrid: 0.005469
+2012-05-07 16:06:12.903 Moku[31647:707] [INFO] GocamPlugin endTime: Mon May 07 2012 16:06:11 GMT-0700 (PDT)
+2012-05-07 16:06:12.906 Moku[31647:707] [INFO] GocamPlugin took: 29102ms
+
+2
+
+GocamPlugin startTime: Mon May 07 2012 16:07:05 GMT-0700 (PDT)
+Computing the line images.
+Computing the hough image.
+Computing the initial grid.
+Growing the grid.
+Analyser::analyse [line_images: 1.140279 hough: 18.720800 grid: 0.439380 grow: 5.112060
+Analysis complete.
+317,277,75,372,195,119,21,157
+gocam ET: 25.949802
+load: 0.157675 normalize: 0.219455 reset: 0.149716
+analyze: 25.415190 drawgrid: 0.007743
+2012-05-07 16:07:32.492 Moku[31647:707] [INFO] GocamPlugin endTime: Mon May 07 2012 16:07:31 GMT-0700 (PDT)
+2012-05-07 16:07:32.497 Moku[31647:707] [INFO] GocamPlugin took: 26083ms
+
+3
+
+GocamPlugin startTime: Mon May 07 2012 16:08:19 GMT-0700 (PDT)
+Computing the line images.
+Computing the hough image.
+Computing the initial grid.
+Growing the grid.
+Analyser::analyse [line_images: 1.127689 hough: 19.093881 grid: 0.447170 grow: 3.252740
+Analysis complete.
+293,249,64,327,198,127,24,167
+gocam ET: 24.579469
+load: 0.176998 normalize: 0.320125 reset: 0.150545
+analyze: 23.924244 drawgrid: 0.007535
+2012-05-07 16:08:45.744 Moku[31647:707] [INFO] GocamPlugin endTime: Mon May 07 2012 16:08:44 GMT-0700 (PDT)
+2012-05-07 16:08:45.751 Moku[31647:707] [INFO] GocamPlugin took: 24713ms
+
+4
+
+GocamPlugin startTime: Mon May 07 2012 16:09:18 GMT-0700 (PDT)
+Computing the line images.
+Computing the hough image.
+Computing the initial grid.
+Growing the grid.
+Analyser::analyse [line_images: 1.129473 hough: 18.964714 grid: 0.455728 grow: 3.179648
+Analysis complete.
+291,253,62,331,197,129,23,168
+gocam ET: 24.249393
+load: 0.150375 normalize: 0.212482 reset: 0.153734
+analyze: 23.729718 drawgrid: 0.003064
+2012-05-07 16:09:43.982 Moku[31647:707] [INFO] GocamPlugin endTime: Mon May 07 2012 16:09:42 GMT-0700 (PDT)
+2012-05-07 16:09:43.988 Moku[31647:707] [INFO] GocamPlugin took: 24376ms
+
+5
+
+GocamPlugin startTime: Mon May 07 2012 16:10:35 GMT-0700 (PDT)
+Computing the line images.
+Computing the hough image.
+Computing the initial grid.
+Growing the grid.
+Analyser::analyse [line_images: 1.127803 hough: 19.006069 grid: 0.448580 grow: 3.472488
+Analysis complete.
+292,256,60,335,198,130,21,170
+gocam ET: 24.609267
+load: 0.159729 normalize: 0.215715 reset: 0.151898
+analyze: 24.057356 drawgrid: 0.024547
+2012-05-07 16:11:01.029 Moku[31647:707] [INFO] GocamPlugin endTime: Mon May 07 2012 16:10:59 GMT-0700 (PDT)
+2012-05-07 16:11:01.034 Moku[31647:707] [INFO] GocamPlugin took: 24741ms
