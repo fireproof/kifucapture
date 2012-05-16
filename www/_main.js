@@ -347,7 +347,7 @@ function capturePhoto() {
      */
     console.log("capturePhoto says -- mobile.changePage: camera");
     $.mobile.changePage("#camera");
-    navigator.camera.getPicture(onPhotoURISuccess, onFail, { 
+    navigator.camera.getPicture(detectGrid, onFail, { 
                                 quality: 50, 
                                 targetWidth: idealWidth,
                                 targetHeight: idealHeight,
@@ -362,7 +362,7 @@ function capturePhoto() {
 function getPhoto(source) {
     console.log("getPhoto says -- mobile.changePage: camera");
     $.mobile.changePage("#camera");
-    navigator.camera.getPicture(onPhotoURISuccess, onFail, { 
+    navigator.camera.getPicture(detectGrid, onFail, { 
                                 quality: 50, 
                                 destinationType: destinationType.FILE_URI,
                                 targetWidth: idealWidth,
@@ -380,7 +380,7 @@ function getPhoto(source) {
 
 // Called when a photo is successfully retrieved
 // and coordinates are needed.
-function onPhotoURISuccess(imageURI) {
+function detectGrid(imageURI) {
     currentMoveID = currentMoveID + 1;
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
@@ -471,6 +471,29 @@ function onPhotoURISuccess(imageURI) {
     
 }
 
+function processImage(imageURI) {
+    // Called when a photo is successfully retrieved
+    // COORDS must already be set
+    // TODO: check to see if board/image has changed first!
+    currentMoveID = currentMoveID + 1; 
+
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+    
+    var secondCanvas = document.getElementById("secondcanvas");
+    var secondCtx = secondCanvas.getContext("2d");
+    
+    var image = new Image();
+    
+    image.onload = function(){
+        goTracer = new GoTracer(image, canvas);
+        goTracer.setCorners(result); // should use global coords variable? Is this set already?
+        goTracer.startScan();
+        // save move to databse
+        saveMovetoDB(goTracer.getSGF());
+    }
+    image.src = imageURI;
+}
 
 // used instead of console.log in a few instances.
 function printObject(o) {
