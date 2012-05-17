@@ -431,7 +431,9 @@ function detectGrid(imageURI) {
                                        var endTime = new Date();
                                        console.log("GocamPlugin endTime: " + endTime);
                                        console.log("GocamPlugin took: " + (endTime - startTime) + "ms");
-                                       //                                                   coords = result;
+                                       
+                                       coords = result;
+                                       
                                        goTracer = new GoTracer(image, canvas);
                                        goTracer.setCorners(result);
                                        goTracer.startScan();
@@ -472,8 +474,8 @@ function detectGrid(imageURI) {
 }
 
 function processImage(imageURI) {
-    // Called when a photo is successfully retrieved
-    // COORDS must already be set
+    // Called when a new photo is successfully retrieved
+    // coords must already be set
     // TODO: check to see if board/image has changed first!
     currentMoveID = currentMoveID + 1; 
 
@@ -487,7 +489,7 @@ function processImage(imageURI) {
     
     image.onload = function(){
         goTracer = new GoTracer(image, canvas);
-        goTracer.setCorners(result); // should use global coords variable? Is this set already?
+        goTracer.setCorners(coords); 
         goTracer.startScan();
         // save move to databse
         saveMovetoDB(goTracer.getSGF());
