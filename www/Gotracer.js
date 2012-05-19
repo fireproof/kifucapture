@@ -114,7 +114,8 @@ GoTracer.prototype.getSets = function(rect)
 								   p: rect.getPoint(x/18, y/18),
 								   x: h - h1 - Math.abs(l - l1) + 64,
 								   y: l,
-								   coord: "[" + String.fromCharCode(y + 97) + String.fromCharCode(x + 97) + "]"
+								   coord: "[" + String.fromCharCode(y + 97) + String.fromCharCode(x + 97) + "]",
+                                   coordplain: String.fromCharCode(y + 97) + String.fromCharCode(x + 97)
 								   }));
 		}
 	}
@@ -201,12 +202,24 @@ GoTracer.prototype.getSGF = function()
 {
 	var blackCoords = this.blackSet.points.map(function(pt) { return pt.coord; })
 	var whiteCoords = this.whiteSet.points.map(function(pt) { return pt.coord; })
-	//console.log (blackCoords.join(''));
 	return '(;AB' + blackCoords.join('') + 'AW' + whiteCoords.join('') + ')';
     // Eidogo won't display SGF with more than one move per color, but the following would the the right way to record two moves at once
 //    return '(;B' + blackCoords.join('') + ';W' + whiteCoords.join('') + ')';
-//
-	
+};
+
+GoTracer.prototype.setBoardState = function()
+{
+    console.log('setBoardState');
+    var blackPlainCoords = this.blackSet.points.map(function(pt) { return pt.coordplain; })
+    var whitePlainCoords = this.whiteSet.points.map(function(pt) { return pt.coordplain; })
+    for (var i = 0; i < blackPlainCoords.length; i++) { 
+        var Bcoord = blackPlainCoords[i];
+        gameState[Bcoord] = "B";
+    }
+    for (var i = 0; i < whitePlainCoords.length; i++) { 
+        var Wcoord = whitePlainCoords[i];
+        gameState[Wcoord] = "W";
+    }
 };
 
 

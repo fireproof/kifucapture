@@ -32,6 +32,30 @@
             var currentGameID = 0;
             var currentBoardSize = 19;
             var coords;
+            if (currentBoardSize === 19) {
+                var gameState = {
+                    aa: "", ab: "", ac: "", ad: "", ae: "", af: "", ag: "", ah: "", ai: "", aj: "", ak: "", al: "", am: "", an: "", ao: "", ap: "", aq: "", ar: "", as: "", 
+                    ba: "", bb: "", bc: "", bd: "", be: "", bf: "", bg: "", bh: "", bi: "", bj: "", bk: "", bl: "", bm: "", bn: "", bo: "", bp: "", bq: "", br: "", bs: "", 
+                    ca: "", cb: "", cc: "", cd: "", ce: "", cf: "", cg: "", ch: "", ci: "", cj: "", ck: "", cl: "", cm: "", cn: "", co: "", cp: "", cq: "", cr: "", cs: "", 
+                    da: "", db: "", dc: "", dd: "", de: "", df: "", dg: "", dh: "", di: "", dj: "", dk: "", dl: "", dm: "", dn: "", do: "", dp: "", dq: "", dr: "", ds: "", 
+                    ea: "", eb: "", ec: "", ed: "", ee: "", ef: "", eg: "", eh: "", ei: "", ej: "", ek: "", el: "", em: "", en: "", eo: "", ep: "", eq: "", er: "", es: "", 
+                    fa: "", fb: "", fc: "", fd: "", fe: "", ff: "", fg: "", fh: "", fi: "", fj: "", fk: "", fl: "", fm: "", fn: "", fo: "", fp: "", fq: "", fr: "", fs: "", 
+                    ga: "", gb: "", gc: "", gd: "", ge: "", gf: "", gg: "", gh: "", gi: "", gj: "", gk: "", gl: "", gm: "", gn: "", go: "", gp: "", gq: "", gr: "", gs: "", 
+                    ha: "", hb: "", hc: "", hd: "", he: "", hf: "", hg: "", hh: "", hi: "", hj: "", hk: "", hl: "", hm: "", hn: "", ho: "", hp: "", hq: "", hr: "", hs: "", 
+                    ia: "", ib: "", ic: "", id: "", ie: "", if: "", ig: "", ih: "", ii: "", ij: "", ik: "", il: "", im: "", in: "", io: "", ip: "", iq: "", ir: "", is: "", 
+                    ja: "", jb: "", jc: "", jd: "", je: "", jf: "", jg: "", jh: "", ji: "", jj: "", jk: "", jl: "", jm: "", jn: "", jo: "", jp: "", jq: "", jr: "", js: "", 
+                    ka: "", kb: "", kc: "", kd: "", ke: "", kf: "", kg: "", kh: "", ki: "", kj: "", kk: "", kl: "", km: "", kn: "", ko: "", kp: "", kq: "", kr: "", ks: "", 
+                    la: "", lb: "", lc: "", ld: "", le: "", lf: "", lg: "", lh: "", li: "", lj: "", lk: "", ll: "", lm: "", ln: "", lo: "", lp: "", lq: "", lr: "", ls: "", 
+                    ma: "", mb: "", mc: "", md: "", me: "", mf: "", mg: "", mh: "", mi: "", mj: "", mk: "", ml: "", mm: "", mn: "", mo: "", mp: "", mq: "", mr: "", ms: "", 
+                    na: "", nb: "", nc: "", nd: "", ne: "", nf: "", ng: "", nh: "", ni: "", nj: "", nk: "", nl: "", nm: "", nn: "", no: "", np: "", nq: "", nr: "", ns: "", 
+                    oa: "", ob: "", oc: "", od: "", oe: "", of: "", og: "", oh: "", oi: "", oj: "", ok: "", ol: "", om: "", on: "", oo: "", op: "", oq: "", or: "", os: "", 
+                    pa: "", pb: "", pc: "", pd: "", pe: "", pf: "", pg: "", ph: "", pi: "", pj: "", pk: "", pl: "", pm: "", pn: "", po: "", pp: "", pq: "", pr: "", ps: "", 
+                    qa: "", qb: "", qc: "", qd: "", qe: "", qf: "", qg: "", qh: "", qi: "", qj: "", qk: "", ql: "", qm: "", qn: "", qo: "", qp: "", qq: "", qr: "", qs: "", 
+                    ra: "", rb: "", rc: "", rd: "", re: "", rf: "", rg: "", rh: "", ri: "", rj: "", rk: "", rl: "", rm: "", rn: "", ro: "", rp: "", rq: "", rr: "", rs: "", 
+                    sa: "", sb: "", sc: "", sd: "", se: "", sf: "", sg: "", sh: "", si: "", sj: "", sk: "", sl: "", sm: "", sn: "", so: "", sp: "", sq: "", sr: "", ss: "" 
+                };
+            }
+            var previousGameState;
             
             // Image Capture 
             var idealWidth = 300;
@@ -90,10 +114,13 @@
                         Edit
                     </a>
                     <a data-role="button" data-inline="true" data-iconpos="notext" data-transition="fade" href="#page1" data-icon="refresh" data-iconpos="left" onclick="reloadEidogo();">
-                        Refresh 
+                        refresh 
                     </a>
                         <a data-role="button" data-inline="true" data-transition="fade" href="#page1" data-icon="refresh"  data-mini="true"  data-iconpos="left" onclick="loadEidogo();">
                             load 
+                        </a>
+                        <a data-role="button" data-inline="true" data-transition="fade" data-icon="refresh"  data-mini="true"  data-iconpos="left" onclick="selectActionPreset();">
+                            add pic 
                         </a>
                     </div>
                 </div>

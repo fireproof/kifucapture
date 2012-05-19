@@ -9,7 +9,7 @@ function populateDB(tx) {
 //	tx.executeSql('DROP TABLE IF EXISTS GAMES');
 	tx.executeSql('CREATE TABLE IF NOT EXISTS MOVES (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, gameid, movedata)');
 	tx.executeSql('CREATE TABLE IF NOT EXISTS GAMES (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, PB, BR, PW, WR, SZ, KM, HA, DT, gamedata)');
-	// PB, BR, PW, WR, SZ, KM, HA, DT, 
+//    tx.executeSql('CREATE TABLE IF NOT EXISTS BOARDSTATE (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, aa, ab, ac, ad, ae, af, ag, ah, ai, aj, ak, al, am, an, ao, ap, aq, ar, as, ba, bb, bc, bd, be, bf, bg, bh, bi, bj, bk, bl, bm, bn, bo, bp, bq, br, bs, ca, cb, cc, cd, ce, cf, cg, ch, ci, cj, ck, cl, cm, cn, co, cp, cq, cr, cs, da, db, dc, dd, de, df, dg, dh, di, dj, dk, dl, dm, dn, do, dp, dq, dr, ds, ea, eb, ec, ed, ee, ef, eg, eh, ei, ej, ek, el, em, en, eo, ep, eq, er, es, fa, fb, fc, fd, fe, ff, fg, fh, fi, fj, fk, fl, fm, fn, fo, fp, fq, fr, fs, ga, gb, gc, gd, ge, gf, gg, gh, gi, gj, gk, gl, gm, gn, go, gp, gq, gr, gs, ha, hb, hc, hd, he, hf, hg, hh, hi, hj, hk, hl, hm, hn, ho, hp, hq, hr, hs, ia, ib, ic, id, ie, if, ig, ih, ii, ij, ik, il, im, in, io, ip, iq, ir, is, ja, jb, jc, jd, je, jf, jg, jh, ji, jj, jk, jl, jm, jn, jo, jp, jq, jr, js, ka, kb, kc, kd, ke, kf, kg, kh, ki, kj, kk, kl, km, kn, ko, kp, kq, kr, ks, la, lb, lc, ld, le, lf, lg, lh, li, lj, lk, ll, lm, ln, lo, lp, lq, lr, ls, ma, mb, mc, md, me, mf, mg, mh, mi, mj, mk, ml, mm, mn, mo, mp, mq, mr, ms, na, nb, nc, nd, ne, nf, ng, nh, ni, nj, nk, nl, nm, nn, no, np, nq, nr, ns, oa, ob, oc, od, oe, of, og, oh, oi, oj, ok, ol, om, on, oo, op, oq, or, os, pa, pb, pc, pd, pe, pf, pg, ph, pi, pj, pk, pl, pm, pn, po, pp, pq, pr, ps, qa, qb, qc, qd, qe, qf, qg, qh, qi, qj, qk, ql, qm, qn, qo, qp, qq, qr, qs, ra, rb, rc, rd, re, rf, rg, rh, ri, rj, rk, rl, rm, rn, ro, rp, rq, rr, rs, sa, sb, sc, sd, se, sf, sg, sh, si, sj, sk, sl, sm, sn, so, sp, sq, sr, ss)');
 }
 
 //// Query the database
@@ -347,6 +347,7 @@ function capturePhoto() {
      */
     console.log("capturePhoto says -- mobile.changePage: camera");
     $.mobile.changePage("#camera");
+    imageSource = "camera";
     navigator.camera.getPicture(detectGrid, onFail, { 
                                 quality: 50, 
                                 targetWidth: idealWidth,
@@ -362,7 +363,35 @@ function capturePhoto() {
 function getPhoto(source) {
     console.log("getPhoto says -- mobile.changePage: camera");
     $.mobile.changePage("#camera");
+    imageSource = "library";
     navigator.camera.getPicture(detectGrid, onFail, { 
+                                quality: 50, 
+                                destinationType: destinationType.FILE_URI,
+                                targetWidth: idealWidth,
+                                targetHeight: idealHeight,
+                                correctOrientation: 1,
+                                sourceType: source,
+                                saveToPhotoAlbum: 0
+                                });
+}
+// When the default option has already been selected - grabbing supporting images
+// these will be replaced with automated image grabbing, I do hope.
+function capturePhotoPreset() {
+    console.log("capturePhotoPreset");
+    navigator.camera.getPicture(processImage, onFail, { 
+                                quality: 50, 
+                                targetWidth: idealWidth,
+                                targetHeight: idealHeight,
+                                correctOrientation: 0,
+                                saveToPhotoAlbum: 0
+                                });
+    
+}
+
+
+function getPhotoPreset(source) {
+    console.log("getPhotoPreset");
+    navigator.camera.getPicture(processImage, onFail, { 
                                 quality: 50, 
                                 destinationType: destinationType.FILE_URI,
                                 targetWidth: idealWidth,
@@ -438,7 +467,13 @@ function detectGrid(imageURI) {
                                        goTracer.setCorners(result);
                                        goTracer.startScan();
                                        console.log(goTracer.getSGF());
-                                       
+                                       goTracer.setBoardState();
+                                       for (var k in gameState) {
+                                           // use hasOwnProperty to filter out keys from the Object.prototype
+                                           if (gameState.hasOwnProperty(k)) {
+                                            console.log('key is: ' + k + ', value is: ' + gameState[k]);
+                                           }
+                                       }
                                        // all done, hide loading message
                                        $.mobile.hidePageLoadingMsg();
                                        
@@ -452,6 +487,7 @@ function detectGrid(imageURI) {
                                                  });
                                        // save move to databse
                                        saveMovetoDB(goTracer.getSGF());
+                                       
                                        $("#acceptbutton").addClass("acceptbutton-live");
                                        // ------------------------------------------------------------------
                                        // save SGF to disk? Send via Email? Open in Browser? Display using eidogo?
@@ -474,25 +510,43 @@ function detectGrid(imageURI) {
 }
 
 function processImage(imageURI) {
+    console.log('processImage called');
     // Called when a new photo is successfully retrieved
     // coords must already be set
     // TODO: check to see if board/image has changed first!
     currentMoveID = currentMoveID + 1; 
-
+    
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
-    
     var secondCanvas = document.getElementById("secondcanvas");
     var secondCtx = secondCanvas.getContext("2d");
-    
     var image = new Image();
     
     image.onload = function(){
+        console.log('processImage image.onload');
+        ctx.canvas.width = idealWidth;
+        ctx.canvas.height = idealHeight;
+        ctx.drawImage(image, 0,0);
         goTracer = new GoTracer(image, canvas);
         goTracer.setCorners(coords); 
         goTracer.startScan();
-        // save move to databse
         saveMovetoDB(goTracer.getSGF());
+        previousGameState = clone(gameState);
+        goTracer.setBoardState();
+        for (var k in gameState) {
+            // use hasOwnProperty to filter out keys from the Object.prototype
+            if (gameState.hasOwnProperty(k)) {
+                console.log('newgamestate key: ' + k + ', value: ' + gameState[k]);
+            }
+        }
+        for (var k in previousGameState) {
+            // use hasOwnProperty to filter out keys from the Object.prototype
+            if (previousGameState.hasOwnProperty(k)) {
+                console.log('prevstate key: ' + k + ', value: ' + previousGameState[k]);
+            }
+        }
+
+        
     }
     image.src = imageURI;
 }
@@ -579,6 +633,11 @@ function selectAction() {
                                    );
 }
 
+function selectActionPreset() {
+    if (imageSource == "camera") { capturePhotoPreset(); }
+    else { getPhotoPreset(pictureSource.PHOTOLIBRARY); }
+}
+
 /* -------------------------- */
 //     Eidogo SGF display     //
 /* -------------------------- */
@@ -608,4 +667,13 @@ function loadEidogo() {
 function reloadEidogo() {
     console.log('player.refresh() called');
     player.refresh();
+}
+
+function clone(obj) {
+    if (null == obj || "object" != typeof obj) return obj;
+    var copy = obj.constructor();
+    for (var attr in obj) {
+        if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+    }
+    return copy;
 }
