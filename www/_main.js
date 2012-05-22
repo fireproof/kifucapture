@@ -411,15 +411,18 @@ function getPhotoPreset(source) {
 // and coordinates are needed.
 function detectGrid(imageURI) {
     currentMoveID = currentMoveID + 1;
+    
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
-    
-    var secondCanvas = document.getElementById("secondcanvas");
+    console.log("canvas width: "+ canvas.width);
+    var secondCanvas = document.getElementById("smallcanvas");
     var secondCtx = secondCanvas.getContext("2d");
-    
+
     var image = new Image();
     
-    image.onload = function(){
+    image.onload = function(){        
+        
+
         
         // ------------------------------------------------------------------
         // default size
@@ -428,10 +431,15 @@ function detectGrid(imageURI) {
         ctx.canvas.width = idealWidth;
         ctx.canvas.height = idealHeight;
         
-        // show loading message
-        $.mobile.showPageLoadingMsg("a", "Detecting Grid...", true);
+        // initial (large) canvas is hidden, so re-draw contents in second canvas
+        secondCanvas.width = 300;
+        secondCanvas.height = 400;
+        secondCtx.drawImage(image, 0,0, secondCanvas.width, secondCanvas.height);
         
         ctx.drawImage(image, 0,0);
+        // show loading message
+        $.mobile.showPageLoadingMsg("a", "Detecting Grid...", true);
+
         
         // ------------------------------------------------------------------
         // Canvas2ImagePlugin saves to Photo Library (maybe sends to Documents or temp dir instead?)
@@ -468,12 +476,12 @@ function detectGrid(imageURI) {
                                        goTracer.startScan();
                                        console.log(goTracer.getSGF());
                                        goTracer.setBoardState();
-                                       for (var k in gameState) {
-                                           // use hasOwnProperty to filter out keys from the Object.prototype
-                                           if (gameState.hasOwnProperty(k)) {
-                                            console.log('key is: ' + k + ', value is: ' + gameState[k]);
-                                           }
-                                       }
+//                                       for (var k in gameState) {
+//                                           // use hasOwnProperty to filter out keys from the Object.prototype
+//                                           if (gameState.hasOwnProperty(k)) {
+//                                            console.log('key is: ' + k + ', value is: ' + gameState[k]);
+//                                           }
+//                                       }
                                        // all done, hide loading message
                                        $.mobile.hidePageLoadingMsg();
                                        
@@ -483,11 +491,12 @@ function detectGrid(imageURI) {
 //                                                 reloadEidogo();
 //                                                 });
                                        writeFile(goTracer.getSGF(), function(){
-                                                 console.log('this is where we used to reload Eidogo');
+                                                 console.log('Write File - draw Second Canvasthis is where we used to reload Eidogo');
+                                                 secondCtx.drawImage(canvas, 0,0, secondCanvas.width, secondCanvas.height);
                                                  });
                                        // save move to databse
                                        saveMovetoDB(goTracer.getSGF());
-                                       
+//                                                                              
                                        $("#acceptbutton").addClass("acceptbutton-live");
                                        // ------------------------------------------------------------------
                                        // save SGF to disk? Send via Email? Open in Browser? Display using eidogo?
@@ -502,7 +511,7 @@ function detectGrid(imageURI) {
         } catch (e) {
             console.log("Exception: "+e);
         }
-        
+                
     };
     image.src = imageURI;
     
@@ -677,3 +686,23 @@ function clone(obj) {
     }
     return copy;
 }
+ 
+// might need to use this for photo handling
+function orientationChangeDoSomething()
+{
+    switch(window.orientation) 
+    {  
+        case -90:
+        case 90:
+            console.log('landscape orientation');
+            break; 
+        default:
+            console.log('portrait orientation');
+            break; 
+    }
+}
+
+window.onorientationchange = function()
+{
+    orientationChangeDoSomething();
+};
