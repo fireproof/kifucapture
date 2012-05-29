@@ -19,8 +19,7 @@
         <!-- main JS -->
         <script type="text/javascript" charset="utf-8" src="Gotracer.js"></script>
         <script type="text/javascript" charset="utf-8" src="_main.js"></script>
-        <! -- iscroll-lite.js -->
-        
+       
         <!-- Eidogo JS -->
         <script type="text/javascript" src="player/js/all.compressed.js"></script>
         
@@ -33,16 +32,6 @@
             var currentGameID = 0;
             var currentBoardSize = 19;
             var coords;
-            // Image Capture 
-            var idealWidth = 600;
-            var idealHeight = 800; // 402?
-            var imageSource = '';
-            // iScroll - lite version
-//            var myScroll;
-//            function iScrollEnable() {
-//                myScroll = new iScroll('archiveContent');
-//            }
-            
             if (currentBoardSize === 19) {
                 var gameState = {
                     aa: "", ab: "", ac: "", ad: "", ae: "", af: "", ag: "", ah: "", ai: "", aj: "", ak: "", al: "", am: "", an: "", ao: "", ap: "", aq: "", ar: "", as: "", 
@@ -68,15 +57,18 @@
             }
             var previousGameState;
             
-                       
+            // Image Capture 
+            var idealWidth = 300;
+            var idealHeight = 400; // 402?
+            var imageSource = '';
+            
             // Disable Scrolling -- will adversely affect list on Archive page
 //            function preventBehavior(e) { 
 //                e.preventDefault(); 
 //            };
 //            document.addEventListener("touchmove", preventBehavior, false);
-            
-//            document.addEventListener('DOMContentLoaded', iScrollEnable, false);
-
+//            
+//            
             function onBodyLoad() {
                 document.addEventListener("deviceready", onDeviceReady, false);
             }
@@ -90,8 +82,6 @@
                                console.log('database populated');
                                });
                 if (currentGameID == '0') { $('#game-control-buttons').hide(); }
-                // fire the orientation change sniff for the first time.
-                orientationChangeDoSomething();
             }
             
                         
@@ -117,9 +107,9 @@
                 <div id="sgfdisplay">
                     <div id="player-container"></div>
                     <div id="game-control-buttons">
-                    <!--<a id="gridButton" data-role="button" data-inline="true" data-icon="grid" data-mini="true" data-transition="flip" onclick="selectAction();">
+                    <a id="gridButton" data-role="button" data-inline="true" data-icon="grid" data-mini="true" data-transition="flip" onclick="selectAction();">
                         Grid
-                    </a> -->
+                    </a>
                     <a id="saveButton" data-role="button" data-inline="true" data-mini="true" data-transition="fade" href="#editGame" data-icon="check" data-iconpos="left" onclick="editGameDetails(currentGameID);">
                         Edit
                     </a>
@@ -153,8 +143,8 @@
             </div>
             <div data-role="content">
                 <div id="camerasetup">
-                    <canvas id="smallcanvas"></canvas>
                     <canvas id="canvas"></canvas>
+                    <canvas id="secondcanvas"></canvas>
                 </div>
             </div>
         </div>
@@ -229,12 +219,10 @@
                     Back
                 </a>
             </div>
-            <div data-role="content" id="archiveContent">
-                <div id="scroller">
+            <div data-role="content">
                 <ul id="archive-list" data-role="listview" data-filter="true" >
                     <li>No Saved Games Available</li>
                 </ul>
-                </div>
             </div>                        
         </div>
 
