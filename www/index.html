@@ -19,12 +19,12 @@
         <!-- main JS -->
         <script type="text/javascript" charset="utf-8" src="Gotracer.js"></script>
         <script type="text/javascript" charset="utf-8" src="_main.js"></script>
-       
+        
         <!-- Eidogo JS -->
         <script type="text/javascript" src="player/js/all.compressed.js"></script>
         
         <script type="text/javascript" charset="utf-8">
-     
+            
             var pictureSource;   // picture source
             var destinationType; // sets the format of returned value
             var db;
@@ -32,6 +32,11 @@
             var currentGameID = 0;
             var currentBoardSize = 19;
             var coords;
+            // Image Capture 
+            var idealWidth = 600;
+            var idealHeight = 800; // 402?
+            var imageSource = '';
+                        
             if (currentBoardSize === 19) {
                 var gameState = {
                     aa: "", ab: "", ac: "", ad: "", ae: "", af: "", ag: "", ah: "", ai: "", aj: "", ak: "", al: "", am: "", an: "", ao: "", ap: "", aq: "", ar: "", as: "", 
@@ -56,19 +61,16 @@
                 };
             }
             var previousGameState;
+            var newMoveArr = new Array();
             
-            // Image Capture 
-            var idealWidth = 300;
-            var idealHeight = 400; // 402?
-            var imageSource = '';
             
             // Disable Scrolling -- will adversely affect list on Archive page
-//            function preventBehavior(e) { 
-//                e.preventDefault(); 
-//            };
-//            document.addEventListener("touchmove", preventBehavior, false);
-//            
-//            
+            //            function preventBehavior(e) { 
+            //                e.preventDefault(); 
+            //            };
+            //            document.addEventListener("touchmove", preventBehavior, false);
+            
+            
             function onBodyLoad() {
                 document.addEventListener("deviceready", onDeviceReady, false);
             }
@@ -82,9 +84,11 @@
                                console.log('database populated');
                                });
                 if (currentGameID == '0') { $('#game-control-buttons').hide(); }
+                // fire the orientation change sniff for the first time.
+                orientationChangeDoSomething();
             }
             
-                        
+            
             </script>
     </head>
     
@@ -107,15 +111,15 @@
                 <div id="sgfdisplay">
                     <div id="player-container"></div>
                     <div id="game-control-buttons">
-                    <a id="gridButton" data-role="button" data-inline="true" data-icon="grid" data-mini="true" data-transition="flip" onclick="selectAction();">
-                        Grid
-                    </a>
-                    <a id="saveButton" data-role="button" data-inline="true" data-mini="true" data-transition="fade" href="#editGame" data-icon="check" data-iconpos="left" onclick="editGameDetails(currentGameID);">
-                        Edit
-                    </a>
-                    <a data-role="button" data-inline="true" data-iconpos="notext" data-transition="fade" href="#page1" data-icon="refresh" data-iconpos="left" onclick="reloadEidogo();">
-                        refresh 
-                    </a>
+                        <!--<a id="gridButton" data-role="button" data-inline="true" data-icon="grid" data-mini="true" data-transition="flip" onclick="selectAction();">
+                         Grid
+                         </a> -->
+                        <a id="saveButton" data-role="button" data-inline="true" data-mini="true" data-transition="fade" href="#editGame" data-icon="check" data-iconpos="left" onclick="editGameDetails(currentGameID);">
+                            Edit
+                        </a>
+                        <a data-role="button" data-inline="true" data-iconpos="notext" data-transition="fade" href="#page1" data-icon="refresh" data-iconpos="left" onclick="reloadEidogo();">
+                            refresh 
+                        </a>
                         <a data-role="button" data-inline="true" data-transition="fade" href="#page1" data-icon="refresh"  data-mini="true"  data-iconpos="left" onclick="loadEidogo();">
                             load 
                         </a>
@@ -143,8 +147,8 @@
             </div>
             <div data-role="content">
                 <div id="camerasetup">
+                    <canvas id="smallcanvas"></canvas>
                     <canvas id="canvas"></canvas>
-                    <canvas id="secondcanvas"></canvas>
                 </div>
             </div>
         </div>
@@ -153,7 +157,7 @@
         <div data-role="page" id="saveGame">
             <div data-theme="a" data-role="header">
                 <h3>
-                     Game Details
+                    Game Details
                 </h3>
                 <a data-role="button" data-direction="reverse" data-transition="fade" href="#page1" data-icon="arrow-l" data-iconpos="left">
                     Cancel
@@ -208,7 +212,7 @@
             </div>
         </div>
         
-       
+        
         
         <div data-role="page" id="gamesArchive">
             <div data-theme="a" data-role="header">
@@ -225,6 +229,6 @@
                 </ul>
             </div>                        
         </div>
-
+        
     </body>
 </html>

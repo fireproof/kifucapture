@@ -249,12 +249,12 @@ Point.prototype.getColor = function(ctx)
 	return {h: (max - min) / (max + 100) * (256 + 100), l: (r + g + b) / 3};
 }
 
-Point.prototype.draw = function(ctx, c)
+Point.prototype.draw = function(ctx, c) // draw grid points on the image
 {
 	if (c.constructor == Array)
 	c = "rgb(" + c[0]/256*100 + "%," + c[1]/256*100 + "%," + c[2]/256*100 + "%)";
 	ctx.fillStyle = c || "white";
-	ctx.fillRect(this.x - 1, this.y - 1, 3, 3);
+	ctx.fillRect(this.x - 2, this.y - 2, 6, 6); // was (this.x - 1, this.y - 1, 3, 3);
 };
 
 Point.prototype.toString = function()

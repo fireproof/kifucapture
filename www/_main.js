@@ -5,38 +5,17 @@
 // Populate the database 
 function populateDB(tx) {
 	console.log('populateDB called');
-//	tx.executeSql('DROP TABLE IF EXISTS MOVES');
-//	tx.executeSql('DROP TABLE IF EXISTS GAMES');
+    //	tx.executeSql('DROP TABLE IF EXISTS MOVES');
+    //	tx.executeSql('DROP TABLE IF EXISTS GAMES');
 	tx.executeSql('CREATE TABLE IF NOT EXISTS MOVES (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, gameid, movedata)');
 	tx.executeSql('CREATE TABLE IF NOT EXISTS GAMES (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, PB, BR, PW, WR, SZ, KM, HA, DT, gamedata)');
-//    tx.executeSql('CREATE TABLE IF NOT EXISTS BOARDSTATE (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, aa, ab, ac, ad, ae, af, ag, ah, ai, aj, ak, al, am, an, ao, ap, aq, ar, as, ba, bb, bc, bd, be, bf, bg, bh, bi, bj, bk, bl, bm, bn, bo, bp, bq, br, bs, ca, cb, cc, cd, ce, cf, cg, ch, ci, cj, ck, cl, cm, cn, co, cp, cq, cr, cs, da, db, dc, dd, de, df, dg, dh, di, dj, dk, dl, dm, dn, do, dp, dq, dr, ds, ea, eb, ec, ed, ee, ef, eg, eh, ei, ej, ek, el, em, en, eo, ep, eq, er, es, fa, fb, fc, fd, fe, ff, fg, fh, fi, fj, fk, fl, fm, fn, fo, fp, fq, fr, fs, ga, gb, gc, gd, ge, gf, gg, gh, gi, gj, gk, gl, gm, gn, go, gp, gq, gr, gs, ha, hb, hc, hd, he, hf, hg, hh, hi, hj, hk, hl, hm, hn, ho, hp, hq, hr, hs, ia, ib, ic, id, ie, if, ig, ih, ii, ij, ik, il, im, in, io, ip, iq, ir, is, ja, jb, jc, jd, je, jf, jg, jh, ji, jj, jk, jl, jm, jn, jo, jp, jq, jr, js, ka, kb, kc, kd, ke, kf, kg, kh, ki, kj, kk, kl, km, kn, ko, kp, kq, kr, ks, la, lb, lc, ld, le, lf, lg, lh, li, lj, lk, ll, lm, ln, lo, lp, lq, lr, ls, ma, mb, mc, md, me, mf, mg, mh, mi, mj, mk, ml, mm, mn, mo, mp, mq, mr, ms, na, nb, nc, nd, ne, nf, ng, nh, ni, nj, nk, nl, nm, nn, no, np, nq, nr, ns, oa, ob, oc, od, oe, of, og, oh, oi, oj, ok, ol, om, on, oo, op, oq, or, os, pa, pb, pc, pd, pe, pf, pg, ph, pi, pj, pk, pl, pm, pn, po, pp, pq, pr, ps, qa, qb, qc, qd, qe, qf, qg, qh, qi, qj, qk, ql, qm, qn, qo, qp, qq, qr, qs, ra, rb, rc, rd, re, rf, rg, rh, ri, rj, rk, rl, rm, rn, ro, rp, rq, rr, rs, sa, sb, sc, sd, se, sf, sg, sh, si, sj, sk, sl, sm, sn, so, sp, sq, sr, ss)');
 }
-
-//// Query the database
-//function queryDB(tx) {
-//	console.log("queryDB called");
-//	tx.executeSql('SELECT * FROM MOVES', [], querySuccess, errorCB);
-//}
-//
-//// Query the success callback
-//function querySuccess(tx, results) {
-//	var len = results.rows.length;
-//	console.log("MOVES table: " + len + " rows found.");
-//	for (var i=0; i<len; i++){
-//		console.log("Row = " + i + " ID = " + results.rows.item(i).id + " movedata = " + results.rows.item(i).movedata);
-//	}
-//}
 
 // Error callback
 function errorCB(err) {
 	console.log("ERROR processing SQL: "+err.code);
 }
 
-//// Success callback
-//function successCB() {
-//	console.log("successCB called");
-//	db.transaction(queryDB, errorCB);
-//}
 
 /* -------------------------- */
 //       Save Move
@@ -100,15 +79,15 @@ function getHighestGameID(callback) {
                    tx.executeSql("SELECT id FROM GAMES", [], function (tx, result) {
                                  var highestGameIDinDB = 0;
                                  for (var i = 0; i < result.rows.length; ++i) {
-                                     var row = result.rows.item(i);
-                                     if (row['id'] > highestGameIDinDB) {
-                                        highestGameIDinDB = row['id'];
-                                     }
+                                 var row = result.rows.item(i);
+                                 if (row['id'] > highestGameIDinDB) {
+                                 highestGameIDinDB = row['id'];
+                                 }
                                  }
                                  callback(highestGameIDinDB);
                                  }, function (tx, error) {
-                                    console.log('could not SELECT id FROM GAMES - ' + error.message);
-                                    return;
+                                 console.log('could not SELECT id FROM GAMES - ' + error.message);
+                                 return;
                                  });
                    });            
 }
@@ -209,9 +188,9 @@ function saveGameDetails() {
 //    New Game Functions
 /* -------------------------- */
 /*  create a new record in GAMES db
-    and sets currentGameID to that new gameid
-    then go to SaveGame page to set details
-*/
+ and sets currentGameID to that new gameid
+ then go to SaveGame page to set details
+ */
 function newGameRecord() {
     console.log('newGameRecord called');
     db.transaction(function (tx) {
@@ -260,7 +239,7 @@ function newGame() {
     // if there's already a game, check to see if user wants to stop and create a new one:
     if (currentGameID > 0) {
         console.log('currentGameID "'+ currentGameID +'" is greater than 0 so a capture session is already running');
-//        navigator.notification.vibrate(1000);
+        //        navigator.notification.vibrate(1000);
         navigator.notification.confirm(
                                        'Stop current game capture and start a new one?',  // message
                                        confirmNewGame,                                  // callback to invoke with index of button pressed
@@ -298,7 +277,7 @@ function acceptGrid() {
 // Canvas2ImagePlugin Function
 /* -------------------------- */
 /*
-    used to save a canvas image to filesystem
+ used to save a canvas image to filesystem
  */
 function saveImage()
 {
@@ -343,7 +322,7 @@ function capturePhoto() {
      correctOrientation: 1
      picture taken upright, image is cropped, object pointing up (top and bottom cropped)
      picture taken sideways, image has object pointing up (image resized to correct dimensions)
-          
+     
      */
     console.log("capturePhoto says -- mobile.changePage: camera");
     $.mobile.changePage("#camera");
@@ -411,15 +390,18 @@ function getPhotoPreset(source) {
 // and coordinates are needed.
 function detectGrid(imageURI) {
     currentMoveID = currentMoveID + 1;
+    
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
-    
-    var secondCanvas = document.getElementById("secondcanvas");
+    console.log("canvas width: "+ canvas.width);
+    var secondCanvas = document.getElementById("smallcanvas");
     var secondCtx = secondCanvas.getContext("2d");
     
     var image = new Image();
     
-    image.onload = function(){
+    image.onload = function(){        
+        
+        
         
         // ------------------------------------------------------------------
         // default size
@@ -428,16 +410,21 @@ function detectGrid(imageURI) {
         ctx.canvas.width = idealWidth;
         ctx.canvas.height = idealHeight;
         
+        // initial (large) canvas is hidden, so re-draw contents in second canvas
+        secondCanvas.width = 300;
+        secondCanvas.height = 400;
+        secondCtx.drawImage(image, 0,0, secondCanvas.width, secondCanvas.height);
+        
+        ctx.drawImage(image, 0,0);
         // show loading message
         $.mobile.showPageLoadingMsg("a", "Detecting Grid...", true);
         
-        ctx.drawImage(image, 0,0);
         
         // ------------------------------------------------------------------
         // Canvas2ImagePlugin saves to Photo Library (maybe sends to Documents or temp dir instead?)
         // might not be necessary if capturePhoto can specify w x h 
         try {
-//            saveImage();
+            //            saveImage();
             console.log("Image would be saved, but hey, let's not fill up the library right now");
         } catch (e) {
             console.log("can't save image - Exception: "+e);
@@ -468,26 +455,27 @@ function detectGrid(imageURI) {
                                        goTracer.startScan();
                                        console.log(goTracer.getSGF());
                                        goTracer.setBoardState();
-                                       for (var k in gameState) {
-                                           // use hasOwnProperty to filter out keys from the Object.prototype
-                                           if (gameState.hasOwnProperty(k)) {
-                                            console.log('key is: ' + k + ', value is: ' + gameState[k]);
-                                           }
-                                       }
+                                       //                                       for (var k in gameState) {
+                                       //                                           // use hasOwnProperty to filter out keys from the Object.prototype
+                                       //                                           if (gameState.hasOwnProperty(k)) {
+                                       //                                            console.log('key is: ' + k + ', value is: ' + gameState[k]);
+                                       //                                           }
+                                       //                                       }
                                        // all done, hide loading message
                                        $.mobile.hidePageLoadingMsg();
                                        
                                        // Approve or Update current moves in SGF file?
                                        // temporary - just write all SGF to file.
-//                                       writeFile(goTracer.getSGF(), function(){
-//                                                 reloadEidogo();
-//                                                 });
+                                       //                                       writeFile(goTracer.getSGF(), function(){
+                                       //                                                 reloadEidogo();
+                                       //                                                 });
                                        writeFile(goTracer.getSGF(), function(){
-                                                 console.log('this is where we used to reload Eidogo');
+                                                 console.log('Write File - draw Second Canvasthis is where we used to reload Eidogo');
+                                                 secondCtx.drawImage(canvas, 0,0, secondCanvas.width, secondCanvas.height);
                                                  });
                                        // save move to databse
                                        saveMovetoDB(goTracer.getSGF());
-                                       
+                                       //                                                                              
                                        $("#acceptbutton").addClass("acceptbutton-live");
                                        // ------------------------------------------------------------------
                                        // save SGF to disk? Send via Email? Open in Browser? Display using eidogo?
@@ -518,7 +506,7 @@ function processImage(imageURI) {
     
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
-    var secondCanvas = document.getElementById("secondcanvas");
+    var secondCanvas = document.getElementById("smallcanvas");
     var secondCtx = secondCanvas.getContext("2d");
     var image = new Image();
     
@@ -533,19 +521,21 @@ function processImage(imageURI) {
         saveMovetoDB(goTracer.getSGF());
         previousGameState = clone(gameState);
         goTracer.setBoardState();
-        for (var k in gameState) {
-            // use hasOwnProperty to filter out keys from the Object.prototype
-            if (gameState.hasOwnProperty(k)) {
-                console.log('newgamestate key: ' + k + ', value: ' + gameState[k]);
-            }
-        }
-        for (var k in previousGameState) {
-            // use hasOwnProperty to filter out keys from the Object.prototype
-            if (previousGameState.hasOwnProperty(k)) {
-                console.log('prevstate key: ' + k + ', value: ' + previousGameState[k]);
-            }
-        }
-
+//        for (var k in previousGameState) {
+//            // use hasOwnProperty to filter out keys from the Object.prototype
+//            if (previousGameState.hasOwnProperty(k)) {
+//                console.log('prevstate key: ' + k + ', value: ' + previousGameState[k]);
+//            }
+//        }
+//        for (var k in gameState) {
+//            // use hasOwnProperty to filter out keys from the Object.prototype
+//            if (gameState.hasOwnProperty(k)) {
+//                console.log('newgamestate key: ' + k + ', value: ' + gameState[k]);
+//            }
+//        }
+        console.log (compareAssociativeArrays(previousGameState, gameState));
+        console.log ('printOjbect NewMoveArr follows: ');
+        printObject(newMoveArr);
         
     }
     image.src = imageURI;
@@ -587,10 +577,10 @@ function onFail(err) {
 }
 
 
-///* -------------------------- */
-////    ActionSheet Function    //
-////   Select Camera/Photo Lib  //
-///* -------------------------- */
+/* -------------------------- */
+//    ActionSheet Function    //
+//   Select Camera/Photo Lib  //
+/* -------------------------- */
 //function selectAction() {
 //    var actionSheet = window.plugins.actionSheet;
 ////    console.log("selectAction says -- mobile.changePage: camera");
@@ -677,3 +667,41 @@ function clone(obj) {
     }
     return copy;
 }
+
+/* Compare game state arrays */
+/* a is initial state, b is current state */
+function compareAssociativeArrays(a, b) {
+    if (a == b) {
+        // check if arrays are identical
+        return true;
+    }   
+    for (key in a) {     
+        if (a[key] != b[key]) {
+            // push key value pair into new assoc. array
+            newMoveArr[key] = b[key];
+//            var newMoveCoord = key +" "+ b[key];
+//            return newMoveCoord;
+        }
+    }
+    return true;
+}
+
+// might need to use this for photo handling
+function orientationChangeDoSomething()
+{
+    switch(window.orientation) 
+    {  
+        case -90:
+        case 90:
+            console.log('landscape orientation');
+            break; 
+        default:
+            console.log('portrait orientation');
+            break; 
+    }
+}
+
+window.onorientationchange = function()
+{
+    orientationChangeDoSomething();
+};
