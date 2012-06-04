@@ -500,7 +500,7 @@ function detectGrid(imageURI) {
 function processImage(imageURI) {
     console.log('processImage called');
     // Called when a new photo is successfully retrieved
-    // coords must already be set
+    // AND coordinate grid has already been set (see gridDetect above)
     // TODO: check to see if board/image has changed first!
     currentMoveID = currentMoveID + 1; 
     
@@ -536,6 +536,12 @@ function processImage(imageURI) {
         console.log (compareAssociativeArrays(previousGameState, gameState));
         console.log ('printOjbect NewMoveArr follows: ');
         printObject(newMoveArr);
+
+        var s = "";
+        for (i in newMoveArr) {
+            s += i + ":" + newMoveArr[i] + ", ";
+        }
+        $('#message').html(s);
         
     }
     image.src = imageURI;
@@ -670,20 +676,13 @@ function clone(obj) {
 
 /* Compare game state arrays */
 /* a is initial state, b is current state */
-function compareAssociativeArrays(a, b) {
-    if (a == b) {
-        // check if arrays are identical
-        return true;
-    }   
+function compareAssociativeArrays(a, b) {   
     for (key in a) {     
         if (a[key] != b[key]) {
             // push key value pair into new assoc. array
             newMoveArr[key] = b[key];
-//            var newMoveCoord = key +" "+ b[key];
-//            return newMoveCoord;
         }
     }
-    return true;
 }
 
 // might need to use this for photo handling
