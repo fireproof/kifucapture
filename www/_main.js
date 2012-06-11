@@ -676,7 +676,8 @@ function clone(obj) {
 
 /* Compare game state arrays */
 /* a is initial state, b is current state */
-function compareAssociativeArrays(a, b) {   
+function compareAssociativeArrays(a, b) {
+    newMoveArr = {};
     for (key in a) {     
         if (a[key] != b[key]) {
             // push key value pair into new assoc. array
