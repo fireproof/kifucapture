@@ -147,6 +147,18 @@ function editGameDetails(gameid){
                                  $.mobile.changePage('#saveGame');
                                  }, errorCB);
                    }, errorCB);
+    // show all moves related to this gameid
+    db.transaction(function(tx){
+                   tx.executeSql('SELECT * FROM MOVES WHERE gameid=?', [gameid], function(tx, results) {
+                                     var len = results.rows.length;
+                                     for (var i = 0; i < len; ++i) {
+                                         var obj = results.rows.item(i);
+                                         console.log('obj: '+ obj[2]);
+                                         $('#moves').append(obj);
+                                    }
+                                 }, errorCB);
+                   }, errorCB);
+
 }
 
 
@@ -424,8 +436,9 @@ function detectGrid(imageURI) {
         // Canvas2ImagePlugin saves to Photo Library (maybe sends to Documents or temp dir instead?)
         // might not be necessary if capturePhoto can specify w x h 
         try {
-            //            saveImage();
-            console.log("Image would be saved, but hey, let's not fill up the library right now");
+            saveImage();
+            console.log('saving image to local library');
+//            console.log("Image would be saved, but hey, let's not fill up the library right now");
         } catch (e) {
             console.log("can't save image - Exception: "+e);
         }
@@ -455,20 +468,20 @@ function detectGrid(imageURI) {
                                        goTracer.startScan();
                                        console.log(goTracer.getSGF());
                                        goTracer.setBoardState();
-                                       //                                       for (var k in gameState) {
-                                       //                                           // use hasOwnProperty to filter out keys from the Object.prototype
-                                       //                                           if (gameState.hasOwnProperty(k)) {
-                                       //                                            console.log('key is: ' + k + ', value is: ' + gameState[k]);
-                                       //                                           }
-                                       //                                       }
+//                                       for (var k in gameState) {
+//                                           // use hasOwnProperty to filter out keys from the Object.prototype
+//                                           if (gameState.hasOwnProperty(k)) {
+//                                            console.log('key is: ' + k + ', value is: ' + gameState[k]);
+//                                           }
+//                                       }
                                        // all done, hide loading message
                                        $.mobile.hidePageLoadingMsg();
                                        
                                        // Approve or Update current moves in SGF file?
                                        // temporary - just write all SGF to file.
-                                       //                                       writeFile(goTracer.getSGF(), function(){
-                                       //                                                 reloadEidogo();
-                                       //                                                 });
+//                                       writeFile(goTracer.getSGF(), function(){
+//                                                 reloadEidogo();
+//                                                 });
                                        writeFile(goTracer.getSGF(), function(){
                                                  console.log('Write File - draw Second Canvasthis is where we used to reload Eidogo');
                                                  secondCtx.drawImage(canvas, 0,0, secondCanvas.width, secondCanvas.height);
@@ -521,18 +534,7 @@ function processImage(imageURI) {
         saveMovetoDB(goTracer.getSGF());
         previousGameState = clone(gameState);
         goTracer.setBoardState();
-//        for (var k in previousGameState) {
-//            // use hasOwnProperty to filter out keys from the Object.prototype
-//            if (previousGameState.hasOwnProperty(k)) {
-//                console.log('prevstate key: ' + k + ', value: ' + previousGameState[k]);
-//            }
-//        }
-//        for (var k in gameState) {
-//            // use hasOwnProperty to filter out keys from the Object.prototype
-//            if (gameState.hasOwnProperty(k)) {
-//                console.log('newgamestate key: ' + k + ', value: ' + gameState[k]);
-//            }
-//        }
+
         console.log (compareAssociativeArrays(previousGameState, gameState));
         console.log ('printOjbect NewMoveArr follows: ');
         printObject(newMoveArr);
@@ -541,7 +543,11 @@ function processImage(imageURI) {
         for (i in newMoveArr) {
             s += i + ":" + newMoveArr[i] + ", ";
         }
-        $('#message').html(s);
+        
+        // add new move to Moves DB
+        saveMovetoDB(s);
+        // show new move on screen
+        $('#message').append('<p>'+s+'</p>');
         
     }
     image.src = imageURI;

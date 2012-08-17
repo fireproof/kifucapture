@@ -100,10 +100,10 @@
                 <h3>
                     Moku
                 </h3>
-                <a data-role="button" data-transition="fade" data-icon="plus" data-shadow="false" onclick="newGame();">
+                <a data-role="button" data-transition="fade" data-icon="plus" data-shadow="false" ontouchstart="newGame();">
                     New
                 </a>
-                <a data-role="button" data-transition="slide" href="#gamesArchive" onclick="listGamesArchive();">
+                <a data-role="button" data-transition="slide" href="#gamesArchive" ontouchstart="listGamesArchive();">
                     Archives
                 </a>
             </div>
@@ -114,16 +114,16 @@
                         <!--<a id="gridButton" data-role="button" data-inline="true" data-icon="grid" data-mini="true" data-transition="flip" onclick="selectAction();">
                          Grid
                          </a> -->
-                        <a id="saveButton" data-role="button" data-inline="true" data-mini="true" data-transition="fade" href="#editGame" data-icon="check" data-iconpos="left" onclick="editGameDetails(currentGameID);">
+                        <a id="saveButton" data-role="button" data-inline="true" data-mini="true" data-transition="fade" href="#editGame" data-icon="check" data-iconpos="left" ontouchstart="editGameDetails(currentGameID);">
                             Edit
                         </a>
-                        <a data-role="button" data-inline="true" data-iconpos="notext" data-transition="fade" href="#page1" data-icon="refresh" data-iconpos="left" onclick="reloadEidogo();">
+                        <a data-role="button" data-inline="true" data-iconpos="notext" data-transition="fade" href="#page1" data-icon="refresh" data-iconpos="left" ontouchstart="reloadEidogo();">
                             refresh 
                         </a>
-                        <a data-role="button" data-inline="true" data-transition="fade" href="#page1" data-icon="refresh"  data-mini="true"  data-iconpos="left" onclick="loadEidogo();">
+                        <a data-role="button" data-inline="true" data-transition="fade" href="#page1" data-icon="refresh"  data-mini="true"  data-iconpos="left" ontouchstart="loadEidogo();">
                             load 
                         </a>
-                        <a data-role="button" data-inline="true" data-transition="fade" data-icon="refresh"  data-mini="true"  data-iconpos="left" onclick="selectActionPreset();">
+                        <a data-role="button" data-inline="true" data-transition="fade" data-icon="refresh"  data-mini="true"  data-iconpos="left" ontouchstart="selectActionPreset();">
                             add pic 
                         </a>
                     </div>
@@ -142,7 +142,7 @@
                 <a data-role="button" data-direction="reverse" data-transition="flip" href="#page1" data-icon="back" data-iconpos="left">
                     Cancel
                 </a>
-                <a id="acceptbutton" data-role="button" data-direction="reverse" data-transition="flip" href="#page1" data-icon="" onclick="acceptGrid();">
+                <a id="acceptbutton" data-role="button" data-direction="reverse" data-transition="flip" href="#page1" data-icon="" ontouchstart="acceptGrid();">
                     Accept
                 </a>
             </div>
@@ -210,6 +210,7 @@
                     <input type="hidden" name="id" id="id" value="" />
                     <input type="submit" data-icon="arrow-r" data-iconpos="right" value="Save Settings" />
                 </form>
+                <div id="moves"></div>
             </div>
         </div>
         
