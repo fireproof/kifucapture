@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		344B924516517E3C006C0EB3 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 344B924416517E3B006C0EB3 /* Default-568h@2x.png */; };
 		3470C2E3153E262300FDD800 /* Canvas2ImagePlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 3470C2E0153E262300FDD800 /* Canvas2ImagePlugin.m */; };
 		3470C2E4153E262300FDD800 /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 3470C2E2153E262300FDD800 /* NSData+Base64.m */; };
 		3470C2F3153EEFDA00FDD800 /* ActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = 3470C2F2153EEFDA00FDD800 /* ActionSheet.m */; };
@@ -133,6 +134,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		344B924416517E3B006C0EB3 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		3470C2DF153E262300FDD800 /* Canvas2ImagePlugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Canvas2ImagePlugin.h; sourceTree = "<group>"; };
 		3470C2E0153E262300FDD800 /* Canvas2ImagePlugin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Canvas2ImagePlugin.m; sourceTree = "<group>"; };
 		3470C2E1153E262300FDD800 /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Base64.h"; sourceTree = "<group>"; };
@@ -447,6 +449,7 @@
 		34E317741518FC6B007BA5BF = {
 			isa = PBXGroup;
 			children = (
+				344B924416517E3B006C0EB3 /* Default-568h@2x.png */,
 				34E317A01518FC6B007BA5BF /* kifucapture */,
 				34E317851518FC6B007BA5BF /* Frameworks */,
 				34E317831518FC6B007BA5BF /* Products */,
@@ -1058,6 +1061,7 @@
 				9345393F1534179000AEB8DB /* type-ghostscript.xml in Resources */,
 				934539401534179000AEB8DB /* type-windows.xml in Resources */,
 				934539411534179000AEB8DB /* type.xml in Resources */,
+				344B924516517E3C006C0EB3 /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1260,6 +1264,7 @@
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "$(inherited) \"$(SRCROOT)/iOSMagick-6.7.5-3-libs\"/**";
+				VALID_ARCHS = "armv7 armv7s";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1313,6 +1318,7 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "$(inherited) \"$(SRCROOT)/iOSMagick-6.7.5-3-libs\"/**";
 				VALIDATE_PRODUCT = YES;
+				VALID_ARCHS = "armv7 armv7s";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
